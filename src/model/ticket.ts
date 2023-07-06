@@ -15,6 +15,10 @@ const ticketSchema = new Schema({
   {
     type: String
   },
+  response:
+  {
+    type: String
+  },
   query_status: {
     type: String
   },
