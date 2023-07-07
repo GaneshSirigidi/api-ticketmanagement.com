@@ -9,8 +9,8 @@ export class TicketDataServiceProvider {
   }
 
 
-  public async replyTicket(replyData, id) {
-    return await TicketModel.findByIdAndUpdate(id, { response: replyData.response }, { new: true });
+  public async getTicketById(id) {
+    return await TicketModel.findById({_id:id});
   }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {

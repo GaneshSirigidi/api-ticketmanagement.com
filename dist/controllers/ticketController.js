@@ -13,14 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TicketController = void 0;
-const ticketService_1 = require("../services/ticketService");
+const ticketDataServiceProvider_1 = require("../services/ticketDataServiceProvider");
 const paginationHelper_1 = __importDefault(require("../helpers/paginationHelper"));
-const ticketDataServiceProvider = new ticketService_1.TicketDataServiceProvider();
+const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
 class TicketController {
-    addTicket(req, res, next) {
+    addTicket(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const ticketData = req.body;
+                ticketData.threads = [];
                 const queryData = yield ticketDataServiceProvider.saveTicket(ticketData);
                 return res.status(200).json({
                     success: true,
@@ -29,11 +30,14 @@ class TicketController {
                 });
             }
             catch (err) {
-                return next(err);
+                return res.status(500).json({
+                    success: false,
+                    message: "Something went wrong"
+                });
             }
         });
     }
-    listTickets(req, res, next) {
+    listTickets(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const email = req.query.email;
@@ -61,7 +65,45 @@ class TicketController {
                 return res.status(200).json(response);
             }
             catch (err) {
-                return next(err);
+                return res.status(500).json({
+                    success: false,
+                    message: "Something went wrong"
+                });
+            }
+        });
+    }
+    replyTicket(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = req.params.id;
+                const { message } = req.body;
+                const user = req.user;
+                const name = user.name;
+                const ticket = yield ticketDataServiceProvider.getTicketById(id);
+                if (!ticket) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Ticket not found",
+                    });
+                }
+                const thread = {
+                    name,
+                    message,
+                    timestamp: new Date(),
+                };
+                ticket.threads.push(thread); // Add the new thread to the ticket
+                const updatedTicket = yield ticketDataServiceProvider.saveTicket(ticket);
+                return res.status(200).json({
+                    success: true,
+                    message: "Reply posted successfully",
+                    data: updatedTicket,
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Something went wrong",
+                });
             }
         });
     }

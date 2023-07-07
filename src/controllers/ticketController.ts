@@ -1,16 +1,18 @@
 
 import { Request, Response, NextFunction } from "express";
 
-import { TicketDataServiceProvider } from '../services/ticketService'
+import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider'
 import paginationHelper from "../helpers/paginationHelper";
 
 const ticketDataServiceProvider = new TicketDataServiceProvider()
 
 export class TicketController {
 
-  public async addTicket(req: Request, res: Response, next: NextFunction) {
+  public async addTicket(req: Request, res: Response) {
     try {
+
       const ticketData = req.body
+      ticketData.threads = [];
       const queryData = await ticketDataServiceProvider.saveTicket(ticketData)
 
       return res.status(200).json({
@@ -20,12 +22,14 @@ export class TicketController {
       });
     }
     catch (err) {
-
-      return next(err)
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong"
+      })
     }
   }
 
-  public async listTickets(req: Request, res: Response, next: NextFunction) {
+  public async listTickets(req: Request, res: Response) {
     try {
       const email = req.query.email
 
@@ -56,27 +60,51 @@ export class TicketController {
       return res.status(200).json(response);
     }
     catch (err) {
-
-      return next(err)
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong"
+      })
     }
   }
-  public async replyTicket(req: Request, res: Response, next: NextFunction) {
+
+
+  public async replyTicket(req: Request, res: Response) {
     try {
-      const id = req.params.id
-      console.log("id", id)
-      const ticketData = req.body
-      const queryData = await ticketDataServiceProvider.replyTicket(ticketData, id)
+      const id = req.params.id;
+      const { message } = req.body;
+      const user = req.user
+      const name=user.name
+      const ticket = await ticketDataServiceProvider.getTicketById(id);
+
+      if (!ticket) {
+        return res.status(400).json({
+          success: false,
+          message: "Ticket not found",
+        });
+      }
+
+      const thread = {
+        name,
+        message,
+        timestamp: new Date(),
+      };
+
+      ticket.threads.push(thread); // Add the new thread to the ticket
+
+      const updatedTicket = await ticketDataServiceProvider.saveTicket(ticket);
 
       return res.status(200).json({
         success: true,
-        message: "reply Posted successfully",
-        data: queryData,
+        message: "Reply posted successfully",
+        data: updatedTicket,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong",
       });
     }
-    catch (err) {
-
-      return next(err)
-    }
   }
+
 
 }

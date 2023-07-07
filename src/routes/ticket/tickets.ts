@@ -1,14 +1,29 @@
 import { Router } from 'express';
 
 import { TicketController } from '../../controllers/ticketController';
+import { AuthMiddleware } from '../../middlewares/authMiddleware';
 
 const ticketController = new TicketController()
-
+const authMiddleware= new AuthMiddleware()
 
 const router: Router = Router();
 
-router.post('/ticket/add', ticketController.addTicket)
-router.get('/ticket/tickets', ticketController.listTickets)
-router.post('/ticket/reply/:id', ticketController.replyTicket)
+router.post('/ticket/add',
+    [
+        authMiddleware.validateAccessToken
+    ],
+     ticketController.addTicket)
+
+router.get('/ticket/tickets',
+    [
+        authMiddleware.validateAccessToken
+    ],  
+     ticketController.listTickets)
+
+router.post('/ticket/reply/:id',
+    [
+        authMiddleware.validateAccessToken
+    ],
+     ticketController.replyTicket)
 
 export default router;
