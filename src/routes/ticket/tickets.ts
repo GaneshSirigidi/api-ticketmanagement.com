@@ -16,9 +16,9 @@ router.post('/ticket/add',
 
 router.get('/ticket/tickets',
     [
-        authMiddleware.validateAccessToken
+        authMiddleware.validateAccessTokenForAdmin
     ],  
-     ticketController.listTickets)
+     ticketController.listTickets)  
 
 router.post('/ticket/reply/:id',
     [
