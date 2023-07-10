@@ -1,12 +1,14 @@
 import express, { Request, Response, NextFunction } from 'express';
-import ticketRoutes from '../routes/ticket'
+import adminRoutes from '../routes/admin'
 import userRoutes from '../routes/user'
+import agentRoutes from '../routes/agent'
 
 const router = express.Router();
 
 
-router.use('/', ticketRoutes)
-router.use('/',userRoutes)
+router.use('/', adminRoutes)
+router.use('/', userRoutes)
+router.use('/',agentRoutes)
 
 
 /* GET home page. */

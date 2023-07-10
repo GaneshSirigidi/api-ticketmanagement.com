@@ -38,5 +38,11 @@ class UserDataServiceProvider {
             return match ? userDetails : null;
         });
     }
+    saveAgent(agentData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            agentData.password = yield bcrypt_1.default.hash(agentData.password, saltRounds);
+            return yield user_1.UserModel.create(agentData);
+        });
+    }
 }
 exports.UserDataServiceProvider = UserDataServiceProvider;

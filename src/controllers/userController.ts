@@ -52,4 +52,33 @@ export class UserController {
             return next(error);
         }
     }
+
+    public async addAgent(req: Request, res: Response) {
+        try {
+
+            const reqData = req.body
+            const authorizationHeader = req.headers.authorization
+
+            if (!authorizationHeader) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Unauthorized",
+                });
+            }
+            const agentData = await userDataServiceProvider.saveAgent(reqData)
+
+            return res.status(200).json({
+                success: true,
+                message: "Agent added successfully",
+                data: agentData,
+            });
+
+        }
+        catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: "Something went wrong"
+            })
+        }
+    }
 }

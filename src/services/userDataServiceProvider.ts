@@ -10,11 +10,11 @@ export class UserDataServiceProvider {
         return await UserModel.create(userData)
     }
 
-    async userById(userId) {
+    public async userById(userId) {
         return await  UserModel.findOne({ _id: userId })
     }
 
-    async login(email: string, password: string) {
+    public async login(email: string, password: string) {
         let match = false;
         const userDetails = await UserModel.findOne({ email });
         if (userDetails) {
@@ -22,7 +22,12 @@ export class UserDataServiceProvider {
         }
         return match ? userDetails : null;
       }
-        
-            
-    
+       
+    public async saveAgent(agentData) {
+      agentData.password = await bcrypt.hash(agentData.password, saltRounds);
+      return await UserModel.create(agentData)
+  }
+   
+   
 }
+            

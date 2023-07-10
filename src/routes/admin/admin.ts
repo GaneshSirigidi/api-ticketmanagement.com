@@ -11,16 +11,23 @@ const validateRequest = schemaValidator.validate();
 
 const router: Router = Router();
 
-router.post('/user/signup',
+router.post('/admin/signup',
   [
     validateRequest
   ], userController.signUp)
 
-router.post('/user/signin',
+router.post('/admin/signin',
   [
     validateRequest
   ],
   userController.signIn,
+)
+
+router.post('/admin/agent',
+  [
+    validateRequest
+  ],
+  userController.addAgent,
 );
 
 

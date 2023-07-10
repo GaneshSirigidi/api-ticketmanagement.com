@@ -7,10 +7,13 @@ const schemaValidators_1 = require("../../middlewares/validations/schemaValidato
 const schemaValidator = new schemaValidators_1.SchemaValidator(true);
 const validateRequest = schemaValidator.validate();
 const router = (0, express_1.Router)();
-router.post('/user/signup', [
+router.post('/admin/signup', [
     validateRequest
 ], userController.signUp);
-router.post('/user/signin', [
+router.post('/admin/signin', [
     validateRequest
 ], userController.signIn);
+router.post('/admin/agent', [
+    validateRequest
+], userController.addAgent);
 exports.default = router;

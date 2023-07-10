@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = void 0;
 const mongoose_1 = require("mongoose");
 const userSchema = new mongoose_1.Schema({
-    name: {
+    full_name: {
         type: String
     },
     email: {
@@ -13,7 +13,9 @@ const userSchema = new mongoose_1.Schema({
         type: String
     },
     user_type: {
-        type: String
+        type: String,
+        enum: ['USER', 'ADMIN', 'AGENT'],
+        default: 'USER'
     }
 }, {
     timestamps: {

@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import ticket from '../ticket/tickets'
+import agent from '../agent/agent'
 
 const router: Router = Router()
 
-router.use(ticket)
+router.use(agent)
 
 
 export default router

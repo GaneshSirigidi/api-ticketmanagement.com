@@ -14,27 +14,27 @@ const authMiddleware = new AuthMiddleware()
 
 const router: Router = Router();
 
-router.post('/tickets',
+router.post('/admin/tickets',
     [
         validateRequest,
         authMiddleware.validateAccessToken
     ],
     ticketController.addTicket)
 
-router.get('/tickets',
+router.get('/admin/tickets',
     [
         authMiddleware.validateAccessToken
     ],
     ticketController.listTickets)
 
-router.get('/tickets/:id',
+router.get('/admin/tickets/:id',
     [
         authMiddleware.validateAccessToken
     ],
     ticketController.getTicketReplies)
 
 
-router.post('/tickets/:id/reply',
+router.post('/admin/tickets/:id/reply',
     [
         authMiddleware.validateAccessToken
     ],

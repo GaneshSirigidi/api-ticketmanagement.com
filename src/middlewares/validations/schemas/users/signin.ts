@@ -6,6 +6,4 @@ export const signInSchema = Joi.object().keys({
     password: Joi.string().required().error(errors => stringErrorHandler(errors, 'Password')),
 
     
-
-
 })

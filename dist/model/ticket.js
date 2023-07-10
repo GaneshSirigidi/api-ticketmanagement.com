@@ -2,39 +2,32 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TicketModel = void 0;
 const mongoose_1 = require("mongoose");
-const threadSchema = new mongoose_1.Schema({
-    name: {
-        type: String,
-    },
-    message: {
-        type: String,
-    },
-    timestamp: {
-        type: Date,
-        default: Date.now,
-    },
-});
 const ticketSchema = new mongoose_1.Schema({
-    name: {
+    author: {
         type: String,
     },
     email: {
         type: String,
         lowercase: true
     },
-    phone: {
-        type: String,
-    },
     company_name: {
         type: String
     },
+    priority: {
+        type: String,
+        enum: ["HIGH", "MEDIUM", "LOW"]
+    },
     query_status: {
-        type: String
+        type: String,
+        enum: ["OPEN", "CLOSE"],
+        default: "OPEN",
     },
     requirement_brief: {
         type: String
     },
-    threads: [threadSchema],
+    subject: {
+        type: String
+    }
 }, {
     timestamps: {
         'createdAt': 'created_at',

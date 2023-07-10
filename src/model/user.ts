@@ -14,7 +14,8 @@ const userSchema = new Schema({
     },
     user_type: {
         type: String,
-        enum: ['CLIENT', 'ADMIN', 'AGENT']
+        enum: ['USER', 'ADMIN', 'AGENT'],
+        default:'USER'
     }
 }, {
     timestamps: {

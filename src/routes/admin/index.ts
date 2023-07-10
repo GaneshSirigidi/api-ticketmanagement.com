@@ -1,10 +1,12 @@
 import { Router } from 'express'
-import user from '../user/user'
-import ticket from '../user/ticket'
+import ticket from '../admin/ticket'
+import admin from '../admin/admin'
 
 const router: Router = Router()
 
-router.use(user)
+
 router.use(ticket)
+router.use(admin)
+
 
 export default router
