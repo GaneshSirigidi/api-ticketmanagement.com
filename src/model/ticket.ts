@@ -1,35 +1,35 @@
+import { string } from 'joi'
 import { Schema, model } from 'mongoose'
 
-
-
 const ticketSchema = new Schema({
-
   author: {
     type: String,
   },
-
   email: {
     type: String,
     lowercase: true
   },
-
-  phone: {
-    type: String,
-  },
   company_name:
   {
     type: String
+  },
+  priority:
+  {
+    type: String,
+    enum: ["HIGH", "MEDIUM", "LOW"]
   },
   query_status: {
     type: String,
     enum: ["OPEN", "CLOSE"],
     default: "OPEN",
   },
-
   requirement_brief: {
     type: String
   },
-
+  subject:
+  {
+    type: String
+  }
 }, {
   timestamps: {
     'createdAt': 'created_at',

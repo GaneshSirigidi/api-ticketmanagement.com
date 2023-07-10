@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 
 const userSchema = new Schema({
 
-    name: {
+    full_name: {
         type: String
     },
     email: {
@@ -13,9 +13,9 @@ const userSchema = new Schema({
         type: String
     },
     user_type: {
-        type: String
+        type: String,
+        enum: ['CLIENT', 'ADMIN', 'AGENT']
     }
-
 }, {
     timestamps: {
         'createdAt': 'created_at',
