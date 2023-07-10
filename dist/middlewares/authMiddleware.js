@@ -58,5 +58,53 @@ class AuthMiddleware {
             }
         });
     }
+    validateAccessTokenForAdmin(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const accessToken = req.headers.authorization;
+                if (!accessToken) {
+                    const respData = {
+                        success: false,
+                        message: "No Authorization Token",
+                    };
+                    return res.status(403).json(respData);
+                }
+                // Decode JWT received via Header
+                const userDetails = jsonwebtoken_1.default.decode(accessToken);
+                // Fetch User From DB
+                const user = yield userDataServiceProvider.userById(userDetails.id);
+                if (userDetails.user_type !== 'ADMIN') {
+                    const respData = {
+                        success: false,
+                        message: "Invalid user type",
+                    };
+                    return res.status(403).json(respData);
+                }
+                const tokenSecret = process.env.JWT_SECRET;
+                try {
+                    // Verify JWT
+                    jsonwebtoken_1.default.verify(accessToken, tokenSecret);
+                    // Add User to the Request Payload
+                    req.user = user;
+                    next();
+                }
+                catch (error) {
+                    let respData = {
+                        success: false,
+                        message: error.message,
+                        error: error,
+                    };
+                    return res.status(401).json(respData);
+                }
+            }
+            catch (error) {
+                let respData = {
+                    success: false,
+                    message: "Invalid Access Token",
+                };
+                return res.status(401).json(respData);
+            }
+        });
+    }
 }
 exports.AuthMiddleware = AuthMiddleware;

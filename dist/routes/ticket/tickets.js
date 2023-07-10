@@ -10,7 +10,7 @@ router.post('/ticket/add', [
     authMiddleware.validateAccessToken
 ], ticketController.addTicket);
 router.get('/ticket/tickets', [
-    authMiddleware.validateAccessToken
+    authMiddleware.validateAccessTokenForAdmin
 ], ticketController.listTickets);
 router.post('/ticket/reply/:id', [
     authMiddleware.validateAccessToken
