@@ -1,21 +1,10 @@
 import { Schema, model } from 'mongoose'
 
-const threadSchema = new Schema({
-  name: {
-    type: String,
-  },
-  message: {
-    type: String,
-  },
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
-});
+
 
 const ticketSchema = new Schema({
 
-  name: {
+  author: {
     type: String,
   },
 
@@ -27,21 +16,19 @@ const ticketSchema = new Schema({
   phone: {
     type: String,
   },
-
   company_name:
   {
     type: String
   },
-
   query_status: {
-    type: String
+    type: String,
+    enum: ["OPEN", "CLOSE"],
+    default: "OPEN",
   },
 
   requirement_brief: {
     type: String
   },
-
-  threads: [threadSchema],
 
 }, {
   timestamps: {

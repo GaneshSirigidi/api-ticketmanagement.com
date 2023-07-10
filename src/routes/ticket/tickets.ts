@@ -4,26 +4,33 @@ import { TicketController } from '../../controllers/ticketController';
 import { AuthMiddleware } from '../../middlewares/authMiddleware';
 
 const ticketController = new TicketController()
-const authMiddleware= new AuthMiddleware()
+const authMiddleware = new AuthMiddleware()
 
 const router: Router = Router();
 
-router.post('/ticket/add',
+router.post('/tickets',
     [
         authMiddleware.validateAccessToken
     ],
-     ticketController.addTicket)
+    ticketController.addTicket)
 
-router.get('/ticket/tickets',
-    [
-        authMiddleware.validateAccessToken
-    ],  
-     ticketController.listTickets)
-
-router.post('/ticket/reply/:id',
+router.get('/tickets',
     [
         authMiddleware.validateAccessToken
     ],
-     ticketController.replyTicket)
+    ticketController.listTickets)
+
+router.get('/tickets/:id',
+    [
+        authMiddleware.validateAccessToken
+    ],
+    ticketController.getTicketReplies)
+
+
+router.post('/tickets/:id/reply',
+    [
+        authMiddleware.validateAccessToken
+    ],
+    ticketController.replyTicket)
 
 export default router;

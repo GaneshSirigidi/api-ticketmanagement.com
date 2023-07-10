@@ -71,9 +71,6 @@ export class TicketController {
   public async replyTicket(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      const { message } = req.body;
-      const user = req.user
-      const name=user.name
       const ticket = await ticketDataServiceProvider.getTicketById(id);
 
       if (!ticket) {
@@ -82,16 +79,14 @@ export class TicketController {
           message: "Ticket not found",
         });
       }
-
-      const thread = {
-        name,
-        message,
-        timestamp: new Date(),
+      const replyData = {
+        reporter_by: req.user.name,
+        request_id: req.body.request_id,
+        reporter_type: req.user.user_type,
+        message: req.body.message
       };
 
-      ticket.threads.push(thread); // Add the new thread to the ticket
-
-      const updatedTicket = await ticketDataServiceProvider.saveTicket(ticket);
+      const updatedTicket = await ticketDataServiceProvider.replyTickets(replyData);
 
       return res.status(200).json({
         success: true,
@@ -105,6 +100,46 @@ export class TicketController {
       });
     }
   }
+
+  public async getTicketReplies(req: Request, res: Response) {
+    try {
+      const id = req.query.id
+
+      const { skip, limit, sort } = req.params
+      const query = {
+        email: { $eq: id }
+      };
+
+      const [tickets, count] = await Promise.all([
+        ticketDataServiceProvider.getReplies({
+          query, skip, limit, sort
+        }),
+        ticketDataServiceProvider.countAll({
+          query
+        })
+      ])
+
+      const response = paginationHelper.getPaginationResponse({
+        page: req.query.page || 1,
+        count,
+        limit,
+        skip,
+        data: tickets,
+        message: "Tickets fetched successfully",
+        searchString: req.query.search_string,
+      });
+
+      return res.status(200).json(response);
+    }
+    catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong"
+      })
+    }
+  }
+
+
 
 
 }
