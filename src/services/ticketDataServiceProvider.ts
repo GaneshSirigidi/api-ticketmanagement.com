@@ -34,4 +34,8 @@ export class TicketDataServiceProvider {
   async countAll({ query = {} }) {
     return TicketModel.countDocuments(query)
   }
+
+  async getOne(ticketId) {
+    return await TicketModel.findOne({ticket_id:ticketId})
+  }
 }

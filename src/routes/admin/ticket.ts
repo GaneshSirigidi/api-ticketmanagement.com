@@ -25,19 +25,28 @@ router.get('/admin/tickets',
     [
         authMiddleware.validateAccessTokenForAdmin
     ],
-    ticketController.listTickets)
+    ticketController.listTickets
+)
+
+router.get('/admin/ticket',
+    [
+        authMiddleware.validateAccessTokenForAdmin
+    ],
+    ticketController.getOne
+)
 
 router.get('/admin/tickets/:id',
     [
         authMiddleware.validateAccessToken
     ],
-    ticketController.getThreads)
-
+    ticketController.getThreads
+)
 
 router.post('/admin/tickets/:id/reply',
     [
         authMiddleware.validateAccessToken
     ],
-    ticketController.replyTicket)
+    ticketController.replyTicket
+)
 
 export default router;

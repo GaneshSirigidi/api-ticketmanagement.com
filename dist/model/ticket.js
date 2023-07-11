@@ -13,9 +13,10 @@ const ticketSchema = new mongoose_1.Schema({
         type: String,
         lowercase: true
     },
-    company_name: {
-        type: String
-    },
+    // company_name:
+    // {
+    //   type: String
+    // },
     priority: {
         type: String,
         enum: ["HIGH", "MEDIUM", "LOW"]

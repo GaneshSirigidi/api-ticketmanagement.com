@@ -16,10 +16,10 @@ const ticketSchema = new Schema({
     lowercase: true
   },
 
-  company_name:
-  {
-    type: String
-  },
+  // company_name:
+  // {
+  //   type: String
+  // },
 
   priority:
   {

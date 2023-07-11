@@ -3,13 +3,13 @@ import { Request, Response, NextFunction } from "express";
 
 import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider'
 import paginationHelper from "../helpers/paginationHelper";
-import {stringGen}  from "../helpers/stringGen";
+import { stringGen } from "../helpers/stringGen";
 
 const ticketDataServiceProvider = new TicketDataServiceProvider();
 
 export class TicketController {
 
-  public async addTicket(req: Request, res: Response,next:NextFunction) {
+  public async addTicket(req: Request, res: Response, next: NextFunction) {
     try {
 
       const ticketData = req.body;
@@ -29,7 +29,7 @@ export class TicketController {
     }
   }
 
-  public async listTickets(req: Request, res: Response,next:NextFunction) {
+  public async listTickets(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.query.email;
 
@@ -64,6 +64,39 @@ export class TicketController {
     }
   }
 
+
+  public async getOne(req: Request, res: Response, next: NextFunction) {
+    try {
+      const ticketId = req.query.ticket_id;
+      if (!ticketId) {
+        return res.status(400).json({
+          success: false,
+          message: "No ticket Id",
+          data: [],
+        });
+      }
+      const ticketData = await ticketDataServiceProvider.getOne(ticketId);
+
+      if (ticketData === null) {
+        return res.status(400).json({
+          success: false,
+          message: "Ticket details not found",
+          data: [],
+        });
+      }
+       
+      return res.status(200).json({
+        success: true,
+        message: "Ticket details fetched successfully",
+        data: ticketData,
+      });
+
+    }
+    catch (err) {
+       
+      return next(err);
+    }
+  }
 
   public async replyTicket(req: Request, res: Response) {
     try {

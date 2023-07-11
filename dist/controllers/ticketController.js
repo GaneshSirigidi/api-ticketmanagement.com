@@ -69,6 +69,36 @@ class TicketController {
             }
         });
     }
+    getOne(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketId = req.query.ticket_id;
+                if (!ticketId) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "No ticket Id",
+                        data: [],
+                    });
+                }
+                const ticketData = yield ticketDataServiceProvider.getOne(ticketId);
+                if (ticketData === null) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Ticket details not found",
+                        data: [],
+                    });
+                }
+                return res.status(200).json({
+                    success: true,
+                    message: "Ticket details fetched successfully",
+                    data: ticketData,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
     replyTicket(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

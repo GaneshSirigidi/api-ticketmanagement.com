@@ -18,6 +18,9 @@ const router = (0, express_1.Router)();
 router.get('/admin/tickets', [
     authMiddleware.validateAccessTokenForAdmin
 ], ticketController.listTickets);
+router.get('/admin/ticket', [
+    authMiddleware.validateAccessTokenForAdmin
+], ticketController.getOne);
 router.get('/admin/tickets/:id', [
     authMiddleware.validateAccessToken
 ], ticketController.getThreads);

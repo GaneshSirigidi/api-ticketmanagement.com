@@ -7,24 +7,24 @@ import {
 } from '../../middlewares/validations/schemaValidators';
 
 const schemaValidator: SchemaValidator = new SchemaValidator(true);
-const validateRequest = schemaValidator.validate();
+// const validateRequest = schemaValidator.validate();
 
 const ticketController = new TicketController()
 const authMiddleware = new AuthMiddleware()
 
 const router: Router = Router();
 
-router.post('/user/tickets',
-    [
-        validateRequest,
-        authMiddleware.validateAccessToken
-    ],
-    ticketController.addTicket
-)
+// router.post('/agent/tickets',
+//     [
+//         validateRequest,
+//         authMiddleware.validateAccessToken
+//     ],
+//     ticketController.addTicket
+// )
 
-router.get('/user/ticket',
+router.get('/agent/ticket',
     [
-        authMiddleware.validateAccessToken
+        authMiddleware.validateAccessTokenForAgent
     ],
     ticketController.getOne
 )

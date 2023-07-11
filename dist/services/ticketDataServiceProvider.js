@@ -49,5 +49,10 @@ class TicketDataServiceProvider {
             return ticket_1.TicketModel.countDocuments(query);
         });
     }
+    getOne(ticketId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield ticket_1.TicketModel.findOne({ ticket_id: ticketId });
+        });
+    }
 }
 exports.TicketDataServiceProvider = TicketDataServiceProvider;
