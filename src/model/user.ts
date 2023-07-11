@@ -6,12 +6,19 @@ const userSchema = new Schema({
     full_name: {
         type: String
     },
+
     email: {
         type: String
     },
+
     password: {
         type: String
     },
+
+    phone_number: {
+        type:String
+    },
+
     user_type: {
         type: String,
         enum: ['USER', 'ADMIN', 'AGENT'],

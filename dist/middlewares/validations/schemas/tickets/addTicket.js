@@ -11,6 +11,6 @@ exports.addTicketSchema = joi_1.default.object().keys({
     email: joi_1.default.string().email({ tlds: { allow: false } }).required().error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'email')),
     priority: joi_1.default.string().valid('HIGH', 'MEDIUM', 'LOW').required().error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'priority')),
     company_name: joi_1.default.string().required().error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'company_name')),
-    query_status: joi_1.default.string().valid('OPEN', 'CLOSE').required().error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'query_status')),
+    query_status: joi_1.default.string().valid('OPEN', 'CLOSE').error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'query_status')),
     subject: joi_1.default.string().required().error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'subject')),
 });

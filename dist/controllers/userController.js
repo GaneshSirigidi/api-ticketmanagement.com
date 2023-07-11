@@ -8,16 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const userDataServiceProvider_1 = require("../services/userDataServiceProvider");
 const authHelper_1 = require("../helpers/authHelper");
+const paginationHelper_1 = __importDefault(require("../helpers/paginationHelper"));
 const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
 class UserController {
-    signUp(req, res) {
+    signUp(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const signUpData = req.body;
+                const existedEmail = yield userDataServiceProvider.emailExists(signUpData.email);
+                if (existedEmail) {
+                    return res.status(422).json({
+                        success: false,
+                        message: "Email Alread Exists"
+                    });
+                }
                 const userData = yield userDataServiceProvider.saveUser(signUpData);
                 return res.status(200).json({
                     success: true,
@@ -26,10 +37,7 @@ class UserController {
                 });
             }
             catch (err) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Something went wrong"
-                });
+                return next(err);
             }
         });
     }
@@ -53,15 +61,58 @@ class UserController {
             }
         });
     }
-    addAgent(req, res) {
+    getProfile(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let userDetails = yield userDataServiceProvider.userById(req.user._id);
+                const profile = {
+                    full_name: userDetails.full_name,
+                    email: userDetails.email,
+                    phone_number: userDetails.phone_number
+                };
+                return res.status(200).json({
+                    success: true,
+                    message: " Profile fetched successfully",
+                    data: profile,
+                });
+            }
+            catch (error) {
+                let respData = {
+                    success: false,
+                    message: error.message,
+                };
+                return res.status(error.statusCode || 500).json(respData);
+            }
+        });
+    }
+    updateProfile(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let profile = req.body;
+                yield userDataServiceProvider.updateUserById(req.user._id, profile);
+                return res.status(200).json({
+                    success: true,
+                    message: "Profile updated successfully",
+                });
+            }
+            catch (error) {
+                let respData = {
+                    success: false,
+                    message: error.message,
+                };
+                return res.status(error.statusCode || 500).json(respData);
+            }
+        });
+    }
+    addAgent(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const reqData = req.body;
-                const authorizationHeader = req.headers.authorization;
-                if (!authorizationHeader) {
-                    return res.status(401).json({
+                const existedEmail = yield userDataServiceProvider.emailExists(reqData.email);
+                if (existedEmail) {
+                    return res.status(422).json({
                         success: false,
-                        message: "Unauthorized",
+                        message: "Email Alread Exists"
                     });
                 }
                 const agentData = yield userDataServiceProvider.saveAgent(reqData);
@@ -72,10 +123,39 @@ class UserController {
                 });
             }
             catch (err) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Something went wrong"
+                return next(err);
+            }
+        });
+    }
+    listUsersByUserType(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userType = req.query.user_type;
+                const { skip, limit, sort } = req.params;
+                const query = {
+                    user_type: { $eq: userType }
+                };
+                const [users, count] = yield Promise.all([
+                    userDataServiceProvider.getAll({
+                        query, skip, limit, sort
+                    }),
+                    userDataServiceProvider.countAll({
+                        query
+                    })
+                ]);
+                const response = paginationHelper_1.default.getPaginationResponse({
+                    page: req.query.page || 1,
+                    count,
+                    limit,
+                    skip,
+                    data: users,
+                    message: "Users fetched successfully",
+                    searchString: req.query.search_string,
                 });
+                return res.status(200).json(response);
+            }
+            catch (err) {
+                return next(err);
             }
         });
     }

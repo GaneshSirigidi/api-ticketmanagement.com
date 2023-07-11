@@ -1,17 +1,27 @@
 import { Request, Response, NextFunction } from 'express'
 import { UserDataServiceProvider } from "../services/userDataServiceProvider"
 import { getUserAuthTokens } from '../helpers/authHelper'
+import paginationHelper from '../helpers/paginationHelper';
 
 
-const userDataServiceProvider = new UserDataServiceProvider()
+const userDataServiceProvider = new UserDataServiceProvider();
 
 export class UserController {
 
-    public async signUp(req: Request, res: Response) {
+    public async signUp(req: Request, res: Response, next: NextFunction) {
         try {
 
-            const signUpData = req.body
-            const userData = await userDataServiceProvider.saveUser(signUpData)
+            const signUpData = req.body;
+
+            const existedEmail = await userDataServiceProvider.emailExists(signUpData.email);
+            if (existedEmail) {
+                return res.status(422).json({
+                    success: false,
+                    message: "Email Alread Exists"
+                });
+            }
+
+            const userData = await userDataServiceProvider.saveUser(signUpData);
 
             return res.status(200).json({
                 success: true,
@@ -20,17 +30,14 @@ export class UserController {
             });
         }
         catch (err) {
-            return res.status(500).json({
-                success: false,
-                message: "Something went wrong"
-            })
+            return next(err)
         }
     }
 
     public async signIn(req: Request, res: Response, next: NextFunction) {
         try {
 
-            const { email, password } = req.body
+            const { email, password } = req.body;
 
             const returnUserData: any = await userDataServiceProvider.login(email, password);
             const { token, refreshToken } = await getUserAuthTokens(returnUserData);
@@ -53,19 +60,66 @@ export class UserController {
         }
     }
 
-    public async addAgent(req: Request, res: Response) {
+    public async getProfile(req: Request, res: Response) {
         try {
 
-            const reqData = req.body
-            const authorizationHeader = req.headers.authorization
+            let userDetails: any = await userDataServiceProvider.userById(req.user._id);
 
-            if (!authorizationHeader) {
-                return res.status(401).json({
+            const profile = {
+                full_name: userDetails.full_name,
+                email: userDetails.email,
+                phone_number: userDetails.phone_number
+
+            };
+
+            return res.status(200).json({
+                success: true,
+                message: " Profile fetched successfully",
+                data: profile,
+            });
+        } catch (error) {
+            let respData = {
+                success: false,
+                message: error.message,
+            };
+
+            return res.status(error.statusCode || 500).json(respData);
+        }
+    }
+
+    public async updateProfile(req: Request, res: Response,) {
+        try {
+            let profile = req.body;
+
+            await userDataServiceProvider.updateUserById(req.user._id, profile);
+
+            return res.status(200).json({
+                success: true,
+                message: "Profile updated successfully",
+            });
+        } catch (error) {
+            let respData = {
+                success: false,
+                message: error.message,
+            };
+            return res.status(error.statusCode || 500).json(respData);
+        }
+    }
+
+    public async addAgent(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const reqData = req.body;
+
+            const existedEmail = await userDataServiceProvider.emailExists(reqData.email);
+            if (existedEmail) {
+                return res.status(422).json({
                     success: false,
-                    message: "Unauthorized",
+                    message: "Email Alread Exists"
                 });
             }
-            const agentData = await userDataServiceProvider.saveAgent(reqData)
+
+            const agentData = await userDataServiceProvider.saveAgent(reqData);
 
             return res.status(200).json({
                 success: true,
@@ -75,10 +129,40 @@ export class UserController {
 
         }
         catch (err) {
-            return res.status(500).json({
-                success: false,
-                message: "Something went wrong"
-            })
+            return next(err)
         }
     }
+
+    public async listUsersByUserType(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userType = req.query.user_type
+            const { skip, limit, sort } = req.params;
+            const query = {
+                user_type: { $eq: userType }
+            };
+
+            const [users, count] = await Promise.all([
+                userDataServiceProvider.getAll({
+                    query, skip, limit, sort
+                }),
+                userDataServiceProvider.countAll({
+                    query
+                })
+            ])
+            const response = paginationHelper.getPaginationResponse({
+                page: req.query.page || 1,
+                count,
+                limit,
+                skip,
+                data: users,
+                message: "Users fetched successfully",
+                searchString: req.query.search_string,
+            });
+            return res.status(200).json(response);
+        }
+        catch (err) {
+            return next(err)
+        }
+    }
+
 }

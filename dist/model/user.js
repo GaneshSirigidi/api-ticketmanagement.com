@@ -12,6 +12,9 @@ const userSchema = new mongoose_1.Schema({
     password: {
         type: String
     },
+    phone_number: {
+        type: String
+    },
     user_type: {
         type: String,
         enum: ['USER', 'ADMIN', 'AGENT'],

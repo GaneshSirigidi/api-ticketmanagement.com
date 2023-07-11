@@ -15,29 +15,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TicketController = void 0;
 const ticketDataServiceProvider_1 = require("../services/ticketDataServiceProvider");
 const paginationHelper_1 = __importDefault(require("../helpers/paginationHelper"));
+const stringGen_1 = require("../helpers/stringGen");
 const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
 class TicketController {
-    addTicket(req, res) {
+    addTicket(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const ticketData = req.body;
-                ticketData.threads = [];
+                const ticketId = yield (0, stringGen_1.stringGen)();
+                ticketData.ticket_id = ticketId;
+                // ticketData.threads = [];
                 const queryData = yield ticketDataServiceProvider.saveTicket(ticketData);
                 return res.status(200).json({
                     success: true,
-                    message: "Token Created successfully",
+                    message: "Ticket Created successfully",
                     data: queryData,
                 });
             }
             catch (err) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Something went wrong"
-                });
+                return next(err);
             }
         });
     }
-    listTickets(req, res) {
+    listTickets(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const email = req.query.email;
@@ -65,10 +65,7 @@ class TicketController {
                 return res.status(200).json(response);
             }
             catch (err) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Something went wrong"
-                });
+                return next(err);
             }
         });
     }
@@ -104,7 +101,7 @@ class TicketController {
             }
         });
     }
-    getTicketReplies(req, res) {
+    getThreads(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const id = req.query.id;
@@ -113,7 +110,7 @@ class TicketController {
                     email: { $eq: id }
                 };
                 const [tickets, count] = yield Promise.all([
-                    ticketDataServiceProvider.getReplies({
+                    ticketDataServiceProvider.getThreads({
                         query, skip, limit, sort
                     }),
                     ticketDataServiceProvider.countAll({

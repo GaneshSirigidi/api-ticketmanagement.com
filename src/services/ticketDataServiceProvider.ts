@@ -23,7 +23,7 @@ export class TicketDataServiceProvider {
   }
 
 
-  async getReplies({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
+  async getThreads({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
     if (lean) {
       return ThreadModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-request_id').lean()
     }

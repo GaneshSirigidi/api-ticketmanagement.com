@@ -44,5 +44,28 @@ class UserDataServiceProvider {
             return yield user_1.UserModel.create(agentData);
         });
     }
+    emailExists(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield user_1.UserModel.findOne({ email: email });
+        });
+    }
+    updateUserById(userId, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return user_1.UserModel.updateOne({ _id: userId }, { $set: data });
+        });
+    }
+    getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (lean) {
+                return user_1.UserModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean();
+            }
+            return user_1.UserModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection);
+        });
+    }
+    countAll({ query = {} }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return user_1.UserModel.countDocuments(query);
+        });
+    }
 }
 exports.UserDataServiceProvider = UserDataServiceProvider;

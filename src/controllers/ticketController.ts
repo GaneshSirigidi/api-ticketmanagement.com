@@ -3,37 +3,37 @@ import { Request, Response, NextFunction } from "express";
 
 import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider'
 import paginationHelper from "../helpers/paginationHelper";
+import {stringGen}  from "../helpers/stringGen";
 
-const ticketDataServiceProvider = new TicketDataServiceProvider()
+const ticketDataServiceProvider = new TicketDataServiceProvider();
 
 export class TicketController {
 
-  public async addTicket(req: Request, res: Response) {
+  public async addTicket(req: Request, res: Response,next:NextFunction) {
     try {
 
-      const ticketData = req.body
-      ticketData.threads = [];
-      const queryData = await ticketDataServiceProvider.saveTicket(ticketData)
+      const ticketData = req.body;
+      const ticketId = await stringGen();
+      ticketData.ticket_id = ticketId;
+      // ticketData.threads = [];
+      const queryData = await ticketDataServiceProvider.saveTicket(ticketData);
 
       return res.status(200).json({
         success: true,
-        message: "Token Created successfully",
+        message: "Ticket Created successfully",
         data: queryData,
       });
     }
     catch (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Something went wrong"
-      })
+      return next(err)
     }
   }
 
-  public async listTickets(req: Request, res: Response) {
+  public async listTickets(req: Request, res: Response,next:NextFunction) {
     try {
-      const email = req.query.email
+      const email = req.query.email;
 
-      const { skip, limit, sort } = req.params
+      const { skip, limit, sort } = req.params;
       const query = {
         email: { $eq: email }
       };
@@ -60,10 +60,7 @@ export class TicketController {
       return res.status(200).json(response);
     }
     catch (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Something went wrong"
-      })
+      return next(err)
     }
   }
 
@@ -101,17 +98,17 @@ export class TicketController {
     }
   }
 
-  public async getTicketReplies(req: Request, res: Response) {
+  public async getThreads(req: Request, res: Response) {
     try {
       const id = req.query.id
 
-      const { skip, limit, sort } = req.params
+      const { skip, limit, sort } = req.params;
       const query = {
         email: { $eq: id }
       };
 
       const [tickets, count] = await Promise.all([
-        ticketDataServiceProvider.getReplies({
+        ticketDataServiceProvider.getThreads({
           query, skip, limit, sort
         }),
         ticketDataServiceProvider.countAll({

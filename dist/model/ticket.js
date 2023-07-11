@@ -3,7 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TicketModel = void 0;
 const mongoose_1 = require("mongoose");
 const ticketSchema = new mongoose_1.Schema({
-    author: {
+    ticket_id: {
+        type: String
+    },
+    requester: {
         type: String,
     },
     email: {

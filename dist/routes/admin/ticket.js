@@ -9,16 +9,18 @@ const validateRequest = schemaValidator.validate();
 const ticketController = new ticketController_1.TicketController();
 const authMiddleware = new authMiddleware_1.AuthMiddleware();
 const router = (0, express_1.Router)();
-router.post('/admin/tickets', [
-    validateRequest,
-    authMiddleware.validateAccessToken
-], ticketController.addTicket);
+// router.post('/admin/tickets',
+//     [
+//         validateRequest,
+//         authMiddleware.validateAccessToken
+//     ],
+//     ticketController.addTicket)
 router.get('/admin/tickets', [
-    authMiddleware.validateAccessToken
+    authMiddleware.validateAccessTokenForAdmin
 ], ticketController.listTickets);
 router.get('/admin/tickets/:id', [
     authMiddleware.validateAccessToken
-], ticketController.getTicketReplies);
+], ticketController.getThreads);
 router.post('/admin/tickets/:id/reply', [
     authMiddleware.validateAccessToken
 ], ticketController.replyTicket);
