@@ -31,6 +31,9 @@ const ticketSchema = new mongoose_1.Schema({
     },
     subject: {
         type: String
+    },
+    assigned_to: {
+        type: String
     }
 }, {
     timestamps: {

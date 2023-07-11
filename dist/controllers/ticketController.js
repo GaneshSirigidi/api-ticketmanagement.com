@@ -16,6 +16,8 @@ exports.TicketController = void 0;
 const ticketDataServiceProvider_1 = require("../services/ticketDataServiceProvider");
 const paginationHelper_1 = __importDefault(require("../helpers/paginationHelper"));
 const stringGen_1 = require("../helpers/stringGen");
+const userDataServiceProvider_1 = require("../services/userDataServiceProvider");
+const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
 const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
 class TicketController {
     addTicket(req, res, next) {
@@ -24,7 +26,6 @@ class TicketController {
                 const ticketData = req.body;
                 const ticketId = yield (0, stringGen_1.stringGen)();
                 ticketData.ticket_id = ticketId;
-                // ticketData.threads = [];
                 const queryData = yield ticketDataServiceProvider.saveTicket(ticketData);
                 return res.status(200).json({
                     success: true,
@@ -96,6 +97,42 @@ class TicketController {
             }
             catch (err) {
                 return next(err);
+            }
+        });
+    }
+    assignTicket(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const assignData = req.body;
+                const emailExists = yield userDataServiceProvider.emailExists(assignData.assigned_to);
+                if (!emailExists) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Agent not found",
+                        data: [],
+                    });
+                }
+                const ticketId = req.params.id;
+                const ticektExists = yield ticketDataServiceProvider.ticketExists(ticketId);
+                if (!ticektExists) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Ticket not found",
+                        data: [],
+                    });
+                }
+                yield ticketDataServiceProvider.assignTicketById(ticketId, assignData);
+                return res.status(200).json({
+                    success: true,
+                    message: `Ticket assigned to ${assignData.assigned_to}`,
+                });
+            }
+            catch (error) {
+                let respData = {
+                    success: false,
+                    message: error.message,
+                };
+                return res.status(error.statusCode || 500).json(respData);
             }
         });
     }

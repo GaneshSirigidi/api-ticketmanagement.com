@@ -28,7 +28,7 @@ export class UserDataServiceProvider {
     return await UserModel.create(agentData)
   }
 
-  async emailExists(email) {
+  async emailExists(email) {  
     return await UserModel.findOne({ email: email })
   }
 

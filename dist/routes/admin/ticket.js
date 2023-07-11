@@ -21,6 +21,9 @@ router.get('/admin/tickets', [
 router.get('/admin/ticket', [
     authMiddleware.validateAccessTokenForAdmin
 ], ticketController.getOne);
+router.patch('/admin/tickets/:id/assigned-to', [
+    authMiddleware.validateAccessTokenForAdmin
+], ticketController.assignTicket);
 router.get('/admin/tickets/:id', [
     authMiddleware.validateAccessToken
 ], ticketController.getThreads);

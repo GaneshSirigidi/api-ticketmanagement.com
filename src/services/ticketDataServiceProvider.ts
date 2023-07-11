@@ -38,4 +38,12 @@ export class TicketDataServiceProvider {
   async getOne(ticketId) {
     return await TicketModel.findOne({ticket_id:ticketId})
   }
+
+  async assignTicketById(ticketId, data) {
+    return await TicketModel.updateOne({ ticket_id: ticketId }, { $set: data });
+  }
+
+  async ticketExists(ticketId) {
+    return await TicketModel.findOne({ticket_id:ticketId})
+  }
 }

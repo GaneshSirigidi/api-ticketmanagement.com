@@ -54,5 +54,15 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.findOne({ ticket_id: ticketId });
         });
     }
+    assignTicketById(ticketId, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield ticket_1.TicketModel.updateOne({ ticket_id: ticketId }, { $set: data });
+        });
+    }
+    ticketExists(ticketId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield ticket_1.TicketModel.findOne({ ticket_id: ticketId });
+        });
+    }
 }
 exports.TicketDataServiceProvider = TicketDataServiceProvider;

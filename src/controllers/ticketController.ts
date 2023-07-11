@@ -4,7 +4,9 @@ import { Request, Response, NextFunction } from "express";
 import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider'
 import paginationHelper from "../helpers/paginationHelper";
 import { stringGen } from "../helpers/stringGen";
+import { UserDataServiceProvider } from "../services/userDataServiceProvider";
 
+const userDataServiceProvider = new UserDataServiceProvider()
 const ticketDataServiceProvider = new TicketDataServiceProvider();
 
 export class TicketController {
@@ -15,7 +17,6 @@ export class TicketController {
       const ticketData = req.body;
       const ticketId = await stringGen();
       ticketData.ticket_id = ticketId;
-      // ticketData.threads = [];
       const queryData = await ticketDataServiceProvider.saveTicket(ticketData);
 
       return res.status(200).json({
@@ -67,6 +68,7 @@ export class TicketController {
 
   public async getOne(req: Request, res: Response, next: NextFunction) {
     try {
+
       const ticketId = req.query.ticket_id;
       if (!ticketId) {
         return res.status(400).json({
@@ -75,6 +77,7 @@ export class TicketController {
           data: [],
         });
       }
+
       const ticketData = await ticketDataServiceProvider.getOne(ticketId);
 
       if (ticketData === null) {
@@ -84,7 +87,7 @@ export class TicketController {
           data: [],
         });
       }
-       
+
       return res.status(200).json({
         success: true,
         message: "Ticket details fetched successfully",
@@ -93,10 +96,51 @@ export class TicketController {
 
     }
     catch (err) {
-       
+
       return next(err);
     }
   }
+
+
+  public async assignTicket(req: Request, res: Response,) {
+    try {
+
+      const assignData = req.body;
+      const emailExists = await userDataServiceProvider.emailExists(assignData.assigned_to)
+      if (!emailExists) {
+        return res.status(400).json({
+          success: false,
+          message: "Agent not found",
+          data: [],
+        });
+      }
+
+      const ticketId = req.params.id
+      const ticektExists = await ticketDataServiceProvider.ticketExists(ticketId)
+      if (!ticektExists) {
+        return res.status(400).json({
+          success: false,
+          message: "Ticket not found",
+          data: [],
+        });
+      }
+
+      await ticketDataServiceProvider.assignTicketById(ticketId, assignData);
+
+      return res.status(200).json({
+        success: true,
+        message: `Ticket assigned to ${assignData.assigned_to}`,
+      });
+
+    } catch (error) {
+      let respData = {
+        success: false,
+        message: error.message,
+      };
+      return res.status(error.statusCode || 500).json(respData);
+    }
+  }
+
 
   public async replyTicket(req: Request, res: Response) {
     try {

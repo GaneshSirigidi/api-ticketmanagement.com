@@ -40,6 +40,10 @@ const ticketSchema = new Schema({
   subject:
   {
     type: String
+  },
+  
+  assigned_to: {
+    type:String
   }
 
 }, {

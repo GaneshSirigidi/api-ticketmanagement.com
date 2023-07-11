@@ -35,6 +35,13 @@ router.get('/admin/ticket',
     ticketController.getOne
 )
 
+router.patch('/admin/tickets/:id/assigned-to',
+    [
+        authMiddleware.validateAccessTokenForAdmin
+    ],
+    ticketController.assignTicket
+)
+
 router.get('/admin/tickets/:id',
     [
         authMiddleware.validateAccessToken
@@ -48,5 +55,7 @@ router.post('/admin/tickets/:id/reply',
     ],
     ticketController.replyTicket
 )
+
+
 
 export default router;
