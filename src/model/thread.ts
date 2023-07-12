@@ -6,9 +6,8 @@ const threadSchema = new Schema({
     reporter_by: {
         type: String
     },
-    request_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Ticket',
+    ticket_id: {
+        type: String
     },
     reporter_type: {
         type: String

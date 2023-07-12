@@ -11,8 +11,8 @@ export class TicketDataServiceProvider {
     return await ThreadModel.create(replyData)
 
   }
-  public async getTicketById(id) {
-    return await TicketModel.findById({ _id: id });
+  public async getTicketByTicketId(id) {
+    return await TicketModel.findOne({ ticket_id: id });
   }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
@@ -25,6 +25,7 @@ export class TicketDataServiceProvider {
 
   async getThreads({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
     if (lean) {
+      console.log("query",query)
       return ThreadModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-request_id').lean()
     }
     return ThreadModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-request_id')
@@ -36,7 +37,7 @@ export class TicketDataServiceProvider {
   }
 
   async getOne(ticketId) {
-    return await TicketModel.findOne({ticket_id:ticketId})
+    return await TicketModel.findOne({ ticket_id: ticketId })
   }
 
   async assignTicketById(ticketId, data) {
@@ -44,6 +45,6 @@ export class TicketDataServiceProvider {
   }
 
   async ticketExists(ticketId) {
-    return await TicketModel.findOne({ticket_id:ticketId})
+    return await TicketModel.findOne({ ticket_id: ticketId })
   }
 }

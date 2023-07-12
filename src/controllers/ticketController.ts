@@ -148,7 +148,9 @@ export class TicketController {
   public async replyTicket(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      const ticket = await ticketDataServiceProvider.getTicketById(id);
+      console.log('id', id)
+      const ticket = await ticketDataServiceProvider.getTicketByTicketId(id);
+      console.log(ticket)
 
       if (!ticket) {
         return res.status(400).json({
@@ -157,8 +159,8 @@ export class TicketController {
         });
       }
       const replyData = {
-        reporter_by: req.user.name,
-        request_id: req.body.request_id,
+        reporter_by: req.user.full_name,
+        ticket_id: id,
         reporter_type: req.user.user_type,
         message: req.body.message
       };
