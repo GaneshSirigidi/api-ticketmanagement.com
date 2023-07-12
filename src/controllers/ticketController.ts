@@ -10,6 +10,9 @@ const userDataServiceProvider = new UserDataServiceProvider()
 const ticketDataServiceProvider = new TicketDataServiceProvider();
 
 export class TicketController {
+  static getAgentTickets(arg0: string, arg1: ((req: Request, res: Response, next: NextFunction) => any)[], getAgentTickets: any) {
+    throw new Error('Method not implemented.');
+  }
 
   public async addTicket(req: Request, res: Response, next: NextFunction) {
     try {
@@ -210,6 +213,38 @@ export class TicketController {
         success: false,
         message: "Something went wrong"
       })
+    }
+  }
+
+  public async getAgentTickets(req: Request, res: Response, next: NextFunction) {
+    try {
+      const email = req.user.email
+      const { skip, limit, sort } = req.params;
+      const query = {
+        assigned_to: { $eq: email }
+      };
+
+      const [users, count] = await Promise.all([
+        ticketDataServiceProvider.getAll({
+          query, skip, limit, sort
+        }),
+        ticketDataServiceProvider.countAll({
+          query
+        })
+      ])
+      const response = paginationHelper.getPaginationResponse({
+        page: req.query.page || 1,
+        count,
+        limit,
+        skip,
+        data: users,
+        message: "Tickets fetched successfully",
+        searchString: req.query.search_string,
+      });
+      return res.status(200).json(response);
+    }
+    catch (err) {
+      return next(err)
     }
   }
 
