@@ -19,4 +19,7 @@ const router = (0, express_1.Router)();
 router.get('/agent/ticket', [
     authMiddleware.validateAccessTokenForAgent
 ], ticketController.getOne);
+router.get('/agent/tickets', [
+    authMiddleware.validateAccessTokenForAgent,
+], ticketController.getAgentTickets);
 exports.default = router;

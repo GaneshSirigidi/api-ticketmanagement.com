@@ -41,7 +41,7 @@ export class UserController {
 
             const { email, password } = req.body;
 
-            const returnUserData: any = await userDataServiceProvider.login(email, password);
+            const returnUserData: any = await userDataServiceProvider.signin(email, password);
             const { token, refreshToken } = await getUserAuthTokens(returnUserData);
 
             const respData = {

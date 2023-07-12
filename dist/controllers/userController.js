@@ -16,7 +16,9 @@ exports.UserController = void 0;
 const userDataServiceProvider_1 = require("../services/userDataServiceProvider");
 const authHelper_1 = require("../helpers/authHelper");
 const paginationHelper_1 = __importDefault(require("../helpers/paginationHelper"));
+const ticketDataServiceProvider_1 = require("../services/ticketDataServiceProvider");
 const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
+const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
 class UserController {
     signUp(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -45,7 +47,7 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { email, password } = req.body;
-                const returnUserData = yield userDataServiceProvider.login(email, password);
+                const returnUserData = yield userDataServiceProvider.signin(email, password);
                 const { token, refreshToken } = yield (0, authHelper_1.getUserAuthTokens)(returnUserData);
                 const respData = {
                     success: true,

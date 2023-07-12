@@ -14,7 +14,7 @@ export class UserDataServiceProvider {
     return await UserModel.findOne({ _id: userId })
   }
 
-  async login(email: string, password: string) {
+  async signin(email: string, password: string) {
     let match = false;
     const userDetails = await UserModel.findOne({ email });
     if (userDetails) {
