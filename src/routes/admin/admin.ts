@@ -36,6 +36,14 @@ router.post('/admin/agent',
   userController.addAgent,
 );
 
+router.delete('/admin/agent/:id',
+  [
+    authMiddleware.validateAccessTokenForAdmin,
+    
+  ],
+  userController.delete,
+);
+
 router.get('/admin/profile',
   [
     authMiddleware.validateAccessTokenForAdmin

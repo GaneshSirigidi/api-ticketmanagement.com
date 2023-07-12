@@ -67,5 +67,10 @@ class UserDataServiceProvider {
             return user_1.UserModel.countDocuments(query);
         });
     }
+    delete(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return user_1.UserModel.deleteOne({ _id: userId });
+        });
+    }
 }
 exports.UserDataServiceProvider = UserDataServiceProvider;

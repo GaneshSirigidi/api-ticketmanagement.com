@@ -127,6 +127,21 @@ class UserController {
             }
         });
     }
+    delete(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = req.params.id;
+                yield userDataServiceProvider.delete(userId);
+                return res.status(200).json({
+                    success: true,
+                    message: "User deleted successfully",
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
     listUsersByUserType(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

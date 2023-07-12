@@ -50,10 +50,46 @@ class TicketController {
                     ticketDataServiceProvider.getAll({
                         query, skip, limit, sort
                     }),
+                    ticketDataServiceProvider.countAll({ query })
+                ]);
+                const response = paginationHelper_1.default.getPaginationResponse({
+                    page: req.query.page || 1,
+                    count,
+                    limit,
+                    skip,
+                    data: tickets,
+                    message: "Tickets fetched successfully",
+                    searchString: req.query.search_string,
+                });
+                return res.status(200).json(response);
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
+    listUserTickets(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { skip, limit, sort } = req.params;
+                const query = {
+                    email: { $eq: req.user.email }
+                };
+                const [tickets, count] = yield Promise.all([
+                    ticketDataServiceProvider.getAll({
+                        query, skip, limit, sort
+                    }),
                     ticketDataServiceProvider.countAll({
                         query
                     })
                 ]);
+                if (!tickets.length) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "No tickets found",
+                        data: [],
+                    });
+                }
                 const response = paginationHelper_1.default.getPaginationResponse({
                     page: req.query.page || 1,
                     count,

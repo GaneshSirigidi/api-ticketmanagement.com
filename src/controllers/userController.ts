@@ -133,6 +133,21 @@ export class UserController {
         }
     }
 
+    public async delete(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.id;
+            await userDataServiceProvider.delete(userId);
+
+            return res.status(200).json({
+                success: true,
+                message: "User deleted successfully",
+            });
+        }
+        catch (err) {
+            return next(err);
+        }
+    }
+
     public async listUsersByUserType(req: Request, res: Response, next: NextFunction) {
         try {
             const userType = req.query.user_type

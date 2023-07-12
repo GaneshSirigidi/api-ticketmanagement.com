@@ -46,5 +46,9 @@ export class UserDataServiceProvider {
   async countAll({ query = {} }) {
     return UserModel.countDocuments(query)
   }
+
+  async delete(userId) {
+    return UserModel.deleteOne({ _id: userId })
+  }
   
 }
