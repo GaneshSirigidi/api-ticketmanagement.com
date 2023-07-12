@@ -7,7 +7,7 @@ import {
 } from '../../middlewares/validations/schemaValidators';
 import { AuthMiddleware } from '../../middlewares/authMiddleware';
 
-const authMiddleware= new AuthMiddleware()
+const authMiddleware = new AuthMiddleware()
 const schemaValidator: SchemaValidator = new SchemaValidator(true);
 const validateRequest = schemaValidator.validate();
 
@@ -36,10 +36,12 @@ router.patch('/agent/profile',
   [
     authMiddleware.validateAccessTokenForAgent,
     validateRequest,
-    
+
   ],
   userController.updateProfile,
 );
+
+
 
 
 export default router;

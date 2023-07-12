@@ -2,9 +2,11 @@ import { Request, Response, NextFunction } from 'express'
 import { UserDataServiceProvider } from "../services/userDataServiceProvider"
 import { getUserAuthTokens } from '../helpers/authHelper'
 import paginationHelper from '../helpers/paginationHelper';
+import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider';
 
 
 const userDataServiceProvider = new UserDataServiceProvider();
+const ticketDataServiceProvider = new TicketDataServiceProvider();
 
 export class UserController {
 
@@ -179,5 +181,8 @@ export class UserController {
             return next(err)
         }
     }
+
+    
+
 
 }
