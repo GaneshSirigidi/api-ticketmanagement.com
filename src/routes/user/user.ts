@@ -6,7 +6,7 @@ import {
   SchemaValidator
 } from '../../middlewares/validations/schemaValidators';
 import { AuthMiddleware } from '../../middlewares/authMiddleware';
-
+import passportMiddleware from '../../middlewares/passportMiddleware';
 const authMiddleware = new AuthMiddleware()
 const schemaValidator: SchemaValidator = new SchemaValidator(true);
 const validateRequest = schemaValidator.validate();
@@ -21,10 +21,21 @@ router.post('/user/signup',
 )
 
 router.post('/user/signin',
+passportMiddleware.authenticate('signin', {
+  session: false,
+  failWithError: true,
+}),
   [
     validateRequest
   ],
   userController.signIn,
+  (err, req, res, next) => {
+    const respData = {
+      success: false,
+      message: 'Invalid Credentials!',
+    };
+    return res.status(err.status).json(respData);
+  }
 );
 
 router.get('/user/profile',

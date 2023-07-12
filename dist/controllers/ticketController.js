@@ -20,6 +20,9 @@ const userDataServiceProvider_1 = require("../services/userDataServiceProvider")
 const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
 const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
 class TicketController {
+    static getAgentTickets(arg0, arg1, getAgentTickets) {
+        throw new Error('Method not implemented.');
+    }
     addTicket(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -50,10 +53,46 @@ class TicketController {
                     ticketDataServiceProvider.getAll({
                         query, skip, limit, sort
                     }),
+                    ticketDataServiceProvider.countAll({ query })
+                ]);
+                const response = paginationHelper_1.default.getPaginationResponse({
+                    page: req.query.page || 1,
+                    count,
+                    limit,
+                    skip,
+                    data: tickets,
+                    message: "Tickets fetched successfully",
+                    searchString: req.query.search_string,
+                });
+                return res.status(200).json(response);
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
+    listUserTickets(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { skip, limit, sort } = req.params;
+                const query = {
+                    email: { $eq: req.user.email }
+                };
+                const [tickets, count] = yield Promise.all([
+                    ticketDataServiceProvider.getAll({
+                        query, skip, limit, sort
+                    }),
                     ticketDataServiceProvider.countAll({
                         query
                     })
                 ]);
+                if (!tickets.length) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "No tickets found",
+                        data: [],
+                    });
+                }
                 const response = paginationHelper_1.default.getPaginationResponse({
                     page: req.query.page || 1,
                     count,
@@ -200,6 +239,38 @@ class TicketController {
                     success: false,
                     message: "Something went wrong"
                 });
+            }
+        });
+    }
+    getAgentTickets(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const email = req.user.email;
+                const { skip, limit, sort } = req.params;
+                const query = {
+                    assigned_to: { $eq: email }
+                };
+                const [users, count] = yield Promise.all([
+                    ticketDataServiceProvider.getAll({
+                        query, skip, limit, sort
+                    }),
+                    ticketDataServiceProvider.countAll({
+                        query
+                    })
+                ]);
+                const response = paginationHelper_1.default.getPaginationResponse({
+                    page: req.query.page || 1,
+                    count,
+                    limit,
+                    skip,
+                    data: users,
+                    message: "Tickets fetched successfully",
+                    searchString: req.query.search_string,
+                });
+                return res.status(200).json(response);
+            }
+            catch (err) {
+                return next(err);
             }
         });
     }

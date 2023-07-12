@@ -1,8 +1,8 @@
 export interface TicketInterface {
   _id?: string
-  name?: string
-  companyName?: string
+  fullname?: string
   email?: string
   phone?: string
+  subject?: string
   requirementBrief?: string
 }

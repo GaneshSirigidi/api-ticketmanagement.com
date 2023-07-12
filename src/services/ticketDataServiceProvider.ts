@@ -16,6 +16,10 @@ export class TicketDataServiceProvider {
   }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
+
+    if (query && query['email'].$eq===undefined) {
+      query = {}  ; // Reset query to empty object
+    }
     if (lean) {
       return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean()
     }
@@ -33,6 +37,9 @@ export class TicketDataServiceProvider {
 
 
   async countAll({ query = {} }) {
+    if (query && query['email'].$eq===undefined) {
+      query = {}  ; // Reset query to empty object
+    }
     return TicketModel.countDocuments(query)
   }
 

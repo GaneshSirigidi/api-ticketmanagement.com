@@ -41,7 +41,7 @@ export class UserController {
 
             const { email, password } = req.body;
 
-            const returnUserData: any = await userDataServiceProvider.login(email, password);
+            const returnUserData: any = await userDataServiceProvider.signin(email, password);
             const { token, refreshToken } = await getUserAuthTokens(returnUserData);
 
             const respData = {
@@ -132,6 +132,21 @@ export class UserController {
         }
         catch (err) {
             return next(err)
+        }
+    }
+
+    public async delete(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.id;
+            await userDataServiceProvider.delete(userId);
+
+            return res.status(200).json({
+                success: true,
+                message: "User deleted successfully",
+            });
+        }
+        catch (err) {
+            return next(err);
         }
     }
 

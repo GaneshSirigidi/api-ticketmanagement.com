@@ -16,4 +16,7 @@ router.post('/user/tickets', [
 router.get('/user/ticket', [
     authMiddleware.validateAccessToken
 ], ticketController.getOne);
+router.get('/user/tickets', [
+    authMiddleware.validateAccessToken
+], ticketController.listUserTickets);
 exports.default = router;

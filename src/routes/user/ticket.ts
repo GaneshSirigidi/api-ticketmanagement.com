@@ -29,4 +29,11 @@ router.get('/user/ticket',
     ticketController.getOne
 )
 
+router.get('/user/tickets',
+    [
+        authMiddleware.validateAccessToken
+    ],
+    ticketController.listUserTickets
+)
+
 export default router;

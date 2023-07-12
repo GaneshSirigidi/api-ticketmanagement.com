@@ -30,6 +30,9 @@ class TicketDataServiceProvider {
     }
     getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (query && query['email'].$eq === undefined) {
+                query = {}; // Reset query to empty object
+            }
             if (lean) {
                 return ticket_1.TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean();
             }
@@ -46,6 +49,9 @@ class TicketDataServiceProvider {
     }
     countAll({ query = {} }) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (query && query['email'].$eq === undefined) {
+                query = {}; // Reset query to empty object
+            }
             return ticket_1.TicketModel.countDocuments(query);
         });
     }

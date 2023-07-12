@@ -36,10 +36,41 @@ export class TicketController {
   public async listTickets(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.query.email;
-
       const { skip, limit, sort } = req.params;
       const query = {
         email: { $eq: email }
+      };
+
+      const [tickets, count] = await Promise.all([
+        ticketDataServiceProvider.getAll({
+          query,skip, limit, sort
+        }),
+        ticketDataServiceProvider.countAll({query})
+      ])
+
+      const response = paginationHelper.getPaginationResponse({
+        page: req.query.page || 1,
+        count,
+        limit,
+        skip,
+        data: tickets,
+        message: "Tickets fetched successfully",
+        searchString: req.query.search_string,
+      });
+
+      return res.status(200).json(response);
+    }
+    catch (err) {
+      return next(err)
+    }
+  }
+
+  public async listUserTickets(req: Request, res: Response, next: NextFunction) {
+    try {
+      
+      const { skip, limit, sort } = req.params;
+      const query = {
+        email: { $eq: req.user.email }
       };
 
       const [tickets, count] = await Promise.all([
@@ -50,7 +81,13 @@ export class TicketController {
           query
         })
       ])
-
+      if (!tickets.length) {
+        return res.status(400).json({
+          success: false,
+          message: "No tickets found",
+          data: [],
+        });
+       }
       const response = paginationHelper.getPaginationResponse({
         page: req.query.page || 1,
         count,

@@ -28,7 +28,7 @@ class UserDataServiceProvider {
             return yield user_1.UserModel.findOne({ _id: userId });
         });
     }
-    login(email, password) {
+    signin(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             let match = false;
             const userDetails = yield user_1.UserModel.findOne({ email });
@@ -65,6 +65,11 @@ class UserDataServiceProvider {
     countAll({ query = {} }) {
         return __awaiter(this, void 0, void 0, function* () {
             return user_1.UserModel.countDocuments(query);
+        });
+    }
+    delete(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return user_1.UserModel.deleteOne({ _id: userId });
         });
     }
 }
