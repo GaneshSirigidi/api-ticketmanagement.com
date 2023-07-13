@@ -31,6 +31,22 @@ export class TicketController {
       return next(err)
     }
   }
+  public async updateTicket(req: Request, res: Response, next: NextFunction) {
+    try {
+
+      const id = req.params.id
+      await ticketDataServiceProvider.updateTicket(id, req.body);
+
+      return res.status(200).json({
+        success: true,
+        message: "Ticket Updated successfully"
+      });
+    }
+    catch (err) {
+      return next(err)
+    }
+  }
+
 
   public async listTickets(req: Request, res: Response, next: NextFunction) {
     try {
@@ -128,8 +144,8 @@ export class TicketController {
   public async getOne(req: Request, res: Response, next: NextFunction) {
     try {
 
-      const ticketId = req.query.ticket_id;
-      if (!ticketId) {
+      const id = req.params.id;
+      if (!id) {
         return res.status(400).json({
           success: false,
           message: "No ticket Id",
@@ -137,7 +153,7 @@ export class TicketController {
         });
       }
 
-      const ticketData = await ticketDataServiceProvider.getOne(ticketId);
+      const ticketData = await ticketDataServiceProvider.getOne(id);
 
       if (ticketData === null) {
         return res.status(400).json({
@@ -174,8 +190,8 @@ export class TicketController {
         });
       }
 
-      const ticketId = req.params.id
-      const ticektExists = await ticketDataServiceProvider.ticketExists(ticketId)
+      const id = req.params.id
+      const ticektExists = await ticketDataServiceProvider.ticketExists(id)
       if (!ticektExists) {
         return res.status(400).json({
           success: false,
@@ -184,7 +200,7 @@ export class TicketController {
         });
       }
 
-      await ticketDataServiceProvider.assignTicketById(ticketId, assignData);
+      await ticketDataServiceProvider.assignTicketById(id, assignData);
 
       return res.status(200).json({
         success: true,
@@ -247,7 +263,7 @@ export class TicketController {
       }
       const replyData = {
         reporter_by: req.user.full_name,
-        ticket_id: ticketId,
+        ticket_id: ticket.ticket_id,
         reporter_type: req.user.user_type,
         message: reqData.message,
         ticket_status: reqData.ticket_status

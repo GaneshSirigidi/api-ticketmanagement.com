@@ -21,8 +21,15 @@ router.post('/user/tickets',
     ],
     ticketController.addTicket
 )
+router.patch('/user/tickets/:id',
+    [
+        validateRequest,
+        authMiddleware.validateAccessTokenForUser
+    ],
+    ticketController.updateTicket
+)
 
-router.get('/user/ticket',
+router.get('/user/tickets/:id',
     [
         authMiddleware.validateAccessTokenForUser
     ],
