@@ -12,21 +12,22 @@ export class TicketDataServiceProvider {
     return await TicketModel.findOne({ ticket_id: id });
   }
 
-  async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
-
+  async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false}) {
+     
     if (query && query['email'].$eq===undefined) {
-      query = {}  ; // Reset query to empty object
+      delete query['email']  ; 
     }
+  
     if (lean) {
       return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean()
     }
     return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection)
   }
 
-  async countAll({ query = {} }) {
-    if (query && query['email'].$eq===undefined) {
-      query = {}  ; // Reset query to empty object
-    }
+  async countAll({ query = {}}) {
+    // if (query && query['email'].$eq===undefined) {
+    //   delete query['email'] ; // Reset query to empty object
+    // }
     return TicketModel.countDocuments(query)
   }
 

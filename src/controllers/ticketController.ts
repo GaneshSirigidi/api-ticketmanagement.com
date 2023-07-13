@@ -35,17 +35,31 @@ export class TicketController {
   public async listTickets(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.query.email;
+      const queryStatus = req.query.query_status
+      
       const { skip, limit, sort } = req.params;
       const query = {
         email: { $eq: email }
       };
 
+      if (queryStatus) {
+        query['query_status']= { $eq: queryStatus };
+      }
+      console.log(query)
       const [tickets, count] = await Promise.all([
         ticketDataServiceProvider.getAll({
           query,skip, limit, sort
         }),
         ticketDataServiceProvider.countAll({query})
       ])
+
+      if (!tickets.length) {
+        return res.status(400).json({
+          success: false,
+          message: "No tickets found",
+          data: [],
+        });
+       }
 
       const response = paginationHelper.getPaginationResponse({
         page: req.query.page || 1,
@@ -67,10 +81,16 @@ export class TicketController {
   public async listUserTickets(req: Request, res: Response, next: NextFunction) {
     try {
       
+      const queryStatus = req.query.query_status
+
       const { skip, limit, sort } = req.params;
       const query = {
-        email: { $eq: req.user.email }
+        email: { $eq: req.user.email },
       };
+
+      if (queryStatus) {
+        query['query_status']= { $eq: queryStatus };
+      }
 
       const [tickets, count] = await Promise.all([
         ticketDataServiceProvider.getAll({
