@@ -42,20 +42,19 @@ router.patch('/admin/tickets/:id/assigned-to',
     ticketController.assignTicket
 )
 
+router.post('/admin/tickets/:id/reply',
+    [
+        authMiddleware.validateAccessTokenForAdmin
+    ],
+    ticketController.replyTicket
+)
+
 router.get('/admin/tickets/:id',
     [
         authMiddleware.validateAccessToken
     ],
     ticketController.getThreads
 )
-
-router.post('/admin/tickets/:id/reply',
-    [
-        authMiddleware.validateAccessToken
-    ],
-    ticketController.replyTicket
-)
-
 
 
 export default router;

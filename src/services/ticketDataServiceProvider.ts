@@ -7,10 +7,7 @@ export class TicketDataServiceProvider {
   public async saveTicket(queryData) {
     return await TicketModel.create(queryData)
   }
-  public async replyTickets(replyData) {
-    return await ThreadModel.create(replyData)
 
-  }
   public async getTicketByTicketId(id) {
     return await TicketModel.findOne({ ticket_id: id });
   }
@@ -25,16 +22,6 @@ export class TicketDataServiceProvider {
     }
     return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection)
   }
-
-
-  async getThreads({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
-    if (lean) {
-      console.log("query",query)
-      return ThreadModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-request_id').lean()
-    }
-    return ThreadModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-request_id')
-  }
-
 
   async countAll({ query = {} }) {
     if (query && query['email'].$eq===undefined) {
@@ -53,5 +40,12 @@ export class TicketDataServiceProvider {
 
   async ticketExists(ticketId) {
     return await TicketModel.findOne({ ticket_id: ticketId })
+  }
+  async updateTicketStatus(ticket) {
+    const status = ticket.query_status;
+    if (status === "OPEN") {
+        ticket.query_status = "CLOSED";   
+    }
+    return await TicketModel.updateOne({ _id: ticket.id }, { query_status: ticket.query_status });
   }
 }

@@ -5,14 +5,13 @@ import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider
 import paginationHelper from "../helpers/paginationHelper";
 import { stringGen } from "../helpers/stringGen";
 import { UserDataServiceProvider } from "../services/userDataServiceProvider";
+import { ThreadsDataServiceProvider } from "../services/threadsDataServiceProvider";
 
+const threadsDataServiceProvider= new ThreadsDataServiceProvider()
 const userDataServiceProvider = new UserDataServiceProvider()
 const ticketDataServiceProvider = new TicketDataServiceProvider();
 
 export class TicketController {
-  static getAgentTickets(arg0: string, arg1: ((req: Request, res: Response, next: NextFunction) => any)[], getAgentTickets: any) {
-    throw new Error('Method not implemented.');
-  }
 
   public async addTicket(req: Request, res: Response, next: NextFunction) {
     try {
@@ -182,13 +181,11 @@ export class TicketController {
   }
 
 
-  public async replyTicket(req: Request, res: Response) {
+  public async replyTicket(req: Request, res: Response,next:NextFunction) {
     try {
-      const id = req.params.id;
-      console.log('id', id)
-      const ticket = await ticketDataServiceProvider.getTicketByTicketId(id);
-      console.log(ticket)
-
+      const ticketId = req.params.id;
+      const ticket = await ticketDataServiceProvider.getTicketByTicketId(ticketId);
+     
       if (!ticket) {
         return res.status(400).json({
           success: false,
@@ -197,40 +194,38 @@ export class TicketController {
       }
       const replyData = {
         reporter_by: req.user.full_name,
-        ticket_id: id,
+        ticket_id: ticketId,
         reporter_type: req.user.user_type,
         message: req.body.message
       };
 
-      const updatedTicket = await ticketDataServiceProvider.replyTickets(replyData);
+      const threadData = await threadsDataServiceProvider.replyTickets(replyData);
+                         await ticketDataServiceProvider.updateTicketStatus(ticket)
 
       return res.status(200).json({
         success: true,
         message: "Reply posted successfully",
-        data: updatedTicket,
+        data: threadData,
       });
     } catch (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Something went wrong",
-      });
+      return next(err);
     }
   }
 
   public async getThreads(req: Request, res: Response) {
     try {
-      const id = req.query.id
+      const ticketId = req.query.id
 
       const { skip, limit, sort } = req.params;
       const query = {
-        email: { $eq: id }
+        email: { $eq: ticketId }
       };
 
       const [tickets, count] = await Promise.all([
-        ticketDataServiceProvider.getThreads({
+        threadsDataServiceProvider.getAll({
           query, skip, limit, sort
         }),
-        ticketDataServiceProvider.countAll({
+        threadsDataServiceProvider.countAll({
           query
         })
       ])
