@@ -15,7 +15,11 @@ const threadSchema = new Schema({
     message:
     {
         type: String
+    },
+    ticket_status: {
+        type:String
     }
+
 }, {
     timestamps: {
         'createdAt': 'created_at',

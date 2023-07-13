@@ -19,7 +19,7 @@ class TicketDataServiceProvider {
     }
     getTicketByTicketId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.findOne({ ticket_id: id });
+            return yield ticket_1.TicketModel.findOne({ ticket_id: id }).select('-assigned_to');
         });
     }
     getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
@@ -56,13 +56,15 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.findOne({ ticket_id: ticketId });
         });
     }
-    updateTicketStatus(ticket) {
+    updateTicketStatus(ticket, ticketStatus) {
         return __awaiter(this, void 0, void 0, function* () {
-            const status = ticket.query_status;
-            if (status === "OPEN") {
-                ticket.query_status = "CLOSED";
-            }
-            return yield ticket_1.TicketModel.updateOne({ _id: ticket.id }, { query_status: ticket.query_status });
+            // let status = ticket.query_status;
+            // console.log(status)
+            // console.log(ticketStatus)
+            // if (status === "OPEN") {
+            //     ticket.query_status = ticketStatus;   
+            // }
+            return yield ticket_1.TicketModel.updateOne({ _id: ticket.id }, { query_status: ticketStatus });
         });
     }
 }

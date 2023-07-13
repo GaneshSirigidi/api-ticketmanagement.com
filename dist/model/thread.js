@@ -14,6 +14,9 @@ const threadSchema = new mongoose_1.Schema({
     },
     message: {
         type: String
+    },
+    ticket_status: {
+        type: String
     }
 }, {
     timestamps: {

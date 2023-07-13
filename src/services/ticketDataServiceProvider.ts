@@ -9,15 +9,15 @@ export class TicketDataServiceProvider {
   }
 
   public async getTicketByTicketId(id) {
-    return await TicketModel.findOne({ ticket_id: id });
+    return await TicketModel.findOne({ ticket_id: id }).select('-assigned_to');
   }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false}) {
-     
+ 
     if (query && query['email'].$eq===undefined) {
       delete query['email']  ; 
     }
-  
+    
     if (lean) {
       return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean()
     }
@@ -42,11 +42,15 @@ export class TicketDataServiceProvider {
   async ticketExists(ticketId) {
     return await TicketModel.findOne({ ticket_id: ticketId })
   }
-  async updateTicketStatus(ticket) {
-    const status = ticket.query_status;
-    if (status === "OPEN") {
-        ticket.query_status = "CLOSED";   
-    }
-    return await TicketModel.updateOne({ _id: ticket.id }, { query_status: ticket.query_status });
+  async updateTicketStatus(ticket,ticketStatus) {
+    // let status = ticket.query_status;
+    // console.log(status)
+    // console.log(ticketStatus)
+    // if (status === "OPEN") {
+    //     ticket.query_status = ticketStatus;   
+    // }
+    return await TicketModel.updateOne({ _id: ticket.id }, { query_status: ticketStatus });
   }
+
+
 }

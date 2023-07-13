@@ -7,7 +7,7 @@ import { stringGen } from "../helpers/stringGen";
 import { UserDataServiceProvider } from "../services/userDataServiceProvider";
 import { ThreadsDataServiceProvider } from "../services/threadsDataServiceProvider";
 
-const threadsDataServiceProvider= new ThreadsDataServiceProvider()
+const threadsDataServiceProvider = new ThreadsDataServiceProvider()
 const userDataServiceProvider = new UserDataServiceProvider()
 const ticketDataServiceProvider = new TicketDataServiceProvider();
 
@@ -36,21 +36,21 @@ export class TicketController {
     try {
       const email = req.query.email;
       const queryStatus = req.query.query_status
-      
+
       const { skip, limit, sort } = req.params;
       const query = {
         email: { $eq: email }
       };
 
       if (queryStatus) {
-        query['query_status']= { $eq: queryStatus };
+        query['query_status'] = { $eq: queryStatus };
       }
-      console.log(query)
+  
       const [tickets, count] = await Promise.all([
         ticketDataServiceProvider.getAll({
-          query,skip, limit, sort
+          query, skip, limit, sort
         }),
-        ticketDataServiceProvider.countAll({query})
+        ticketDataServiceProvider.countAll({ query })
       ])
 
       if (!tickets.length) {
@@ -59,7 +59,7 @@ export class TicketController {
           message: "No tickets found",
           data: [],
         });
-       }
+      }
 
       const response = paginationHelper.getPaginationResponse({
         page: req.query.page || 1,
@@ -80,7 +80,7 @@ export class TicketController {
 
   public async listUserTickets(req: Request, res: Response, next: NextFunction) {
     try {
-      
+
       const queryStatus = req.query.query_status
 
       const { skip, limit, sort } = req.params;
@@ -89,7 +89,7 @@ export class TicketController {
       };
 
       if (queryStatus) {
-        query['query_status']= { $eq: queryStatus };
+        query['query_status'] = { $eq: queryStatus };
       }
 
       const [tickets, count] = await Promise.all([
@@ -106,7 +106,7 @@ export class TicketController {
           message: "No tickets found",
           data: [],
         });
-       }
+      }
       const response = paginationHelper.getPaginationResponse({
         page: req.query.page || 1,
         count,
@@ -233,11 +233,12 @@ export class TicketController {
   }
 
 
-  public async replyTicket(req: Request, res: Response,next:NextFunction) {
+  public async replyTicket(req: Request, res: Response, next: NextFunction) {
     try {
+      const reqData = req.body
       const ticketId = req.params.id;
       const ticket = await ticketDataServiceProvider.getTicketByTicketId(ticketId);
-     
+
       if (!ticket) {
         return res.status(400).json({
           success: false,
@@ -248,11 +249,12 @@ export class TicketController {
         reporter_by: req.user.full_name,
         ticket_id: ticketId,
         reporter_type: req.user.user_type,
-        message: req.body.message
+        message: reqData.message,
+        ticket_status: reqData.ticket_status
       };
 
       const threadData = await threadsDataServiceProvider.replyTicket(replyData);
-                         await ticketDataServiceProvider.updateTicketStatus(ticket)
+      await ticketDataServiceProvider.updateTicketStatus(ticket, reqData.ticket_status)
 
       return res.status(200).json({
         success: true,
@@ -267,13 +269,14 @@ export class TicketController {
   public async getThreads(req: Request, res: Response) {
     try {
       const ticketId = req.params.id
+      const ticketData = await ticketDataServiceProvider.getTicketByTicketId(ticketId);
 
       const { skip, limit, sort } = req.params;
       const query = {
         ticket_id: { $eq: ticketId }
       };
 
-      const [tickets, count] = await Promise.all([
+      const [threadsData, count] = await Promise.all([
         threadsDataServiceProvider.getAll({
           query, skip, limit, sort
         }),
@@ -287,7 +290,7 @@ export class TicketController {
         count,
         limit,
         skip,
-        data: tickets,
+        data: [ticketData, threadsData],
         message: "Threads fetched successfully",
         searchString: req.query.search_string,
       });

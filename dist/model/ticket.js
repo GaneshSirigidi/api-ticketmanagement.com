@@ -34,6 +34,12 @@ const ticketSchema = new mongoose_1.Schema({
     },
     assigned_to: {
         type: String
+    },
+    assigned_count: {
+        type: Number
+    },
+    unassigned_count: {
+        type: Number
     }
 }, {
     timestamps: {

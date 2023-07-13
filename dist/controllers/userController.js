@@ -17,8 +17,11 @@ const userDataServiceProvider_1 = require("../services/userDataServiceProvider")
 const authHelper_1 = require("../helpers/authHelper");
 const paginationHelper_1 = __importDefault(require("../helpers/paginationHelper"));
 const ticketDataServiceProvider_1 = require("../services/ticketDataServiceProvider");
+const s3DataServiceProvider_1 = require("../services/s3DataServiceProvider");
+const uuid_1 = require("uuid");
 const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
 const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
+const s3DataServiceProvider = new s3DataServiceProvider_1.S3DataServiceProvider();
 class UserController {
     signUp(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -173,6 +176,30 @@ class UserController {
             }
             catch (err) {
                 return next(err);
+            }
+        });
+    }
+    getSignedUrl(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const fileName = `${(0, uuid_1.v4)()}_${req.body.file}`;
+                if (!fileName) {
+                    return res.status(400).json({ message: "No file provided" });
+                }
+                const filePath = "Ticket-Proofs";
+                const uploadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);
+                let data = {
+                    "upload_url": uploadUrl,
+                };
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully generated pre-signed url",
+                    data
+                });
+            }
+            catch (err) {
+                console.error(err);
+                return res.status(500).json({ message: "Internal server error" });
             }
         });
     }

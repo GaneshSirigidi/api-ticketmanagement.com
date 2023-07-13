@@ -52,7 +52,6 @@ class TicketController {
                 if (queryStatus) {
                     query['query_status'] = { $eq: queryStatus };
                 }
-                console.log(query);
                 const [tickets, count] = yield Promise.all([
                     ticketDataServiceProvider.getAll({
                         query, skip, limit, sort
@@ -225,6 +224,7 @@ class TicketController {
     replyTicket(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const reqData = req.body;
                 const ticketId = req.params.id;
                 const ticket = yield ticketDataServiceProvider.getTicketByTicketId(ticketId);
                 if (!ticket) {
@@ -237,10 +237,11 @@ class TicketController {
                     reporter_by: req.user.full_name,
                     ticket_id: ticketId,
                     reporter_type: req.user.user_type,
-                    message: req.body.message
+                    message: reqData.message,
+                    ticket_status: reqData.ticket_status
                 };
                 const threadData = yield threadsDataServiceProvider.replyTicket(replyData);
-                yield ticketDataServiceProvider.updateTicketStatus(ticket);
+                yield ticketDataServiceProvider.updateTicketStatus(ticket, reqData.ticket_status);
                 return res.status(200).json({
                     success: true,
                     message: "Reply posted successfully",
@@ -256,11 +257,12 @@ class TicketController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const ticketId = req.params.id;
+                const ticketData = yield ticketDataServiceProvider.getTicketByTicketId(ticketId);
                 const { skip, limit, sort } = req.params;
                 const query = {
                     ticket_id: { $eq: ticketId }
                 };
-                const [tickets, count] = yield Promise.all([
+                const [threadsData, count] = yield Promise.all([
                     threadsDataServiceProvider.getAll({
                         query, skip, limit, sort
                     }),
@@ -273,7 +275,7 @@ class TicketController {
                     count,
                     limit,
                     skip,
-                    data: tickets,
+                    data: [ticketData, threadsData],
                     message: "Threads fetched successfully",
                     searchString: req.query.search_string,
                 });

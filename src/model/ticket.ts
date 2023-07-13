@@ -44,6 +44,14 @@ const ticketSchema = new Schema({
   
   assigned_to: {
     type:String
+  },
+
+  assigned_count: {
+    type:Number
+  },
+
+  unassigned_count: {
+    type:Number
   }
 
 }, {
