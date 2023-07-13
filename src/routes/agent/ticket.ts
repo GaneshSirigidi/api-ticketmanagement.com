@@ -22,7 +22,7 @@ const router: Router = Router();
 //     ticketController.addTicket
 // )
 
-router.get('/agent/ticket',
+router.get('/agent/tickets/:id',
     [
         authMiddleware.validateAccessTokenForAgent
     ],

@@ -7,7 +7,7 @@ import { stringGen } from "../helpers/stringGen";
 import { UserDataServiceProvider } from "../services/userDataServiceProvider";
 import { ThreadsDataServiceProvider } from "../services/threadsDataServiceProvider";
 
-const threadsDataServiceProvider= new ThreadsDataServiceProvider()
+const threadsDataServiceProvider = new ThreadsDataServiceProvider()
 const userDataServiceProvider = new UserDataServiceProvider()
 const ticketDataServiceProvider = new TicketDataServiceProvider();
 
@@ -31,26 +31,42 @@ export class TicketController {
       return next(err)
     }
   }
+  public async updateTicket(req: Request, res: Response, next: NextFunction) {
+    try {
+
+      const id = req.params.id
+      await ticketDataServiceProvider.updateTicket(id, req.body);
+
+      return res.status(200).json({
+        success: true,
+        message: "Ticket Updated successfully"
+      });
+    }
+    catch (err) {
+      return next(err)
+    }
+  }
+
 
   public async listTickets(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.query.email;
       const queryStatus = req.query.query_status
-      
+
       const { skip, limit, sort } = req.params;
       const query = {
         email: { $eq: email }
       };
 
       if (queryStatus) {
-        query['query_status']= { $eq: queryStatus };
+        query['query_status'] = { $eq: queryStatus };
       }
       console.log(query)
       const [tickets, count] = await Promise.all([
         ticketDataServiceProvider.getAll({
-          query,skip, limit, sort
+          query, skip, limit, sort
         }),
-        ticketDataServiceProvider.countAll({query})
+        ticketDataServiceProvider.countAll({ query })
       ])
 
       if (!tickets.length) {
@@ -59,7 +75,7 @@ export class TicketController {
           message: "No tickets found",
           data: [],
         });
-       }
+      }
 
       const response = paginationHelper.getPaginationResponse({
         page: req.query.page || 1,
@@ -80,7 +96,7 @@ export class TicketController {
 
   public async listUserTickets(req: Request, res: Response, next: NextFunction) {
     try {
-      
+
       const queryStatus = req.query.query_status
 
       const { skip, limit, sort } = req.params;
@@ -89,7 +105,7 @@ export class TicketController {
       };
 
       if (queryStatus) {
-        query['query_status']= { $eq: queryStatus };
+        query['query_status'] = { $eq: queryStatus };
       }
 
       const [tickets, count] = await Promise.all([
@@ -106,7 +122,7 @@ export class TicketController {
           message: "No tickets found",
           data: [],
         });
-       }
+      }
       const response = paginationHelper.getPaginationResponse({
         page: req.query.page || 1,
         count,
@@ -128,8 +144,8 @@ export class TicketController {
   public async getOne(req: Request, res: Response, next: NextFunction) {
     try {
 
-      const ticketId = req.query.ticket_id;
-      if (!ticketId) {
+      const id = req.params.id;
+      if (!id) {
         return res.status(400).json({
           success: false,
           message: "No ticket Id",
@@ -137,7 +153,7 @@ export class TicketController {
         });
       }
 
-      const ticketData = await ticketDataServiceProvider.getOne(ticketId);
+      const ticketData = await ticketDataServiceProvider.getOne(id);
 
       if (ticketData === null) {
         return res.status(400).json({
@@ -174,8 +190,8 @@ export class TicketController {
         });
       }
 
-      const ticketId = req.params.id
-      const ticektExists = await ticketDataServiceProvider.ticketExists(ticketId)
+      const id = req.params.id
+      const ticektExists = await ticketDataServiceProvider.ticketExists(id)
       if (!ticektExists) {
         return res.status(400).json({
           success: false,
@@ -184,7 +200,7 @@ export class TicketController {
         });
       }
 
-      await ticketDataServiceProvider.assignTicketById(ticketId, assignData);
+      await ticketDataServiceProvider.assignTicketById(id, assignData);
 
       return res.status(200).json({
         success: true,
@@ -233,11 +249,11 @@ export class TicketController {
   }
 
 
-  public async replyTicket(req: Request, res: Response,next:NextFunction) {
+  public async replyTicket(req: Request, res: Response, next: NextFunction) {
     try {
-      const ticketId = req.params.id;
-      const ticket = await ticketDataServiceProvider.getTicketByTicketId(ticketId);
-     
+      const id = req.params.id;
+      const ticket = await ticketDataServiceProvider.getTicketByTicketId(id);
+
       if (!ticket) {
         return res.status(400).json({
           success: false,
@@ -246,13 +262,13 @@ export class TicketController {
       }
       const replyData = {
         reporter_by: req.user.full_name,
-        ticket_id: ticketId,
+        ticket_id: ticket.ticket_id,
         reporter_type: req.user.user_type,
         message: req.body.message
       };
 
       const threadData = await threadsDataServiceProvider.replyTicket(replyData);
-                         await ticketDataServiceProvider.updateTicketStatus(ticket)
+      await ticketDataServiceProvider.updateTicketStatus(ticket)
 
       return res.status(200).json({
         success: true,
