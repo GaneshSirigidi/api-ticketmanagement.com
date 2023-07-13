@@ -49,9 +49,9 @@ router.post('/admin/tickets/:id/reply',
     ticketController.replyTicket
 )
 
-router.get('/admin/tickets/:id',
+router.get('/admin/tickets/:id/threads',
     [
-        authMiddleware.validateAccessToken
+        authMiddleware.validateAccessTokenForAdmin
     ],
     ticketController.getThreads
 )

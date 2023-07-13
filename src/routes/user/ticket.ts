@@ -36,4 +36,5 @@ router.get('/user/tickets',
     ticketController.listUserTickets
 )
 
+
 export default router;

@@ -180,76 +180,6 @@ export class TicketController {
     }
   }
 
-
-  public async replyTicket(req: Request, res: Response,next:NextFunction) {
-    try {
-      const ticketId = req.params.id;
-      const ticket = await ticketDataServiceProvider.getTicketByTicketId(ticketId);
-     
-      if (!ticket) {
-        return res.status(400).json({
-          success: false,
-          message: "Ticket not found",
-        });
-      }
-      const replyData = {
-        reporter_by: req.user.full_name,
-        ticket_id: ticketId,
-        reporter_type: req.user.user_type,
-        message: req.body.message
-      };
-
-      const threadData = await threadsDataServiceProvider.replyTickets(replyData);
-                         await ticketDataServiceProvider.updateTicketStatus(ticket)
-
-      return res.status(200).json({
-        success: true,
-        message: "Reply posted successfully",
-        data: threadData,
-      });
-    } catch (err) {
-      return next(err);
-    }
-  }
-
-  public async getThreads(req: Request, res: Response) {
-    try {
-      const ticketId = req.query.id
-
-      const { skip, limit, sort } = req.params;
-      const query = {
-        email: { $eq: ticketId }
-      };
-
-      const [tickets, count] = await Promise.all([
-        threadsDataServiceProvider.getAll({
-          query, skip, limit, sort
-        }),
-        threadsDataServiceProvider.countAll({
-          query
-        })
-      ])
-
-      const response = paginationHelper.getPaginationResponse({
-        page: req.query.page || 1,
-        count,
-        limit,
-        skip,
-        data: tickets,
-        message: "Tickets fetched successfully",
-        searchString: req.query.search_string,
-      });
-
-      return res.status(200).json(response);
-    }
-    catch (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Something went wrong"
-      })
-    }
-  }
-
   public async getAgentTickets(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.user.email
@@ -282,6 +212,75 @@ export class TicketController {
     }
   }
 
+
+  public async replyTicket(req: Request, res: Response,next:NextFunction) {
+    try {
+      const ticketId = req.params.id;
+      const ticket = await ticketDataServiceProvider.getTicketByTicketId(ticketId);
+     
+      if (!ticket) {
+        return res.status(400).json({
+          success: false,
+          message: "Ticket not found",
+        });
+      }
+      const replyData = {
+        reporter_by: req.user.full_name,
+        ticket_id: ticketId,
+        reporter_type: req.user.user_type,
+        message: req.body.message
+      };
+
+      const threadData = await threadsDataServiceProvider.replyTicket(replyData);
+                         await ticketDataServiceProvider.updateTicketStatus(ticket)
+
+      return res.status(200).json({
+        success: true,
+        message: "Reply posted successfully",
+        data: threadData,
+      });
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  public async getThreads(req: Request, res: Response) {
+    try {
+      const ticketId = req.params.id
+
+      const { skip, limit, sort } = req.params;
+      const query = {
+        ticket_id: { $eq: ticketId }
+      };
+
+      const [tickets, count] = await Promise.all([
+        threadsDataServiceProvider.getAll({
+          query, skip, limit, sort
+        }),
+        threadsDataServiceProvider.countAll({
+          query
+        })
+      ])
+
+      const response = paginationHelper.getPaginationResponse({
+        page: req.query.page || 1,
+        count,
+        limit,
+        skip,
+        data: tickets,
+        message: "Threads fetched successfully",
+        searchString: req.query.search_string,
+      });
+
+      return res.status(200).json(response);
+    }
+    catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: err.message || "Something went wrong"
+      })
+    }
+  }
 
 
 
