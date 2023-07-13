@@ -40,12 +40,27 @@ class TicketController {
             }
         });
     }
+    updateTicket(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = req.params.id;
+                yield ticketDataServiceProvider.updateTicket(id, req.body);
+                return res.status(200).json({
+                    success: true,
+                    message: "Ticket Updated successfully"
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
     listTickets(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const email = req.query.email;
                 const queryStatus = req.query.query_status;
-                const { skip, limit, sort } = req.params;
+                const { skip, limit, sort } = req.parsedFilterParams;
                 const query = {
                     email: { $eq: email }
                 };
@@ -85,7 +100,7 @@ class TicketController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const queryStatus = req.query.query_status;
-                const { skip, limit, sort } = req.params;
+                const { skip, limit, sort } = req.parsedFilterParams;
                 const query = {
                     email: { $eq: req.user.email },
                 };
@@ -126,15 +141,16 @@ class TicketController {
     getOne(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const ticketId = req.query.ticket_id;
-                if (!ticketId) {
+                const id = req.params.id;
+                if (!id) {
                     return res.status(400).json({
                         success: false,
                         message: "No ticket Id",
                         data: [],
                     });
                 }
-                const ticketData = yield ticketDataServiceProvider.getOne(ticketId);
+                const ticketData = yield ticketDataServiceProvider.getOne(id);
+                console.log(ticketData);
                 if (ticketData === null) {
                     return res.status(400).json({
                         success: false,
@@ -165,8 +181,8 @@ class TicketController {
                         data: [],
                     });
                 }
-                const ticketId = req.params.id;
-                const ticektExists = yield ticketDataServiceProvider.ticketExists(ticketId);
+                const id = req.params.id;
+                const ticektExists = yield ticketDataServiceProvider.ticketExists(id);
                 if (!ticektExists) {
                     return res.status(400).json({
                         success: false,
@@ -174,7 +190,7 @@ class TicketController {
                         data: [],
                     });
                 }
-                yield ticketDataServiceProvider.assignTicketById(ticketId, assignData);
+                yield ticketDataServiceProvider.assignTicketById(id, assignData);
                 return res.status(200).json({
                     success: true,
                     message: `Ticket assigned to ${assignData.assigned_to}`,
@@ -193,12 +209,12 @@ class TicketController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const email = req.user.email;
-                const { skip, limit, sort } = req.params;
+                const { skip, limit, sort } = req.parsedFilterParams;
                 const query = {
                     assigned_to: { $eq: email }
                 };
                 const [users, count] = yield Promise.all([
-                    ticketDataServiceProvider.getAll({
+                    ticketDataServiceProvider.getAllAgentTickets({
                         query, skip, limit, sort
                     }),
                     ticketDataServiceProvider.countAll({
@@ -235,13 +251,13 @@ class TicketController {
                 }
                 const replyData = {
                     reporter_by: req.user.full_name,
-                    ticket_id: ticketId,
+                    ticket_id: ticket.ticket_id,
                     reporter_type: req.user.user_type,
                     message: reqData.message,
                     ticket_status: reqData.ticket_status
                 };
                 const threadData = yield threadsDataServiceProvider.replyTicket(replyData);
-                yield ticketDataServiceProvider.updateTicketStatus(ticket, reqData.ticket_status);
+                //  await ticketDataServiceProvider.updateTicketStatus(ticket, reqData.ticket_status)
                 return res.status(200).json({
                     success: true,
                     message: "Reply posted successfully",

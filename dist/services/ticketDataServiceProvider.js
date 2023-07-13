@@ -19,7 +19,7 @@ class TicketDataServiceProvider {
     }
     getTicketByTicketId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.findOne({ ticket_id: id }).select('-assigned_to');
+            return yield ticket_1.TicketModel.findOne({ _id: id });
         });
     }
     getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
@@ -41,30 +41,41 @@ class TicketDataServiceProvider {
             return ticket_1.TicketModel.countDocuments(query);
         });
     }
-    getOne(ticketId) {
+    getOne(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.findOne({ ticket_id: ticketId });
+            return yield ticket_1.TicketModel.findById(id);
         });
     }
-    assignTicketById(ticketId, data) {
+    assignTicketById(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.updateOne({ ticket_id: ticketId }, { $set: data });
+            return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: data });
         });
     }
-    ticketExists(ticketId) {
+    ticketExists(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.findOne({ ticket_id: ticketId });
+            return yield ticket_1.TicketModel.findOne({ _id: id });
         });
     }
     updateTicketStatus(ticket, ticketStatus) {
         return __awaiter(this, void 0, void 0, function* () {
-            // let status = ticket.query_status;
-            // console.log(status)
-            // console.log(ticketStatus)
+            // const status = ticket.query_status;
             // if (status === "OPEN") {
-            //     ticket.query_status = ticketStatus;   
+            //   ticket.query_status = "CLOSED";
             // }
             return yield ticket_1.TicketModel.updateOne({ _id: ticket.id }, { query_status: ticketStatus });
+        });
+    }
+    updateTicket(id, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: body });
+        });
+    }
+    getAllAgentTickets({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (lean) {
+                return ticket_1.TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean();
+            }
+            return ticket_1.TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection);
         });
     }
 }

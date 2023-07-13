@@ -16,7 +16,7 @@ const router = (0, express_1.Router)();
 //     ],
 //     ticketController.addTicket
 // )
-router.get('/agent/ticket', [
+router.get('/agent/tickets/:id', [
     authMiddleware.validateAccessTokenForAgent
 ], ticketController.getOne);
 router.get('/agent/tickets', [

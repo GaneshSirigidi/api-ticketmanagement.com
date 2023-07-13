@@ -157,6 +157,7 @@ export class UserController {
         try {
             const userType = req.query.user_type
             const { skip, limit, sort } = req.params;
+            
             const query = {
                 user_type: { $eq: userType }
             };

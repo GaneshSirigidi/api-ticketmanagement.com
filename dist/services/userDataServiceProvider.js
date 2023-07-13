@@ -56,6 +56,9 @@ class UserDataServiceProvider {
     }
     getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (query && query['user_type'].$eq === undefined) {
+                query = {};
+            }
             if (lean) {
                 return user_1.UserModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean();
             }
@@ -64,6 +67,9 @@ class UserDataServiceProvider {
     }
     countAll({ query = {} }) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (query && query['user_type'].$eq === undefined) {
+                query = {};
+            }
             return user_1.UserModel.countDocuments(query);
         });
     }

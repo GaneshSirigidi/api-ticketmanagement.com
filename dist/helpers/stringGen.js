@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.stringGen = void 0;
 const stringGen = () => {
     const text = "TCKT-";
-    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const generatedTexts = [];
     for (let i = 0; i < Infinity; i++) {
         let newText = "";

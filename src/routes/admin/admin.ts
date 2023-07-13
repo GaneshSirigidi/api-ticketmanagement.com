@@ -1,13 +1,13 @@
 import { Router } from 'express';
 
 import { UserController } from '../../controllers/userController';
-const userController = new UserController()
-import {
-  SchemaValidator
-} from '../../middlewares/validations/schemaValidators';
+import { CustomValidationMiddleware } from '../../middlewares/customValidationMiddleware';
+import {SchemaValidator} from '../../middlewares/validations/schemaValidators';
 import { AuthMiddleware } from '../../middlewares/authMiddleware';
 import passportMiddleware from '../../middlewares/passportMiddleware';
 
+const customValidationMiddleware = new CustomValidationMiddleware();
+const userController = new UserController()
 const authMiddleware = new AuthMiddleware()
 const schemaValidator: SchemaValidator = new SchemaValidator(true);
 const validateRequest = schemaValidator.validate();
@@ -74,7 +74,8 @@ router.patch('/admin/profile',
 
 router.get('/admin/users',
   [
-    authMiddleware.validateAccessTokenForAdmin
+    authMiddleware.validateAccessTokenForAdmin,
+    customValidationMiddleware.parseSkipAndLimitAndSortParams
   ],
   userController.listUsersByUserType,
 );

@@ -14,7 +14,6 @@ export class TicketDataServiceProvider {
   }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
-
     if (query && query['email'].$eq === undefined) {
       delete query['email'];
     }
@@ -33,7 +32,7 @@ export class TicketDataServiceProvider {
   }
 
   async getOne(id) {
-    return await TicketModel.findOne({ _id: id })
+    return await TicketModel.findById(id)
   }
 
   async assignTicketById(id, data) {
@@ -53,5 +52,13 @@ export class TicketDataServiceProvider {
   async updateTicket(id, body) {
     return await TicketModel.updateOne({ _id: id },
       { $set: body })
+  }
+
+  async getAllAgentTickets({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
+
+    if (lean) {
+      return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean()
+    }
+    return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection)
   }
 }

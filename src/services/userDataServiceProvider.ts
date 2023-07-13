@@ -37,6 +37,10 @@ export class UserDataServiceProvider {
   }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
+    if (query && query['user_type'].$eq === undefined) {
+      query={}
+    }
+
     if (lean) {
       return UserModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean()
     }
@@ -44,6 +48,9 @@ export class UserDataServiceProvider {
   }
 
   async countAll({ query = {} }) {
+    if (query && query['user_type'].$eq === undefined) {
+      query={}
+    }
     return UserModel.countDocuments(query)
   }
 

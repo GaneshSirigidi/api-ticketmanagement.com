@@ -5,10 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const userController_1 = require("../../controllers/userController");
-const userController = new userController_1.UserController();
+const customValidationMiddleware_1 = require("../../middlewares/customValidationMiddleware");
 const schemaValidators_1 = require("../../middlewares/validations/schemaValidators");
 const authMiddleware_1 = require("../../middlewares/authMiddleware");
 const passportMiddleware_1 = __importDefault(require("../../middlewares/passportMiddleware"));
+const customValidationMiddleware = new customValidationMiddleware_1.CustomValidationMiddleware();
+const userController = new userController_1.UserController();
 const authMiddleware = new authMiddleware_1.AuthMiddleware();
 const schemaValidator = new schemaValidators_1.SchemaValidator(true);
 const validateRequest = schemaValidator.validate();
@@ -43,6 +45,7 @@ router.patch('/admin/profile', [
     validateRequest
 ], userController.updateProfile);
 router.get('/admin/users', [
-    authMiddleware.validateAccessTokenForAdmin
+    authMiddleware.validateAccessTokenForAdmin,
+    customValidationMiddleware.parseSkipAndLimitAndSortParams
 ], userController.listUsersByUserType);
 exports.default = router;

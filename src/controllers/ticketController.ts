@@ -53,7 +53,7 @@ export class TicketController {
       const email = req.query.email;
       const queryStatus = req.query.query_status
 
-      const { skip, limit, sort } = req.params;
+      const { skip, limit, sort } = req.parsedFilterParams;
       const query = {
         email: { $eq: email }
       };
@@ -99,7 +99,7 @@ export class TicketController {
 
       const queryStatus = req.query.query_status
 
-      const { skip, limit, sort } = req.params;
+      const { skip, limit, sort } = req.parsedFilterParams;
       const query = {
         email: { $eq: req.user.email },
       };
@@ -153,8 +153,8 @@ export class TicketController {
         });
       }
 
-      const ticketData = await ticketDataServiceProvider.getOne(id);
-
+      const ticketData = await ticketDataServiceProvider.getOne(id );
+      console.log(ticketData)
       if (ticketData === null) {
         return res.status(400).json({
           success: false,
@@ -219,13 +219,13 @@ export class TicketController {
   public async getAgentTickets(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.user.email
-      const { skip, limit, sort } = req.params;
+      const { skip, limit, sort } = req.parsedFilterParams;
       const query = {
         assigned_to: { $eq: email }
       };
 
       const [users, count] = await Promise.all([
-        ticketDataServiceProvider.getAll({
+        ticketDataServiceProvider.getAllAgentTickets({
           query, skip, limit, sort
         }),
         ticketDataServiceProvider.countAll({
@@ -270,7 +270,7 @@ export class TicketController {
       };
 
       const threadData = await threadsDataServiceProvider.replyTicket(replyData);
-      await ticketDataServiceProvider.updateTicketStatus(ticket, reqData.ticket_status)
+                        //  await ticketDataServiceProvider.updateTicketStatus(ticket, reqData.ticket_status)
 
       return res.status(200).json({
         success: true,
