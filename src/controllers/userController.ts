@@ -3,10 +3,13 @@ import { UserDataServiceProvider } from "../services/userDataServiceProvider"
 import { getUserAuthTokens } from '../helpers/authHelper'
 import paginationHelper from '../helpers/paginationHelper';
 import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider';
+import { S3DataServiceProvider } from '../services/s3DataServiceProvider';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const userDataServiceProvider = new UserDataServiceProvider();
 const ticketDataServiceProvider = new TicketDataServiceProvider();
+const s3DataServiceProvider = new S3DataServiceProvider()
 
 export class UserController {
 
@@ -182,7 +185,31 @@ export class UserController {
         }
     }
 
-    
 
 
+    public async getSignedUrl(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const fileName = `${uuidv4()}_${req.body.file}`;
+            if (!fileName) {
+                return res.status(400).json({ message: "No file provided" });
+            }
+            const filePath = "Ticket-Proofs";
+            const uploadUrl = await s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath)
+
+
+
+            let data = {
+                "upload_url": uploadUrl,
+            };
+            return res.status(200).json({
+                success: true,
+                message: "Successfully generated pre-signed url",
+                data
+            });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    }
 }

@@ -54,5 +54,12 @@ router.patch('/user/profile',
   userController.updateProfile,
 );
 
+router.post('/user/pre-signed-url',
+  [
+    authMiddleware.validateAccessTokenForUser,
+    validateRequest
+
+  ], userController.getSignedUrl)
+
 
 export default router;
