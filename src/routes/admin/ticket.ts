@@ -49,12 +49,12 @@ router.post('/admin/tickets/:id/reply',
     ticketController.replyTicket
 )
 
-router.get('/admin/tickets/:id/threads',
-    [
-        authMiddleware.validateAccessTokenForAdmin
-    ],
-    ticketController.getThreads
-)
+// router.get('/admin/tickets/:id/threads',
+//     [
+//         authMiddleware.validateAccessTokenForAdmin
+//     ],
+//     ticketController.getThreads
+// )
 
 
 export default router;

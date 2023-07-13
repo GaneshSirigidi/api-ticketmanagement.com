@@ -40,18 +40,19 @@ passportMiddleware.authenticate('signin', {
 
 router.get('/user/profile',
   [
-    authMiddleware.validateAccessToken
+    authMiddleware.validateAccessTokenForUser
   ],
   userController.getProfile,
 );
 
 router.patch('/user/profile',
   [
-    authMiddleware.validateAccessToken,
+    authMiddleware.validateAccessTokenForUser,
     validateRequest,
     
   ],
   userController.updateProfile,
 );
+
 
 export default router;

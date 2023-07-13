@@ -17,23 +17,30 @@ const router: Router = Router();
 router.post('/user/tickets',
     [
         validateRequest,
-        authMiddleware.validateAccessToken
+        authMiddleware.validateAccessTokenForUser
     ],
     ticketController.addTicket
 )
 
 router.get('/user/ticket',
     [
-        authMiddleware.validateAccessToken
+        authMiddleware.validateAccessTokenForUser
     ],
     ticketController.getOne
 )
 
 router.get('/user/tickets',
     [
-        authMiddleware.validateAccessToken
+        authMiddleware.validateAccessTokenForUser
     ],
     ticketController.listUserTickets
+)
+
+router.get('/user/tickets/:id/threads',
+    [
+        authMiddleware.validateAccessTokenForUser
+    ],
+    ticketController.getThreads
 )
 
 
