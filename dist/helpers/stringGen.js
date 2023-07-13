@@ -2,10 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.stringGen = void 0;
 const stringGen = () => {
-    var text = "TCKT-";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < 6; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    return text;
+    const text = "TCKT-";
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const generatedTexts = [];
+    for (let i = 0; i < Infinity; i++) {
+        let newText = "";
+        for (let j = 0; j < 6; j++) {
+            newText += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        if (!generatedTexts.includes(newText)) {
+            generatedTexts.push(newText);
+            return text + newText;
+        }
+    }
 };
 exports.stringGen = stringGen;

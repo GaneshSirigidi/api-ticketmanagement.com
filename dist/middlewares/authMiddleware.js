@@ -17,7 +17,7 @@ const userDataServiceProvider_1 = require("../services/userDataServiceProvider")
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
 class AuthMiddleware {
-    validateAccessToken(req, res, next) {
+    validateAccessTokenForUser(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const accessToken = req.headers.authorization;
@@ -32,6 +32,13 @@ class AuthMiddleware {
                 const userDetails = jsonwebtoken_1.default.decode(accessToken);
                 // Fetch User From DB
                 const user = yield userDataServiceProvider.userById(userDetails.id);
+                if (userDetails.user_type !== 'USER') {
+                    const respData = {
+                        success: false,
+                        message: "Invalid user type",
+                    };
+                    return res.status(403).json(respData);
+                }
                 const tokenSecret = process.env.JWT_SECRET;
                 try {
                     // Verify JWT

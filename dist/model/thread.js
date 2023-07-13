@@ -6,9 +6,8 @@ const threadSchema = new mongoose_1.Schema({
     reporter_by: {
         type: String
     },
-    request_id: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Ticket',
+    ticket_id: {
+        type: String
     },
     reporter_type: {
         type: String

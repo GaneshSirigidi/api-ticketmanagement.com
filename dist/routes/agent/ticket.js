@@ -22,4 +22,7 @@ router.get('/agent/ticket', [
 router.get('/agent/tickets', [
     authMiddleware.validateAccessTokenForAgent,
 ], ticketController.getAgentTickets);
+router.post('/agent/tickets/:id/reply', [
+    authMiddleware.validateAccessTokenForAgent,
+], ticketController.replyTicket);
 exports.default = router;

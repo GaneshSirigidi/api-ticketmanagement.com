@@ -17,12 +17,11 @@ const ticketDataServiceProvider_1 = require("../services/ticketDataServiceProvid
 const paginationHelper_1 = __importDefault(require("../helpers/paginationHelper"));
 const stringGen_1 = require("../helpers/stringGen");
 const userDataServiceProvider_1 = require("../services/userDataServiceProvider");
+const threadsDataServiceProvider_1 = require("../services/threadsDataServiceProvider");
+const threadsDataServiceProvider = new threadsDataServiceProvider_1.ThreadsDataServiceProvider();
 const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
 const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
 class TicketController {
-    static getAgentTickets(arg0, arg1, getAgentTickets) {
-        throw new Error('Method not implemented.');
-    }
     addTicket(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -175,73 +174,6 @@ class TicketController {
             }
         });
     }
-    replyTicket(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const id = req.params.id;
-                const ticket = yield ticketDataServiceProvider.getTicketById(id);
-                if (!ticket) {
-                    return res.status(400).json({
-                        success: false,
-                        message: "Ticket not found",
-                    });
-                }
-                const replyData = {
-                    reporter_by: req.user.name,
-                    request_id: req.body.request_id,
-                    reporter_type: req.user.user_type,
-                    message: req.body.message
-                };
-                const updatedTicket = yield ticketDataServiceProvider.replyTickets(replyData);
-                return res.status(200).json({
-                    success: true,
-                    message: "Reply posted successfully",
-                    data: updatedTicket,
-                });
-            }
-            catch (err) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Something went wrong",
-                });
-            }
-        });
-    }
-    getThreads(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const id = req.query.id;
-                const { skip, limit, sort } = req.params;
-                const query = {
-                    email: { $eq: id }
-                };
-                const [tickets, count] = yield Promise.all([
-                    ticketDataServiceProvider.getThreads({
-                        query, skip, limit, sort
-                    }),
-                    ticketDataServiceProvider.countAll({
-                        query
-                    })
-                ]);
-                const response = paginationHelper_1.default.getPaginationResponse({
-                    page: req.query.page || 1,
-                    count,
-                    limit,
-                    skip,
-                    data: tickets,
-                    message: "Tickets fetched successfully",
-                    searchString: req.query.search_string,
-                });
-                return res.status(200).json(response);
-            }
-            catch (err) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Something went wrong"
-                });
-            }
-        });
-    }
     getAgentTickets(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -271,6 +203,71 @@ class TicketController {
             }
             catch (err) {
                 return next(err);
+            }
+        });
+    }
+    replyTicket(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketId = req.params.id;
+                const ticket = yield ticketDataServiceProvider.getTicketByTicketId(ticketId);
+                if (!ticket) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Ticket not found",
+                    });
+                }
+                const replyData = {
+                    reporter_by: req.user.full_name,
+                    ticket_id: ticketId,
+                    reporter_type: req.user.user_type,
+                    message: req.body.message
+                };
+                const threadData = yield threadsDataServiceProvider.replyTicket(replyData);
+                yield ticketDataServiceProvider.updateTicketStatus(ticket);
+                return res.status(200).json({
+                    success: true,
+                    message: "Reply posted successfully",
+                    data: threadData,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
+    getThreads(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketId = req.params.id;
+                const { skip, limit, sort } = req.params;
+                const query = {
+                    ticket_id: { $eq: ticketId }
+                };
+                const [tickets, count] = yield Promise.all([
+                    threadsDataServiceProvider.getAll({
+                        query, skip, limit, sort
+                    }),
+                    threadsDataServiceProvider.countAll({
+                        query
+                    })
+                ]);
+                const response = paginationHelper_1.default.getPaginationResponse({
+                    page: req.query.page || 1,
+                    count,
+                    limit,
+                    skip,
+                    data: tickets,
+                    message: "Threads fetched successfully",
+                    searchString: req.query.search_string,
+                });
+                return res.status(200).json(response);
+            }
+            catch (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: err.message || "Something went wrong"
+                });
             }
         });
     }

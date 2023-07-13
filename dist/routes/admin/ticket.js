@@ -24,10 +24,13 @@ router.get('/admin/ticket', [
 router.patch('/admin/tickets/:id/assigned-to', [
     authMiddleware.validateAccessTokenForAdmin
 ], ticketController.assignTicket);
-router.get('/admin/tickets/:id', [
-    authMiddleware.validateAccessToken
-], ticketController.getThreads);
 router.post('/admin/tickets/:id/reply', [
-    authMiddleware.validateAccessToken
+    authMiddleware.validateAccessTokenForAdmin
 ], ticketController.replyTicket);
+// router.get('/admin/tickets/:id/threads',
+//     [
+//         authMiddleware.validateAccessTokenForAdmin
+//     ],
+//     ticketController.getThreads
+// )
 exports.default = router;

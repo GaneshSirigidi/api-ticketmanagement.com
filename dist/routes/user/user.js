@@ -29,10 +29,10 @@ router.post('/user/signin', passportMiddleware_1.default.authenticate('signin', 
     return res.status(err.status).json(respData);
 });
 router.get('/user/profile', [
-    authMiddleware.validateAccessToken
+    authMiddleware.validateAccessTokenForUser
 ], userController.getProfile);
 router.patch('/user/profile', [
-    authMiddleware.validateAccessToken,
+    authMiddleware.validateAccessTokenForUser,
     validateRequest,
 ], userController.updateProfile);
 exports.default = router;
