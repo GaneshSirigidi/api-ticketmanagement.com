@@ -6,6 +6,8 @@ import logger from 'morgan';
 import routes from './routes/index';
 import "../src/lib/db";
 
+
+
 const app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
