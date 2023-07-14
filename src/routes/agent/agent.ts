@@ -19,7 +19,7 @@ const router: Router = Router();
 //     validateRequest
 //   ], userController.signUp)
 
-router.post('/agent/signin',
+router.post('/signin',
 passportMiddleware.authenticate('signin', {
   session: false,
   failWithError: true,

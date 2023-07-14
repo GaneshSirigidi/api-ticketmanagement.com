@@ -57,14 +57,23 @@ export class TicketController {
       const queryStatus = req.query.query_status
 
       const { skip, limit, sort } = req.parsedFilterParams || {};
-      const query = {
-        email: { $eq: email }
-      };
-
+      const { query = {} } = req.parsedFilterParams || {};
+      if (email && email.length) {
+        query.email = { $eq: email }
+      }
+      
       if (queryStatus) {
         query['query_status'] = { $eq: queryStatus };
       }
-  
+
+      const searchQuery = req.query.ticket_id;
+      if (searchQuery && searchQuery.length) {
+        query.$or =
+          [
+            { ticket_id: { $regex: searchQuery, $options: "i" } },
+          ]
+      }
+
       const [tickets, count] = await Promise.all([
         ticketDataServiceProvider.getAll({
           query, skip, limit, sort
@@ -101,14 +110,24 @@ export class TicketController {
     try {
 
       const queryStatus = req.query.query_status
+      const email = req.user.email
 
       const { skip, limit, sort } = req.parsedFilterParams;
-      const query = {
-        email: { $eq: req.user.email },
-      };
+      const { query = {} } = req.parsedFilterParams;
 
-      if (queryStatus) {
+      if (email && email.length) {
+        query['email'] = { $eq: email }
+      }
+      if (queryStatus && queryStatus.length) {
         query['query_status'] = { $eq: queryStatus };
+      }
+      
+      const searchQuery = req.query.ticket_id;
+      if (searchQuery && searchQuery.length) {
+        query.$or =
+          [
+            { ticket_id: { $regex: searchQuery, $options: "i" } },
+          ]
       }
 
       const [tickets, count] = await Promise.all([
@@ -119,6 +138,7 @@ export class TicketController {
           query
         })
       ])
+
       if (!tickets.length) {
         return res.status(400).json({
           success: false,
@@ -133,7 +153,7 @@ export class TicketController {
         skip,
         data: tickets,
         message: "Tickets fetched successfully",
-        searchString: req.query.search_string,
+        searchString: searchQuery,
       });
 
       return res.status(200).json(response);
@@ -156,8 +176,8 @@ export class TicketController {
         });
       }
 
-      const ticketData = await ticketDataServiceProvider.getOne(id );
-      
+      const ticketData = await ticketDataServiceProvider.getOne(id);
+
       if (ticketData === null) {
         return res.status(400).json({
           success: false,
@@ -228,7 +248,7 @@ export class TicketController {
       };
 
       const [users, count] = await Promise.all([
-        ticketDataServiceProvider.getAllAgentTickets({
+        ticketDataServiceProvider.getAll({
           query, skip, limit, sort
         }),
         ticketDataServiceProvider.countAll({
@@ -273,7 +293,7 @@ export class TicketController {
       };
 
       const threadData = await threadsDataServiceProvider.replyTicket(replyData);
-                        //  await ticketDataServiceProvider.updateTicketStatus(ticket, reqData.ticket_status)
+      //  await ticketDataServiceProvider.updateTicketStatus(ticket, reqData.ticket_status)
 
       return res.status(200).json({
         success: true,
