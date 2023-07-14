@@ -24,6 +24,7 @@
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "rimraf": "^5.0.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

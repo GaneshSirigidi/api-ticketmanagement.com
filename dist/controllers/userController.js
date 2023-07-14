@@ -151,7 +151,7 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userType = req.query.user_type;
-                const { skip, limit, sort } = req.params;
+                const { skip, limit, sort } = req.parsedFilterParams || {};
                 const query = {
                     user_type: { $eq: userType }
                 };
