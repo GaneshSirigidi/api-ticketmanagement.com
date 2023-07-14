@@ -1,4 +1,5 @@
 import { addTicketSchema } from "./tickets/addTicket";
+import { listTicketSchema } from "./tickets/listTicket";
 import { signInSchema } from "./users/signin";
 import { signUpSchema, updateProfileSchema } from "./users/singup";
 
@@ -8,9 +9,10 @@ export default {
     '/user/tickets':
     {
         multi: true,
-        post: addTicketSchema
+        post: addTicketSchema,
+        get:listTicketSchema
     },
-
+    
     '/user/signup':
     {
         multi: true,
