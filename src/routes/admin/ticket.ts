@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { TicketController } from '../../controllers/ticketController';
 import { AuthMiddleware } from '../../middlewares/authMiddleware';
+import { CustomValidationMiddleware } from '../../middlewares/customValidationMiddleware';
 import {
     SchemaValidator
 } from '../../middlewares/validations/schemaValidators';
@@ -9,6 +10,7 @@ import {
 const schemaValidator: SchemaValidator = new SchemaValidator(true);
 const validateRequest = schemaValidator.validate();
 
+const customValidationMiddleware = new CustomValidationMiddleware();
 const ticketController = new TicketController()
 const authMiddleware = new AuthMiddleware()
 
@@ -23,7 +25,8 @@ const router: Router = Router();
 
 router.get('/admin/tickets',
     [
-        authMiddleware.validateAccessTokenForAdmin
+        authMiddleware.validateAccessTokenForAdmin,
+        customValidationMiddleware.parseSkipAndLimitAndSortParams,
     ],
     ticketController.listTickets
 )

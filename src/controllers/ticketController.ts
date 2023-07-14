@@ -1,5 +1,8 @@
 
 import { Request, Response, NextFunction } from "express";
+import {
+  AuthRequest,
+} from "../interfaces/authRequest";
 
 import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider'
 import paginationHelper from "../helpers/paginationHelper";
@@ -53,7 +56,7 @@ export class TicketController {
       const email = req.query.email;
       const queryStatus = req.query.query_status
 
-      const { skip, limit, sort } = req.parsedFilterParams;
+      const { skip, limit, sort } = req.parsedFilterParams || {};
       const query = {
         email: { $eq: email }
       };
@@ -109,7 +112,7 @@ export class TicketController {
       }
 
       const [tickets, count] = await Promise.all([
-        ticketDataServiceProvider.getAll({
+        ticketDataServiceProvider.getAllUserTickets({
           query, skip, limit, sort
         }),
         ticketDataServiceProvider.countAll({
@@ -154,7 +157,7 @@ export class TicketController {
       }
 
       const ticketData = await ticketDataServiceProvider.getOne(id );
-      console.log(ticketData)
+      
       if (ticketData === null) {
         return res.status(400).json({
           success: false,
@@ -216,10 +219,10 @@ export class TicketController {
     }
   }
 
-  public async getAgentTickets(req: Request, res: Response, next: NextFunction) {
+  public async listAgentTickets(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.user.email
-      const { skip, limit, sort } = req.parsedFilterParams;
+      const { skip, limit, sort } = req.parsedFilterParams || {};
       const query = {
         assigned_to: { $eq: email }
       };

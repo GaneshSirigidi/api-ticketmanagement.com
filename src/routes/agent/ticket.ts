@@ -2,13 +2,14 @@ import { Router } from 'express';
 
 import { TicketController } from '../../controllers/ticketController';
 import { AuthMiddleware } from '../../middlewares/authMiddleware';
+import { CustomValidationMiddleware } from '../../middlewares/customValidationMiddleware';
 import {
     SchemaValidator
 } from '../../middlewares/validations/schemaValidators';
 
 const schemaValidator: SchemaValidator = new SchemaValidator(true);
 // const validateRequest = schemaValidator.validate();
-
+const customValidationMiddleware = new CustomValidationMiddleware();
 const ticketController = new TicketController()
 const authMiddleware = new AuthMiddleware()
 
@@ -32,8 +33,9 @@ router.get('/agent/tickets/:id',
 router.get('/agent/tickets',
     [
         authMiddleware.validateAccessTokenForAgent,
+        customValidationMiddleware.parseSkipAndLimitAndSortParams,
     ],
-    ticketController.getAgentTickets,
+    ticketController.listAgentTickets,
 );
 router.post('/agent/tickets/:id/reply',
     [

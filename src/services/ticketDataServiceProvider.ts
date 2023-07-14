@@ -25,9 +25,6 @@ export class TicketDataServiceProvider {
   }
 
   async countAll({ query = {} }) {
-    // if (query && query['email'].$eq===undefined) {
-    //   delete query['email'] ; // Reset query to empty object
-    // }
     return TicketModel.countDocuments(query)
   }
 
@@ -39,16 +36,22 @@ export class TicketDataServiceProvider {
     return await TicketModel.updateOne({ _id: id }, { $set: data });
   }
 
+  async getAllUserTickets({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
+
+    if (lean) {
+      return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-assigned_to').lean()
+    }
+    return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-assigned_to')
+  }
+
   async ticketExists(id) {
     return await TicketModel.findOne({ _id: id })
   }
+
   async updateTicketStatus(ticket,ticketStatus) {
-    // const status = ticket.query_status;
-    // if (status === "OPEN") {
-    //   ticket.query_status = "CLOSED";
-    // }
     return await TicketModel.updateOne({ _id: ticket.id }, { query_status: ticketStatus });
   }
+
   async updateTicket(id, body) {
     return await TicketModel.updateOne({ _id: id },
       { $set: body })
@@ -61,4 +64,6 @@ export class TicketDataServiceProvider {
     }
     return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection)
   }
+
+  
 }
