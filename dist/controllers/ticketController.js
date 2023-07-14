@@ -60,7 +60,7 @@ class TicketController {
             try {
                 const email = req.query.email;
                 const queryStatus = req.query.query_status;
-                const { skip, limit, sort } = req.parsedFilterParams;
+                const { skip, limit, sort } = req.parsedFilterParams || {};
                 const query = {
                     email: { $eq: email }
                 };
@@ -108,7 +108,7 @@ class TicketController {
                     query['query_status'] = { $eq: queryStatus };
                 }
                 const [tickets, count] = yield Promise.all([
-                    ticketDataServiceProvider.getAll({
+                    ticketDataServiceProvider.getAllUserTickets({
                         query, skip, limit, sort
                     }),
                     ticketDataServiceProvider.countAll({
@@ -150,7 +150,6 @@ class TicketController {
                     });
                 }
                 const ticketData = yield ticketDataServiceProvider.getOne(id);
-                console.log(ticketData);
                 if (ticketData === null) {
                     return res.status(400).json({
                         success: false,
@@ -205,11 +204,11 @@ class TicketController {
             }
         });
     }
-    getAgentTickets(req, res, next) {
+    listAgentTickets(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const email = req.user.email;
-                const { skip, limit, sort } = req.parsedFilterParams;
+                const { skip, limit, sort } = req.parsedFilterParams || {};
                 const query = {
                     assigned_to: { $eq: email }
                 };

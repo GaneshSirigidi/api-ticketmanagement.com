@@ -7,7 +7,7 @@ exports.CustomValidationMiddleware = void 0;
 // import { CustomError } from "../interfaces/customError";
 class CustomValidationMiddleware {
     parseSkipAndLimitAndSortParams(request, res, next) {
-        let { page = 1, limit = 10, min_price, max_price, } = request.query;
+        let { page = 1, limit = 10 } = request.query;
         const { order_by: orderBy, order_type: orderType, get_all: getAll, } = request.query;
         let skip = 0;
         const sort = {};
@@ -27,8 +27,6 @@ class CustomValidationMiddleware {
             limit,
             query: {},
             sort,
-            min_price,
-            max_price,
             projection: {},
         };
         return next();

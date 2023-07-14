@@ -35,9 +35,6 @@ class TicketDataServiceProvider {
     }
     countAll({ query = {} }) {
         return __awaiter(this, void 0, void 0, function* () {
-            // if (query && query['email'].$eq===undefined) {
-            //   delete query['email'] ; // Reset query to empty object
-            // }
             return ticket_1.TicketModel.countDocuments(query);
         });
     }
@@ -51,6 +48,14 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: data });
         });
     }
+    getAllUserTickets({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (lean) {
+                return ticket_1.TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-assigned_to').lean();
+            }
+            return ticket_1.TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-assigned_to');
+        });
+    }
     ticketExists(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield ticket_1.TicketModel.findOne({ _id: id });
@@ -58,10 +63,6 @@ class TicketDataServiceProvider {
     }
     updateTicketStatus(ticket, ticketStatus) {
         return __awaiter(this, void 0, void 0, function* () {
-            // const status = ticket.query_status;
-            // if (status === "OPEN") {
-            //   ticket.query_status = "CLOSED";
-            // }
             return yield ticket_1.TicketModel.updateOne({ _id: ticket.id }, { query_status: ticketStatus });
         });
     }
