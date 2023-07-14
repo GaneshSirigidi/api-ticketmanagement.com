@@ -1,16 +1,20 @@
 {
     "version": 2,
-    "name": "music-album",
+    "name": "ticketmanagement",
     "builds": [
         {
-            "src": "app.js",
+            "src": "src/server.ts",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
+            "src": "/api/(.*)",
+            "dest": "src/server.ts"
+        },
+        {
             "src": "/(.*)",
-            "dest": "/app.js"
+            "dest": "/src/public/index.html"
         }
     ]
 }
