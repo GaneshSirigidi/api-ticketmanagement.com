@@ -2,6 +2,9 @@
   "name": "ticketmanagement",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": ">=NODE_JS_VERSION"
+  },
   "scripts": {
     "start": "ts-node src/server.ts",
     "dev": "nodemon src/server.ts",
