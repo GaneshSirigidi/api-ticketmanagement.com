@@ -20,7 +20,7 @@ router.post('/user/signup',
   userController.signUp
 )
 
-router.post('/user/signin',
+router.post('/signin',
 passportMiddleware.authenticate('signin', {
   session: false,
   failWithError: true,

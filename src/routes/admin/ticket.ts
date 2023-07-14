@@ -31,7 +31,7 @@ router.get('/admin/tickets',
     ticketController.listTickets
 )
 
-router.get('/admin/ticket',
+router.get('/admin/ticket/:id',
     [
         authMiddleware.validateAccessTokenForAdmin
     ],
