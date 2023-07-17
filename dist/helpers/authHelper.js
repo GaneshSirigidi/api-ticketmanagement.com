@@ -15,14 +15,8 @@ const getUserAuthTokens = function (userData) {
     };
     let tokenSecret;
     let refreshTokenSecret;
-    if (userData.user_type == "USER") {
-        tokenSecret = process.env.JWT_SECRET;
-        refreshTokenSecret = process.env.JWT_REFRESH_TOKEN_SECRET;
-    }
-    else {
-        tokenSecret = process.env.JWT_SECRET;
-        refreshTokenSecret = process.env.JWT_REFRESH_TOKEN_SECRET;
-    }
+    tokenSecret = process.env.JWT_SECRET + userData.password;
+    refreshTokenSecret = process.env.JWT_REFRESH_TOKEN_SECRET + userData.password;
     const token = jsonwebtoken_1.default.sign(user, tokenSecret, {
         expiresIn: 604800
     });

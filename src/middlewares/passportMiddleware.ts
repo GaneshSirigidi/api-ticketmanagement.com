@@ -10,7 +10,7 @@ passport.use('signin', new LocalStrategy({
   passwordField: 'password',
 }, async (username, password, done) => {
   try {
-    let user = await userDataServiceProvider.signin(username, password)
+    let user = await userDataServiceProvider.login(username, password)
 
     if (user) {
       return done(null, user);

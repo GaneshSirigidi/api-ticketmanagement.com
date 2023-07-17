@@ -7,7 +7,8 @@ const threadSchema = new mongoose_1.Schema({
         type: String
     },
     ticket_id: {
-        type: String
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "Ticket"
     },
     reporter_type: {
         type: String

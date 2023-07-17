@@ -90,64 +90,6 @@ export class TicketController {
     }
   }
 
-  public async listUserTickets(req: Request, res: Response, next: NextFunction) {
-    try {
-
-      const queryStatus = req.query.query_status
-      const email = req.user.email
-
-      const { skip, limit, sort } = req.parsedFilterParams;
-      const { query = {} } = req.parsedFilterParams;
-
-      if (email && email.length) {
-        query['email'] = { $eq: email }
-      }
-      if (queryStatus && queryStatus.length) {
-        query['query_status'] = { $eq: queryStatus };
-      }
-
-      const searchQuery = req.query.ticket_id;
-      if (searchQuery && searchQuery.length) {
-        query.$or =
-          [
-            { ticket_id: { $regex: searchQuery, $options: "i" } },
-          ]
-      }
-
-      const [tickets, count] = await Promise.all([
-        ticketDataServiceProvider.getAllUserTickets({
-          query, skip, limit, sort
-        }),
-        ticketDataServiceProvider.countAll({
-          query
-        })
-      ])
-
-      if (!tickets.length) {
-        return res.status(400).json({
-          success: false,
-          message: "No tickets found",
-          data: [],
-        });
-      }
-      const response = paginationHelper.getPaginationResponse({
-        page: req.query.page || 1,
-        count,
-        limit,
-        skip,
-        data: tickets,
-        message: "Tickets fetched successfully",
-        searchString: searchQuery,
-      });
-
-      return res.status(200).json(response);
-    }
-    catch (err) {
-      return next(err)
-    }
-  }
-
-
   public async getOne(req: Request, res: Response, next: NextFunction) {
     try {
 
@@ -223,45 +165,11 @@ export class TicketController {
     }
   }
 
-  public async listAgentTickets(req: Request, res: Response, next: NextFunction) {
-    try {
-      const email = req.user.email
-      const { skip, limit, sort } = req.parsedFilterParams || {};
-
-      const query = {
-        assigned_to: { $eq: email }
-      };
-
-      const [users, count] = await Promise.all([
-        ticketDataServiceProvider.getAll({
-          query, skip, limit, sort
-        }),
-        ticketDataServiceProvider.countAll({
-          query
-        })
-      ])
-      const response = paginationHelper.getPaginationResponse({
-        page: req.query.page || 1,
-        count,
-        limit,
-        skip,
-        data: users,
-        message: "Tickets fetched successfully",
-        searchString: req.query.search_string,
-      });
-      return res.status(200).json(response);
-    }
-    catch (err) {
-      return next(err)
-    }
-  }
-
-
   public async replyTicket(req: Request, res: Response, next: NextFunction) {
     try {
       const reqData = req.body
       const ticketId = req.params.id;
-      const ticket = await ticketDataServiceProvider.getTicketByTicketId(ticketId);
+      const ticket = await ticketDataServiceProvider.getTicketById(ticketId);
 
       if (!ticket) {
         return res.status(400).json({
@@ -271,7 +179,7 @@ export class TicketController {
       }
       const replyData = {
         reporter_by: req.user.full_name,
-        ticket_id: ticket.ticket_id,
+        ticket_id: ticketId,
         reporter_type: req.user.user_type,
         message: reqData.message,
         ticket_status: reqData.ticket_status
@@ -293,7 +201,7 @@ export class TicketController {
   public async getThreads(req: Request, res: Response) {
     try {
       const ticketId = req.params.id
-      const ticketData = await ticketDataServiceProvider.getTicketByTicketId(ticketId);
+      const ticketData = await ticketDataServiceProvider.getTicketById(ticketId);
 
       const { skip, limit, sort } = req.params;
       const query = {

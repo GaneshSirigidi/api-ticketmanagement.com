@@ -47,6 +47,7 @@ router.patch('/admin/tickets/:id/assigned-to',
 
 router.post('/admin/tickets/:id/reply',
     [
+        validateRequest,
         authMiddleware.validateAccessTokenForAdmin
     ],
     ticketController.replyTicket

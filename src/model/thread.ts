@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, SchemaType, model } from "mongoose";
 
 
 const threadSchema = new Schema({
@@ -7,7 +7,8 @@ const threadSchema = new Schema({
         type: String
     },
     ticket_id: {
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: "Ticket"
     },
     reporter_type: {
         type: String

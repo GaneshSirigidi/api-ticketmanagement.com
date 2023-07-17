@@ -9,12 +9,12 @@ export class TicketDataServiceProvider {
     return await TicketModel.create(queryData)
   }
 
-  public async getTicketByTicketId(id) {
-    return await TicketModel.findOne({ _id: id });
+  public async getTicketById(id) {
+    return await TicketModel.findById({ _id: id });
   }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
-
+  
     if (lean) {
       return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean()
     }
@@ -31,14 +31,6 @@ export class TicketDataServiceProvider {
 
   async assignTicketById(id, data) {
     return await TicketModel.updateOne({ _id: id }, { $set: data });
-  }
-
-  async getAllUserTickets({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
-
-    if (lean) {
-      return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-assigned_to').lean()
-    }
-    return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-assigned_to')
   }
 
   async ticketExists(id) {

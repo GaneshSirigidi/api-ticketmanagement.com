@@ -39,7 +39,7 @@ class AuthMiddleware {
                     };
                     return res.status(403).json(respData);
                 }
-                const tokenSecret = process.env.JWT_SECRET;
+                const tokenSecret = process.env.JWT_SECRET + user.password;
                 try {
                     // Verify JWT
                     jsonwebtoken_1.default.verify(accessToken, tokenSecret);
@@ -87,7 +87,7 @@ class AuthMiddleware {
                     };
                     return res.status(403).json(respData);
                 }
-                const tokenSecret = process.env.JWT_SECRET;
+                const tokenSecret = process.env.JWT_SECRET + user.password;
                 try {
                     // Verify JWT
                     jsonwebtoken_1.default.verify(accessToken, tokenSecret);
@@ -135,7 +135,7 @@ class AuthMiddleware {
                     };
                     return res.status(403).json(respData);
                 }
-                const tokenSecret = process.env.JWT_SECRET;
+                const tokenSecret = process.env.JWT_SECRET + user.password;
                 try {
                     // Verify JWT
                     jsonwebtoken_1.default.verify(accessToken, tokenSecret);

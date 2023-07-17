@@ -22,12 +22,20 @@ export class UserController {
             if (existedEmail) {
                 return res.status(422).json({
                     success: false,
-                    message: "Email Alread Exists"
+                    message: "Email Already Exists"
+                });
+            }
+
+            const existedPhone = await userDataServiceProvider.phoneExists(signUpData.phone_number);
+            if (existedPhone) {
+                return res.status(422).json({
+                    success: false,
+                    message: "Phone number Already Exists"
                 });
             }
 
             const userData = await userDataServiceProvider.saveUser(signUpData);
-
+            
             return res.status(200).json({
                 success: true,
                 message: "User Created successfully",
@@ -42,10 +50,10 @@ export class UserController {
     public async signIn(req: Request, res: Response, next: NextFunction) {
         try {
 
-            const { email, password } = req.body;
-
-            const returnUserData: any = await userDataServiceProvider.signin(email, password);
-            const { token, refreshToken } = await getUserAuthTokens(returnUserData);
+            const returnUserData: any = JSON.parse(JSON.stringify(req.user));;
+            delete returnUserData.password;
+            
+            const { token, refreshToken } = await getUserAuthTokens(req.user);
 
             const respData = {
                 success: true,
@@ -73,7 +81,8 @@ export class UserController {
             const profile = {
                 full_name: userDetails.full_name,
                 email: userDetails.email,
-                phone_number: userDetails.phone_number
+                phone_number: userDetails.phone_number,
+                user_type: userDetails.user_type
 
             };
 
@@ -92,10 +101,9 @@ export class UserController {
         }
     }
 
-    public async updateProfile(req: Request, res: Response,) {
+    public async updateProfile(req: Request, res: Response,next:NextFunction) {
         try {
             let profile = req.body;
-
             await userDataServiceProvider.updateUserById(req.user._id, profile);
 
             return res.status(200).json({
@@ -157,7 +165,7 @@ export class UserController {
         try {
             const userType = req.query.user_type
             const { skip, limit, sort } = req.parsedFilterParams || {};
-            
+
             const query = {
                 user_type: { $eq: userType }
             };
