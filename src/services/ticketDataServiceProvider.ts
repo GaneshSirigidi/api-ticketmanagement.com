@@ -14,7 +14,7 @@ export class TicketDataServiceProvider {
   }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
-  
+
     if (lean) {
       return TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean()
     }
@@ -37,7 +37,7 @@ export class TicketDataServiceProvider {
     return await TicketModel.findOne({ _id: id })
   }
 
-  async updateTicketStatus(ticket,ticketStatus) {
+  async updateTicketStatus(ticket, ticketStatus) {
     return await TicketModel.updateOne({ _id: ticket.id }, { query_status: ticketStatus });
   }
 
@@ -46,5 +46,9 @@ export class TicketDataServiceProvider {
       { $set: body })
   }
 
-  
+  async delete(ticketId) {
+    return await TicketModel.deleteOne({ _id: ticketId })
+  }
+
+
 }

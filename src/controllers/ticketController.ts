@@ -32,32 +32,16 @@ export class TicketController {
       return next(err)
     }
   }
-  public async updateTicket(req: Request, res: Response, next: NextFunction) {
-    try {
-
-      const id = req.params.id
-      await ticketDataServiceProvider.updateTicket(id, req.body);
-
-      return res.status(200).json({
-        success: true,
-        message: "Ticket Updated successfully"
-      });
-    }
-    catch (err) {
-      return next(err)
-    }
-  }
-
 
   public async listTickets(req: Request, res: Response, next: NextFunction) {
     try {
 
       const { skip, limit, sort } = req.parsedFilterParams || {};
       let { query = {} } = req.parsedFilterParams || {};
-     
+
       query = filterHelper.tickets(query, req.query)
       query = roleBasedFilterHelper.tickets(query, req.user);
-      
+
       const [tickets, count] = await Promise.all([
         ticketDataServiceProvider.getAll({
           query, skip, limit, sort
@@ -90,11 +74,27 @@ export class TicketController {
     }
   }
 
-  public async getOne(req: Request, res: Response, next: NextFunction) {
+  public async updateTicket(req: Request, res: Response, next: NextFunction) {
     try {
 
-      const id = req.params.id;
-      if (!id) {
+      const id = req.params.id
+      await ticketDataServiceProvider.updateTicket(id, req.body);
+
+      return res.status(200).json({
+        success: true,
+        message: "Ticket Updated successfully"
+      });
+    }
+    catch (err) {
+      return next(err)
+    }
+  }
+
+  public async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+
+      const ticketId = req.params.id
+      if (!ticketId) {
         return res.status(400).json({
           success: false,
           message: "No ticket Id",
@@ -102,7 +102,31 @@ export class TicketController {
         });
       }
 
-      const ticketData = await ticketDataServiceProvider.getOne(id);
+      const deleteData = await ticketDataServiceProvider.delete(ticketId)
+
+      return res.status(200).json({
+        success: true,
+        message: "Ticket deleted successfully",
+        data: [],
+      });
+    }
+    catch (error) {
+      return next(error);
+    }
+  }
+
+  public async getOne(req: Request, res: Response, next: NextFunction) {
+    try {
+
+      const ticketId = req.params.id;
+      if (!ticketId) {
+        return res.status(400).json({
+          success: false,
+          message: "No ticket Id",
+          data: [],
+        });
+      }
+      const ticketData = await ticketDataServiceProvider.getOne(ticketId);
 
       if (ticketData === null) {
         return res.status(400).json({
@@ -238,15 +262,15 @@ export class TicketController {
   }
 
 
-//TODO
-  public async ticketsStatistics(req:Request,res:Response) {
+  //TODO
+  public async ticketsStatistics(req: Request, res: Response) {
     try {
-      
+
       const totalTickets = await ticketDataServiceProvider.countAll({})
       return totalTickets;
     }
     catch (error) {
-      
+
     }
   }
 

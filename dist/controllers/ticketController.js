@@ -42,21 +42,6 @@ class TicketController {
             }
         });
     }
-    updateTicket(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const id = req.params.id;
-                yield ticketDataServiceProvider.updateTicket(id, req.body);
-                return res.status(200).json({
-                    success: true,
-                    message: "Ticket Updated successfully"
-                });
-            }
-            catch (err) {
-                return next(err);
-            }
-        });
-    }
     listTickets(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -93,18 +78,56 @@ class TicketController {
             }
         });
     }
-    getOne(req, res, next) {
+    updateTicket(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const id = req.params.id;
-                if (!id) {
+                yield ticketDataServiceProvider.updateTicket(id, req.body);
+                return res.status(200).json({
+                    success: true,
+                    message: "Ticket Updated successfully"
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
+    delete(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketId = req.params.id;
+                if (!ticketId) {
                     return res.status(400).json({
                         success: false,
                         message: "No ticket Id",
                         data: [],
                     });
                 }
-                const ticketData = yield ticketDataServiceProvider.getOne(id);
+                const deleteData = yield ticketDataServiceProvider.delete(ticketId);
+                return res.status(200).json({
+                    success: true,
+                    message: "Ticket deleted successfully",
+                    data: [],
+                });
+            }
+            catch (error) {
+                return next(error);
+            }
+        });
+    }
+    getOne(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketId = req.params.id;
+                if (!ticketId) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "No ticket Id",
+                        data: [],
+                    });
+                }
+                const ticketData = yield ticketDataServiceProvider.getOne(ticketId);
                 if (ticketData === null) {
                     return res.status(400).json({
                         success: false,
