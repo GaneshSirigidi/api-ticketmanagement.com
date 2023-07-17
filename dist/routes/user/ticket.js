@@ -24,7 +24,6 @@ router.get('/user/tickets/:id', [
 ], ticketController.getOne);
 router.get('/user/tickets', [
     authMiddleware.validateAccessTokenForUser,
-    validateRequest,
     customValidationMiddleware.parseSkipAndLimitAndSortParams,
 ], ticketController.listUserTickets);
 router.get('/user/tickets/:id/threads', [

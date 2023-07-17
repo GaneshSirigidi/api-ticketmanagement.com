@@ -21,7 +21,7 @@ router.get('/admin/tickets', [
     authMiddleware.validateAccessTokenForAdmin,
     customValidationMiddleware.parseSkipAndLimitAndSortParams,
 ], ticketController.listTickets);
-router.get('/admin/ticket', [
+router.get('/admin/ticket/:id', [
     authMiddleware.validateAccessTokenForAdmin
 ], ticketController.getOne);
 router.patch('/admin/tickets/:id/assigned-to', [

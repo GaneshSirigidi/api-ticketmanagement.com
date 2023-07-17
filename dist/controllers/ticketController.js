@@ -61,11 +61,19 @@ class TicketController {
                 const email = req.query.email;
                 const queryStatus = req.query.query_status;
                 const { skip, limit, sort } = req.parsedFilterParams || {};
-                const query = {
-                    email: { $eq: email }
-                };
+                const { query = {} } = req.parsedFilterParams || {};
+                if (email && email.length) {
+                    query.email = { $eq: email };
+                }
                 if (queryStatus) {
                     query['query_status'] = { $eq: queryStatus };
+                }
+                const searchQuery = req.query.ticket_id;
+                if (searchQuery && searchQuery.length) {
+                    query.$or =
+                        [
+                            { ticket_id: { $regex: searchQuery, $options: "i" } },
+                        ];
                 }
                 const [tickets, count] = yield Promise.all([
                     ticketDataServiceProvider.getAll({
@@ -100,12 +108,21 @@ class TicketController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const queryStatus = req.query.query_status;
+                const email = req.user.email;
                 const { skip, limit, sort } = req.parsedFilterParams;
-                const query = {
-                    email: { $eq: req.user.email },
-                };
-                if (queryStatus) {
+                const { query = {} } = req.parsedFilterParams;
+                if (email && email.length) {
+                    query['email'] = { $eq: email };
+                }
+                if (queryStatus && queryStatus.length) {
                     query['query_status'] = { $eq: queryStatus };
+                }
+                const searchQuery = req.query.ticket_id;
+                if (searchQuery && searchQuery.length) {
+                    query.$or =
+                        [
+                            { ticket_id: { $regex: searchQuery, $options: "i" } },
+                        ];
                 }
                 const [tickets, count] = yield Promise.all([
                     ticketDataServiceProvider.getAllUserTickets({
@@ -129,7 +146,7 @@ class TicketController {
                     skip,
                     data: tickets,
                     message: "Tickets fetched successfully",
-                    searchString: req.query.search_string,
+                    searchString: searchQuery,
                 });
                 return res.status(200).json(response);
             }
@@ -213,7 +230,7 @@ class TicketController {
                     assigned_to: { $eq: email }
                 };
                 const [users, count] = yield Promise.all([
-                    ticketDataServiceProvider.getAllAgentTickets({
+                    ticketDataServiceProvider.getAll({
                         query, skip, limit, sort
                     }),
                     ticketDataServiceProvider.countAll({

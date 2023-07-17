@@ -17,7 +17,7 @@ const router = (0, express_1.Router)();
 //   [
 //     validateRequest
 //   ], userController.signUp)
-router.post('/agent/signin', passportMiddleware_1.default.authenticate('signin', {
+router.post('/signin', passportMiddleware_1.default.authenticate('signin', {
     session: false,
     failWithError: true,
 }), [
