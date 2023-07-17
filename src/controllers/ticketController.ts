@@ -238,5 +238,18 @@ export class TicketController {
   }
 
 
+//TODO
+  public async ticketsStatistics(req:Request,res:Response) {
+    try {
+      
+      const totalTickets = await ticketDataServiceProvider.countAll({})
+      return totalTickets;
+    }
+    catch (error) {
+      
+    }
+  }
+
+
 
 }

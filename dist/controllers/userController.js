@@ -27,20 +27,6 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const signUpData = req.body;
-                const existedEmail = yield userDataServiceProvider.emailExists(signUpData.email);
-                if (existedEmail) {
-                    return res.status(422).json({
-                        success: false,
-                        message: "Email Already Exists"
-                    });
-                }
-                const existedPhone = yield userDataServiceProvider.phoneExists(signUpData.phone_number);
-                if (existedPhone) {
-                    return res.status(422).json({
-                        success: false,
-                        message: "Phone number Already Exists"
-                    });
-                }
                 const userData = yield userDataServiceProvider.saveUser(signUpData);
                 return res.status(200).json({
                     success: true,

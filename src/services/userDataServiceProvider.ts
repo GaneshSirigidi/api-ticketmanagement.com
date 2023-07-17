@@ -32,9 +32,9 @@ export class UserDataServiceProvider {
     return await UserModel.findOne({ email: email })
   }
 
-  async phoneExists(phone) {
-    return await UserModel.findOne({phone_number:phone})
-  }
+  // async phoneExists(phone) {
+  //   return await UserModel.findOne({phone_number:phone})
+  // }
 
   async updateUserById(userId, data) {
     return await UserModel.findByIdAndUpdate({ _id: userId }, { $set: data });

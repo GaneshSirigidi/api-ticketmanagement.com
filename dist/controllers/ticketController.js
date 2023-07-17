@@ -227,5 +227,16 @@ class TicketController {
             }
         });
     }
+    //TODO
+    ticketsStatistics(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const totalTickets = yield ticketDataServiceProvider.countAll({});
+                return totalTickets;
+            }
+            catch (error) {
+            }
+        });
+    }
 }
 exports.TicketController = TicketController;

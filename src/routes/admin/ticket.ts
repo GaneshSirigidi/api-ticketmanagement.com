@@ -53,12 +53,19 @@ router.post('/admin/tickets/:id/reply',
     ticketController.replyTicket
 )
 
-// router.get('/admin/tickets/:id/threads',
-//     [
-//         authMiddleware.validateAccessTokenForAdmin
-//     ],
-//     ticketController.getThreads
-// )
+router.get('/admin/tickets/:id/threads',
+    [
+        authMiddleware.validateAccessTokenForAdmin
+    ],
+    ticketController.getThreads
+)
+
+router.get('/admin/tickets-statistics',
+    [
+        authMiddleware.validateAccessTokenForAdmin
+    ],
+    ticketController.ticketsStatistics
+)
 
 
 export default router;

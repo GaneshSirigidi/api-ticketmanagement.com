@@ -17,23 +17,6 @@ export class UserController {
         try {
 
             const signUpData = req.body;
-
-            const existedEmail = await userDataServiceProvider.emailExists(signUpData.email);
-            if (existedEmail) {
-                return res.status(422).json({
-                    success: false,
-                    message: "Email Already Exists"
-                });
-            }
-
-            const existedPhone = await userDataServiceProvider.phoneExists(signUpData.phone_number);
-            if (existedPhone) {
-                return res.status(422).json({
-                    success: false,
-                    message: "Phone number Already Exists"
-                });
-            }
-
             const userData = await userDataServiceProvider.saveUser(signUpData);
             
             return res.status(200).json({
@@ -52,7 +35,7 @@ export class UserController {
 
             const returnUserData: any = JSON.parse(JSON.stringify(req.user));;
             delete returnUserData.password;
-            
+
             const { token, refreshToken } = await getUserAuthTokens(req.user);
 
             const respData = {
