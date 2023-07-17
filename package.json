@@ -8,7 +8,7 @@
     "build": "rimraf ./dist && tsc"
   },
   "dependencies": {
-    "aws-sdk": "^2.1414.0",
+    "aws-sdk": "^2.1414.0", 
     "bcrypt": "^5.1.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",

@@ -1,14 +1,12 @@
 
 import { Request, Response, NextFunction } from "express";
-import {
-  AuthRequest,
-} from "../interfaces/authRequest";
-
 import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider'
 import paginationHelper from "../helpers/paginationHelper";
 import { stringGen } from "../helpers/stringGen";
 import { UserDataServiceProvider } from "../services/userDataServiceProvider";
 import { ThreadsDataServiceProvider } from "../services/threadsDataServiceProvider";
+import roleBasedFilterHelper from "../helpers/roleBasedFilterHelper";
+import filterHelper from "../helpers/filterHelper";
 
 const threadsDataServiceProvider = new ThreadsDataServiceProvider()
 const userDataServiceProvider = new UserDataServiceProvider()
@@ -53,27 +51,13 @@ export class TicketController {
 
   public async listTickets(req: Request, res: Response, next: NextFunction) {
     try {
-      const email = req.query.email;
-      const queryStatus = req.query.query_status
 
       const { skip, limit, sort } = req.parsedFilterParams || {};
-      const { query = {} } = req.parsedFilterParams || {};
-      if (email && email.length) {
-        query.email = { $eq: email }
-      }
+      let { query = {} } = req.parsedFilterParams || {};
+     
+      query = filterHelper.tickets(query, req.query)
+      query = roleBasedFilterHelper.tickets(query, req.user);
       
-      if (queryStatus) {
-        query['query_status'] = { $eq: queryStatus };
-      }
-
-      const searchQuery = req.query.ticket_id;
-      if (searchQuery && searchQuery.length) {
-        query.$or =
-          [
-            { ticket_id: { $regex: searchQuery, $options: "i" } },
-          ]
-      }
-
       const [tickets, count] = await Promise.all([
         ticketDataServiceProvider.getAll({
           query, skip, limit, sort
@@ -121,7 +105,7 @@ export class TicketController {
       if (queryStatus && queryStatus.length) {
         query['query_status'] = { $eq: queryStatus };
       }
-      
+
       const searchQuery = req.query.ticket_id;
       if (searchQuery && searchQuery.length) {
         query.$or =
@@ -243,6 +227,7 @@ export class TicketController {
     try {
       const email = req.user.email
       const { skip, limit, sort } = req.parsedFilterParams || {};
+
       const query = {
         assigned_to: { $eq: email }
       };

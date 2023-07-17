@@ -42,7 +42,7 @@ router.get('/user/tickets',
         customValidationMiddleware.parseSkipAndLimitAndSortParams,
        
     ],
-    ticketController.listUserTickets
+    ticketController.listTickets
 )
 
 router.get('/user/tickets/:id/threads',

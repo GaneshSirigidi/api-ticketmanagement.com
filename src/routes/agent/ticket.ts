@@ -35,7 +35,7 @@ router.get('/agent/tickets',
         authMiddleware.validateAccessTokenForAgent,
         customValidationMiddleware.parseSkipAndLimitAndSortParams,
     ],
-    ticketController.listAgentTickets,
+    ticketController.listTickets,
 );
 router.post('/agent/tickets/:id/reply',
     [
