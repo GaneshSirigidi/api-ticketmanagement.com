@@ -7,6 +7,9 @@ import {
 } from '../../middlewares/validations/schemaValidators';
 import { AuthMiddleware } from '../../middlewares/authMiddleware';
 import passportMiddleware from '../../middlewares/passportMiddleware';
+import { CustomValidationMiddleware } from '../../middlewares/customValidationMiddleware';
+
+const customValidationMiddleware = new CustomValidationMiddleware();
 const authMiddleware = new AuthMiddleware()
 const schemaValidator: SchemaValidator = new SchemaValidator(true);
 const validateRequest = schemaValidator.validate();
@@ -15,7 +18,8 @@ const router: Router = Router();
 
 router.post('/user/signup',
   [
-    validateRequest
+    validateRequest,
+    customValidationMiddleware.checkEmailExists
   ],
   userController.signUp
 )

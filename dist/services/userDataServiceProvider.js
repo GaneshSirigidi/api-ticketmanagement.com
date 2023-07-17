@@ -25,10 +25,10 @@ class UserDataServiceProvider {
     }
     userById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield user_1.UserModel.findOne({ _id: userId });
+            return yield user_1.UserModel.findById({ _id: userId });
         });
     }
-    signin(email, password) {
+    login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             let match = false;
             const userDetails = yield user_1.UserModel.findOne({ email });
@@ -49,9 +49,12 @@ class UserDataServiceProvider {
             return yield user_1.UserModel.findOne({ email: email });
         });
     }
+    // async phoneExists(phone) {
+    //   return await UserModel.findOne({phone_number:phone})
+    // }
     updateUserById(userId, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return user_1.UserModel.updateOne({ _id: userId }, { $set: data });
+            return yield user_1.UserModel.findByIdAndUpdate({ _id: userId }, { $set: data });
         });
     }
     getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
@@ -75,7 +78,7 @@ class UserDataServiceProvider {
     }
     delete(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return user_1.UserModel.deleteOne({ _id: userId });
+            return yield user_1.UserModel.deleteOne({ _id: userId });
         });
     }
 }

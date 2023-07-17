@@ -42,7 +42,8 @@ passportMiddleware.authenticate('signin', {
 router.post('/admin/agent',
   [
     authMiddleware.validateAccessTokenForAdmin,
-    validateRequest
+    validateRequest,
+    customValidationMiddleware.checkEmailExists
     
   ],
   userController.addAgent,

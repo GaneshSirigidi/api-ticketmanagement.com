@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const addTicket_1 = require("./tickets/addTicket");
 const listTicket_1 = require("./tickets/listTicket");
+const replyTicket_1 = require("./tickets/replyTicket");
 const signin_1 = require("./users/signin");
 const singup_1 = require("./users/singup");
 exports.default = {
@@ -32,6 +33,10 @@ exports.default = {
         multi: true,
         patch: singup_1.updateProfileSchema
     },
+    '/agent/tickets/:id/reply': {
+        multi: true,
+        post: replyTicket_1.replyTicketSchema
+    },
     //Admin
     '/admin/signup': {
         multi: true,
@@ -49,4 +54,8 @@ exports.default = {
         multi: true,
         patch: singup_1.updateProfileSchema
     },
+    '/admin/tickets/:id/reply': {
+        multi: true,
+        post: replyTicket_1.replyTicketSchema
+    }
 };

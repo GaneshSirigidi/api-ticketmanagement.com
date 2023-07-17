@@ -47,17 +47,25 @@ router.patch('/admin/tickets/:id/assigned-to',
 
 router.post('/admin/tickets/:id/reply',
     [
+        validateRequest,
         authMiddleware.validateAccessTokenForAdmin
     ],
     ticketController.replyTicket
 )
 
-// router.get('/admin/tickets/:id/threads',
-//     [
-//         authMiddleware.validateAccessTokenForAdmin
-//     ],
-//     ticketController.getThreads
-// )
+router.get('/admin/tickets/:id/threads',
+    [
+        authMiddleware.validateAccessTokenForAdmin
+    ],
+    ticketController.getThreads
+)
+
+router.get('/admin/tickets-statistics',
+    [
+        authMiddleware.validateAccessTokenForAdmin
+    ],
+    ticketController.ticketsStatistics
+)
 
 
 export default router;

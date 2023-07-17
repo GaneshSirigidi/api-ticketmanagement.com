@@ -21,7 +21,7 @@ passport_1.default.use('signin', new passport_local_1.default({
     passwordField: 'password',
 }, (username, password, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let user = yield userDataServiceProvider.signin(username, password);
+        let user = yield userDataServiceProvider.login(username, password);
         if (user) {
             return done(null, user);
         }

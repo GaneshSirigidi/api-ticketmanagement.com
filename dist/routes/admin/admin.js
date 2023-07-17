@@ -32,7 +32,8 @@ router.post('/signin', passportMiddleware_1.default.authenticate('signin', {
 });
 router.post('/admin/agent', [
     authMiddleware.validateAccessTokenForAdmin,
-    validateRequest
+    validateRequest,
+    customValidationMiddleware.checkEmailExists
 ], userController.addAgent);
 router.delete('/admin/agent/:id', [
     authMiddleware.validateAccessTokenForAdmin,

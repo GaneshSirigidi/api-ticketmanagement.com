@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction, query } from "express";
 
 // data service provider
-// import { UserDataServiceProvider } from "../services/userDataServiceProvider";
+import { UserDataServiceProvider } from "../services/userDataServiceProvider";
 
 
-// const userDataServiceProvider = new UserDataServiceProvider();
+const userDataServiceProvider = new UserDataServiceProvider();
 
 // import { CustomError } from "../interfaces/customError";
 
@@ -47,5 +47,23 @@ export class CustomValidationMiddleware {
     return next();
   }
 
-  
+  public async checkEmailExists(req: Request, res: Response, next: NextFunction) {
+
+    try {
+      const existedEmail = await userDataServiceProvider.emailExists(req.body.email);
+      if (existedEmail) {
+        return res.status(422).json({
+          success: false,
+          message: "Email Already Existed",
+          statusCode: 422
+        });
+      }
+      next();
+    }
+    catch (error) {
+      next(error);
+    }
+  }
+
+
 }

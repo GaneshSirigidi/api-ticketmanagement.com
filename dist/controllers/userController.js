@@ -27,13 +27,6 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const signUpData = req.body;
-                const existedEmail = yield userDataServiceProvider.emailExists(signUpData.email);
-                if (existedEmail) {
-                    return res.status(422).json({
-                        success: false,
-                        message: "Email Alread Exists"
-                    });
-                }
                 const userData = yield userDataServiceProvider.saveUser(signUpData);
                 return res.status(200).json({
                     success: true,
@@ -49,9 +42,10 @@ class UserController {
     signIn(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { email, password } = req.body;
-                const returnUserData = yield userDataServiceProvider.signin(email, password);
-                const { token, refreshToken } = yield (0, authHelper_1.getUserAuthTokens)(returnUserData);
+                const returnUserData = JSON.parse(JSON.stringify(req.user));
+                ;
+                delete returnUserData.password;
+                const { token, refreshToken } = yield (0, authHelper_1.getUserAuthTokens)(req.user);
                 const respData = {
                     success: true,
                     user_details: returnUserData,
@@ -73,7 +67,8 @@ class UserController {
                 const profile = {
                     full_name: userDetails.full_name,
                     email: userDetails.email,
-                    phone_number: userDetails.phone_number
+                    phone_number: userDetails.phone_number,
+                    user_type: userDetails.user_type
                 };
                 return res.status(200).json({
                     success: true,
@@ -90,7 +85,7 @@ class UserController {
             }
         });
     }
-    updateProfile(req, res) {
+    updateProfile(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let profile = req.body;

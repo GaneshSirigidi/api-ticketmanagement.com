@@ -1,5 +1,6 @@
 import { addTicketSchema } from "./tickets/addTicket";
 import { listTicketSchema } from "./tickets/listTicket";
+import { replyTicketSchema } from "./tickets/replyTicket";
 import { signInSchema } from "./users/signin";
 import { signUpSchema, updateProfileSchema } from "./users/singup";
 
@@ -10,9 +11,9 @@ export default {
     {
         multi: true,
         post: addTicketSchema,
-        get:listTicketSchema
+        get: listTicketSchema
     },
-    
+
     '/user/signup':
     {
         multi: true,
@@ -31,7 +32,7 @@ export default {
         patch: updateProfileSchema
     },
 
- 
+
     //Agent
 
     '/agent/signin':
@@ -44,6 +45,12 @@ export default {
     {
         multi: true,
         patch: updateProfileSchema
+    },
+
+    '/agent/tickets/:id/reply':
+    {
+        multi: true,
+        post: replyTicketSchema
     },
 
     //Admin
@@ -69,4 +76,10 @@ export default {
         multi: true,
         patch: updateProfileSchema
     },
+
+    '/admin/tickets/:id/reply':
+    {
+        multi: true,
+        post: replyTicketSchema
+    }
 }

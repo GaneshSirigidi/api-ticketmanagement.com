@@ -17,9 +17,9 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.create(queryData);
         });
     }
-    getTicketByTicketId(id) {
+    getTicketById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.findOne({ _id: id });
+            return yield ticket_1.TicketModel.findById({ _id: id });
         });
     }
     getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
@@ -43,14 +43,6 @@ class TicketDataServiceProvider {
     assignTicketById(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: data });
-        });
-    }
-    getAllUserTickets({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (lean) {
-                return ticket_1.TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-assigned_to').lean();
-            }
-            return ticket_1.TicketModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-assigned_to');
         });
     }
     ticketExists(id) {

@@ -11,10 +11,10 @@ export class UserDataServiceProvider {
   }
 
   async userById(userId) {
-    return await UserModel.findOne({ _id: userId })
+    return await UserModel.findById({ _id: userId })
   }
 
-  async signin(email: string, password: string) {
+  async login(email: string, password: string) {
     let match = false;
     const userDetails = await UserModel.findOne({ email });
     if (userDetails) {
@@ -32,8 +32,12 @@ export class UserDataServiceProvider {
     return await UserModel.findOne({ email: email })
   }
 
+  // async phoneExists(phone) {
+  //   return await UserModel.findOne({phone_number:phone})
+  // }
+
   async updateUserById(userId, data) {
-    return UserModel.updateOne({ _id: userId }, { $set: data });
+    return await UserModel.findByIdAndUpdate({ _id: userId }, { $set: data });
   }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
@@ -55,7 +59,7 @@ export class UserDataServiceProvider {
   }
 
   async delete(userId) {
-    return UserModel.deleteOne({ _id: userId })
+    return await UserModel.deleteOne({ _id: userId })
   }
   
 }
