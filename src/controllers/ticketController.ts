@@ -7,6 +7,8 @@ import { UserDataServiceProvider } from "../services/userDataServiceProvider";
 import { ThreadsDataServiceProvider } from "../services/threadsDataServiceProvider";
 import roleBasedFilterHelper from "../helpers/roleBasedFilterHelper";
 import filterHelper from "../helpers/filterHelper";
+import emailServiceProvider from "../services/notifications/emailServiceProvider";
+import { prepareTicketdetailsData } from "../helpers/emailHelper";
 
 const threadsDataServiceProvider = new ThreadsDataServiceProvider()
 const userDataServiceProvider = new UserDataServiceProvider()
@@ -20,12 +22,15 @@ export class TicketController {
       const ticketData = req.body;
       const ticketId = await stringGen();
       ticketData.ticket_id = ticketId;
-      const queryData = await ticketDataServiceProvider.saveTicket(ticketData);
+      const responseData = await ticketDataServiceProvider.saveTicket(ticketData);
+           
+      const {emailData,emailContent}= prepareTicketdetailsData(responseData)
+      await emailServiceProvider.sendTicketDetailsEmail(emailData,emailContent)
 
       return res.status(200).json({
         success: true,
         message: "Ticket Created successfully",
-        data: queryData,
+        data: responseData,
       });
     }
     catch (err) {

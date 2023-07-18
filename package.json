@@ -34,6 +34,7 @@
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "sib-api-v3-typescript": "^2.2.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
