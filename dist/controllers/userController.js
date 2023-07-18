@@ -19,6 +19,10 @@ const paginationHelper_1 = __importDefault(require("../helpers/paginationHelper"
 const ticketDataServiceProvider_1 = require("../services/ticketDataServiceProvider");
 const s3DataServiceProvider_1 = require("../services/s3DataServiceProvider");
 const uuid_1 = require("uuid");
+const emailServiceProvider_1 = __importDefault(require("../services/notifications/emailServiceProvider"));
+const emailHelper_1 = require("../helpers/emailHelper");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
 const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
 const s3DataServiceProvider = new s3DataServiceProvider_1.S3DataServiceProvider();
@@ -195,6 +199,67 @@ class UserController {
             catch (err) {
                 console.error(err);
                 return res.status(500).json({ message: "Internal server error" });
+            }
+        });
+    }
+    forgotPassword(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const email = req.body.email;
+                const user = yield userDataServiceProvider.userByEmail(email);
+                if (user) {
+                    const token = jsonwebtoken_1.default.sign({ user_id: user._id, email: user.email }, process.env.JWT_SECRET, {
+                        expiresIn: process.env.EXPIRES_IN
+                    });
+                    const { emailData, emailContent } = (0, emailHelper_1.prepareForgotPasswordEmailData)(email, token);
+                    yield emailServiceProvider_1.default.sendForgotPasswordDetailsEmail(emailData, emailContent);
+                    return res.status(200).json({
+                        success: true,
+                        message: `email sent successfully`,
+                    });
+                }
+                return res.status(400).json({
+                    success: false,
+                    message: "user not found",
+                });
+            }
+            catch (err) {
+                let respData = {
+                    success: false,
+                    message: err.message,
+                };
+                return res.status(err.statusCode || 500).json(respData);
+            }
+        });
+    }
+    resetPassword(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let token = req.body.token;
+                let verify = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+                let user = yield userDataServiceProvider.userByEmail(verify.email);
+                if (user) {
+                    const hasedpassword = yield bcrypt_1.default.hash(req.body.password, 12);
+                    user.password = hasedpassword;
+                    yield user.save();
+                    return res.status(200).json({
+                        success: true,
+                        message: "password reset successfully",
+                    });
+                }
+                else {
+                    return res.status(401).json({
+                        success: true,
+                        message: "password reset failed",
+                    });
+                }
+            }
+            catch (err) {
+                let respData = {
+                    success: false,
+                    message: err.message,
+                };
+                return res.status(err.statusCode || 500).json(respData);
             }
         });
     }

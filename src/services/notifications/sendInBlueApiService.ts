@@ -1,6 +1,7 @@
 
 // import { CustomError } from '../../interfaces/customError'
 import dotenv from 'dotenv';
+import { setDriver } from 'mongoose';
 dotenv.config();
 
 
@@ -21,18 +22,37 @@ export class SendInBlueAPIDataServiceProvider {
         name: process.env.SENDER_NAME,
       }
 
-      const receivers  = [{ email: options.to }]
-     
-      const response=await apiInstance.sendTransacEmail({
+      const receivers = [{ email: options.to }]
+
+      const response = await apiInstance.sendTransacEmail({
         sender,
         to: receivers,
         subject: options.subject,
         htmlContent: options.html,
       })
-   
+
     }
     catch (err) {
       console.log(err)
+    }
+  }
+
+  public async sendResetPasswordEmail(options) {
+    try {
+      const sender = {
+        email: process.env.SENDER_EMAIL,
+      }
+      const response = await apiInstance.sendTransacEmail({
+        sender,
+        to: [{ email: options.to }],
+        subject: options.subject,
+        htmlContent: options.html,
+      })
+    }
+    catch (err) {
+
+      console.log("err", err)
+      throw err
     }
   }
 

@@ -38,6 +38,12 @@ router.patch('/user/profile', [
     authMiddleware.validateAccessTokenForUser,
     validateRequest,
 ], userController.updateProfile);
+router.post('/user/forgot-password', [
+    validateRequest,
+], userController.forgotPassword);
+router.patch('/user/reset-password', [
+    validateRequest,
+], userController.resetPassword);
 router.post('/user/pre-signed-url', [
     authMiddleware.validateAccessTokenForUser,
     validateRequest

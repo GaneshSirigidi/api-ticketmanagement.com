@@ -17,6 +17,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const sendInBlueApiService_1 = require("../notifications/sendInBlueApiService");
 const sendTicketdetails_1 = __importDefault(require("../../views/emailTemplates/sendTicketdetails"));
+const forgotPasswordTemplate_1 = __importDefault(require("../../views/emailTemplates/forgotPasswordTemplate"));
 const sendInBlueAPIDataServiceProvider = new sendInBlueApiService_1.SendInBlueAPIDataServiceProvider();
 class EmailServiceProvider {
     constructor() {
@@ -29,18 +30,17 @@ class EmailServiceProvider {
                 const emailRecipient = emailData.email;
                 const emailSubject = emailData.subject;
                 const emailBody = ejs_1.default.render(emailTemplate, emailContent);
-                const toEmails = [emailRecipient];
                 var mailOptions = {
                     from: process.env.SENDER_EMAIL,
-                    to: toEmails,
+                    to: emailRecipient,
                     subject: emailSubject,
                     html: emailBody,
                 };
-                yield sendInBlueAPIDataServiceProvider.sendEmail(mailOptions);
+                yield sendInBlueAPIDataServiceProvider.sendResetPasswordEmail(mailOptions);
             }
             catch (error) {
                 // TODO:: Error Log
-                console.log(error);
+                throw error;
             }
         });
     }
@@ -67,6 +67,16 @@ class EmailServiceProvider {
     sendTicketDetailsEmail(emailData, emailContent) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.sendAdminEmail(emailData, emailContent, sendTicketdetails_1.default);
+        });
+    }
+    sendForgotPasswordDetailsEmail(emailData, emailContent) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.sendEmail(emailData, emailContent, forgotPasswordTemplate_1.default);
+            }
+            catch (err) {
+                throw err;
+            }
         });
     }
 }

@@ -5,6 +5,10 @@ import paginationHelper from '../helpers/paginationHelper';
 import { TicketDataServiceProvider } from '../services/ticketDataServiceProvider';
 import { S3DataServiceProvider } from '../services/s3DataServiceProvider';
 import { v4 as uuidv4 } from 'uuid';
+import emailServiceProvider from "../services/notifications/emailServiceProvider";
+import { prepareForgotPasswordEmailData } from '../helpers/emailHelper';
+import jwt from 'jsonwebtoken'
+import bcrypt from "bcrypt";
 
 
 const userDataServiceProvider = new UserDataServiceProvider();
@@ -198,4 +202,72 @@ export class UserController {
             return res.status(500).json({ message: "Internal server error" });
         }
     }
+
+    public async forgotPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const email = req.body.email
+            const user = await userDataServiceProvider.userByEmail(email)
+            if (user) {
+                const token = jwt.sign({ user_id: user._id, email: user.email }, process.env.JWT_SECRET, {
+                    expiresIn: process.env.EXPIRES_IN
+
+                })
+                const { emailData, emailContent } = prepareForgotPasswordEmailData(email, token);
+                await emailServiceProvider.sendForgotPasswordDetailsEmail(emailData, emailContent)
+                return res.status(200).json({
+                    success: true,
+                    message: `email sent successfully`,
+
+                });
+            }
+            return res.status(400).json({
+                success: false,
+                message: "user not found",
+
+            });
+
+        } catch (err) {
+            let respData = {
+                success: false,
+                message: err.message,
+            };
+            return res.status(err.statusCode || 500).json(respData);
+        }
+    }
+
+    public async resetPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            let token = req.body.token
+            let verify = jwt.verify(token, process.env.JWT_SECRET)
+            let user = await userDataServiceProvider.userByEmail(verify.email)
+            if (user) {
+
+                const hasedpassword = await bcrypt.hash(req.body.password, 12)
+                user.password = hasedpassword
+                await user.save()
+                return res.status(200).json({
+                    success: true,
+                    message: "password reset successfully",
+
+                });
+            }
+            else {
+
+                return res.status(401).json({
+                    success: true,
+                    message: "password reset failed",
+
+                });
+            }
+        }
+        catch (err) {
+            let respData = {
+                success: false,
+                message: err.message,
+            };
+            return res.status(err.statusCode || 500).json(respData);
+        }
+    }
+
 }

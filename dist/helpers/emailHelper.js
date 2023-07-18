@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.prepareTicketdetailsData = void 0;
+exports.prepareForgotPasswordEmailData = exports.prepareTicketdetailsData = void 0;
 const prepareTicketdetailsData = (ticketData) => {
     const name = ticketData.requester;
     const emailData = {
@@ -12,3 +12,16 @@ const prepareTicketdetailsData = (ticketData) => {
     return { emailData, emailContent };
 };
 exports.prepareTicketdetailsData = prepareTicketdetailsData;
+const baseUrl = process.env.APP_URL;
+const prepareForgotPasswordEmailData = (email, token, subject = "Forgot Password") => {
+    const url = baseUrl + `/forgot-password/verify-email?token=${token}`;
+    const emailData = {
+        email: email,
+        subject,
+    };
+    const emailContent = {
+        resetURL: url,
+    };
+    return { emailData, emailContent };
+};
+exports.prepareForgotPasswordEmailData = prepareForgotPasswordEmailData;

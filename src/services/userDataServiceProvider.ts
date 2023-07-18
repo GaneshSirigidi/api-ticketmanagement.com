@@ -13,7 +13,9 @@ export class UserDataServiceProvider {
   async userById(userId) {
     return await UserModel.findById({ _id: userId })
   }
-
+  async userByEmail(email) {
+    return await UserModel.findOne({ email })
+  }
   async login(email: string, password: string) {
     let match = false;
     const userDetails = await UserModel.findOne({ email });
@@ -28,7 +30,7 @@ export class UserDataServiceProvider {
     return await UserModel.create(agentData)
   }
 
-  async emailExists(email) {  
+  async emailExists(email) {
     return await UserModel.findOne({ email: email })
   }
 
@@ -42,7 +44,7 @@ export class UserDataServiceProvider {
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
     if (query && query['user_type'].$eq === undefined) {
-      query={}
+      query = {}
     }
 
     if (lean) {
@@ -53,7 +55,7 @@ export class UserDataServiceProvider {
 
   async countAll({ query = {} }) {
     if (query && query['user_type'].$eq === undefined) {
-      query={}
+      query = {}
     }
     return UserModel.countDocuments(query)
   }
@@ -61,5 +63,5 @@ export class UserDataServiceProvider {
   async delete(userId) {
     return await UserModel.deleteOne({ _id: userId })
   }
-  
+
 }

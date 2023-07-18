@@ -28,6 +28,11 @@ class UserDataServiceProvider {
             return yield user_1.UserModel.findById({ _id: userId });
         });
     }
+    userByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield user_1.UserModel.findOne({ email });
+        });
+    }
     login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             let match = false;

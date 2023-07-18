@@ -4,6 +4,7 @@ dotenv.config();
 
 import { SendInBlueAPIDataServiceProvider } from "../notifications/sendInBlueApiService";
 import ticketDetails from "../../views/emailTemplates/sendTicketdetails";
+import forgotPasswordTemplate from "../../views/emailTemplates/forgotPasswordTemplate";
 
 
 const sendInBlueAPIDataServiceProvider = new SendInBlueAPIDataServiceProvider();
@@ -16,40 +17,38 @@ class EmailServiceProvider {
 
   async sendEmail(emailData: any, emailContent: any, emailTemplate: any) {
     try {
+
       const emailRecipient = emailData.email;
       const emailSubject = emailData.subject;
-
       const emailBody = ejs.render(emailTemplate, emailContent);
-      const toEmails = [ emailRecipient ];
 
       var mailOptions = {
         from: process.env.SENDER_EMAIL,
-        to: toEmails,
+        to: emailRecipient,
         subject: emailSubject,
         html: emailBody,
       };
-
-      await sendInBlueAPIDataServiceProvider.sendEmail(mailOptions);
+      await sendInBlueAPIDataServiceProvider.sendResetPasswordEmail(mailOptions);
     } catch (error) {
       // TODO:: Error Log
-      console.log(error);
+      throw error
     }
   }
 
-  async sendAdminEmail(emailData: any, emailContent: any,emailTemplate:any) {
+  async sendAdminEmail(emailData: any, emailContent: any, emailTemplate: any) {
     try {
       const adminEmail = "mfather913@gmail.com"; // Replace with the admin's email address
-      const emailSubject ="TMS Ticket";
-  
+      const emailSubject = "TMS Ticket";
+
       const emailBody = ejs.render(emailTemplate, { ticketData: emailContent._doc });
-    
+
       var mailOptions = {
         from: process.env.SENDER_EMAIL,
         to: adminEmail,
         subject: emailSubject,
         html: emailBody,
       };
-    
+
       await sendInBlueAPIDataServiceProvider.sendEmail(mailOptions);
     } catch (error) {
       // TODO: Error Log
@@ -58,9 +57,17 @@ class EmailServiceProvider {
   }
 
   async sendTicketDetailsEmail(emailData: any, emailContent: any) {
-    await this.sendAdminEmail(emailData, emailContent,ticketDetails);
+    await this.sendAdminEmail(emailData, emailContent, ticketDetails);
   }
-  
+  async sendForgotPasswordDetailsEmail(emailData: any, emailContent: any) {
+    try {
+      await this.sendEmail(emailData, emailContent, forgotPasswordTemplate);
+    }
+    catch (err) {
+      throw err
+    }
+  }
+
 }
 
 export default new EmailServiceProvider();

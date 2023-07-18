@@ -25,10 +25,10 @@ router.post('/user/signup',
 )
 
 router.post('/signin',
-passportMiddleware.authenticate('signin', {
-  session: false,
-  failWithError: true,
-}),
+  passportMiddleware.authenticate('signin', {
+    session: false,
+    failWithError: true,
+  }),
   [
     validateRequest
   ],
@@ -53,10 +53,21 @@ router.patch('/user/profile',
   [
     authMiddleware.validateAccessTokenForUser,
     validateRequest,
-    
+
   ],
   userController.updateProfile,
 );
+
+router.post('/user/forgot-password',
+  [
+    validateRequest,
+  ],
+  userController.forgotPassword
+)
+router.patch('/user/reset-password',
+  [
+    validateRequest,
+  ], userController.resetPassword)
 
 router.post('/user/pre-signed-url',
   [

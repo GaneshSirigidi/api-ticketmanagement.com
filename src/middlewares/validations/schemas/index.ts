@@ -1,8 +1,10 @@
 import { addTicketSchema } from "./tickets/addTicket";
 import { listTicketSchema } from "./tickets/listTicket";
 import { replyTicketSchema } from "./tickets/replyTicket";
+import { forgotPasswordRequestSchema } from "./users/forgot-password-request";
+import { resetPasswordSchema } from "./users/reset-password";
 import { signInSchema } from "./users/signin";
-import { signUpSchema, updateProfileSchema } from "./users/singup";
+import { agentSignUpSchema, signUpSchema, updateProfileSchema } from "./users/singup";
 
 export default {
     //User
@@ -30,6 +32,16 @@ export default {
     {
         multi: true,
         patch: updateProfileSchema
+    },
+    '/user/forgot-password':
+    {
+        multi: true,
+        patch: forgotPasswordRequestSchema
+    },
+    '/user/reset-password':
+    {
+        multi: true,
+        patch: resetPasswordSchema
     },
 
 
@@ -68,7 +80,7 @@ export default {
 
     '/admin/agent': {
         multi: true,
-        post: signUpSchema
+        post: agentSignUpSchema
     },
 
     '/admin/profile':
