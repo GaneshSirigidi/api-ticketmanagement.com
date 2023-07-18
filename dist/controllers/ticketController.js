@@ -20,6 +20,8 @@ const userDataServiceProvider_1 = require("../services/userDataServiceProvider")
 const threadsDataServiceProvider_1 = require("../services/threadsDataServiceProvider");
 const roleBasedFilterHelper_1 = __importDefault(require("../helpers/roleBasedFilterHelper"));
 const filterHelper_1 = __importDefault(require("../helpers/filterHelper"));
+const emailServiceProvider_1 = __importDefault(require("../services/notifications/emailServiceProvider"));
+const emailHelper_1 = require("../helpers/emailHelper");
 const threadsDataServiceProvider = new threadsDataServiceProvider_1.ThreadsDataServiceProvider();
 const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
 const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
@@ -30,11 +32,13 @@ class TicketController {
                 const ticketData = req.body;
                 const ticketId = yield (0, stringGen_1.stringGen)();
                 ticketData.ticket_id = ticketId;
-                const queryData = yield ticketDataServiceProvider.saveTicket(ticketData);
+                const responseData = yield ticketDataServiceProvider.saveTicket(ticketData);
+                const { emailData, emailContent } = (0, emailHelper_1.prepareTicketdetailsData)(responseData);
+                yield emailServiceProvider_1.default.sendTicketDetailsEmail(emailData, emailContent);
                 return res.status(200).json({
                     success: true,
                     message: "Ticket Created successfully",
-                    data: queryData,
+                    data: responseData,
                 });
             }
             catch (err) {

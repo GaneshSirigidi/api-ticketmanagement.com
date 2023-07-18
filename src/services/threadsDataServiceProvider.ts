@@ -8,9 +8,9 @@ export class ThreadsDataServiceProvider{
     
     async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
         if (lean) {
-          return ThreadModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-ticket_id').lean()
+          return ThreadModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection).lean()
         }
-        return ThreadModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select('-ticket_id')
+        return ThreadModel.find(query).collation({ locale: "en" }).sort(sort).skip(skip).limit(limit).select(projection)
     }
     
     async countAll({ query = {} }) {
