@@ -66,6 +66,10 @@ router.get('/admin/tickets-statistics',
     ],
     ticketController.ticketsStatistics
 )
+router.delete('/admin/ticket/:id',
+    [
+        authMiddleware.validateAccessTokenForAdmin
 
+    ], ticketController.delete)
 
 export default router;

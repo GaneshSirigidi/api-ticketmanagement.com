@@ -93,29 +93,6 @@ class TicketController {
             }
         });
     }
-    delete(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const ticketId = req.params.id;
-                if (!ticketId) {
-                    return res.status(400).json({
-                        success: false,
-                        message: "No ticket Id",
-                        data: [],
-                    });
-                }
-                const deleteData = yield ticketDataServiceProvider.delete(ticketId);
-                return res.status(200).json({
-                    success: true,
-                    message: "Ticket deleted successfully",
-                    data: [],
-                });
-            }
-            catch (error) {
-                return next(error);
-            }
-        });
-    }
     getOne(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -247,6 +224,29 @@ class TicketController {
                     success: false,
                     message: err.message || "Something went wrong"
                 });
+            }
+        });
+    }
+    delete(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = req.params.id;
+                if (!id) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "No ticket Id",
+                        data: [],
+                    });
+                }
+                const deleteData = yield ticketDataServiceProvider.delete(id, req.body);
+                return res.status(200).json({
+                    success: true,
+                    message: "Ticket deleted successfully",
+                    deleteData
+                });
+            }
+            catch (error) {
+                return next(error);
             }
         });
     }

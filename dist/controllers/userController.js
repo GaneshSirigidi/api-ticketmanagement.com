@@ -177,7 +177,7 @@ class UserController {
     getSignedUrl(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const fileName = `${(0, uuid_1.v4)()}_${req.body.file}`;
+                const fileName = `${req.user._id}_${(0, uuid_1.v4)()}_${req.body.file}`;
                 if (!fileName) {
                     return res.status(400).json({ message: "No file provided" });
                 }

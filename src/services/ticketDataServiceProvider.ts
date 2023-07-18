@@ -1,5 +1,4 @@
 import { TicketModel } from "../model/ticket";
-import { ThreadModel } from "../model/thread"
 
 
 export class TicketDataServiceProvider {
@@ -46,8 +45,8 @@ export class TicketDataServiceProvider {
       { $set: body })
   }
 
-  async delete(ticketId) {
-    return await TicketModel.deleteOne({ _id: ticketId })
+  async delete(id, body) {
+    return await TicketModel.updateOne({ _id: id }, { $set: body })
   }
 
 

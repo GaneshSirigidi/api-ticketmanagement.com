@@ -89,32 +89,6 @@ export class TicketController {
       return next(err)
     }
   }
-
-  public async delete(req: Request, res: Response, next: NextFunction) {
-    try {
-
-      const ticketId = req.params.id
-      if (!ticketId) {
-        return res.status(400).json({
-          success: false,
-          message: "No ticket Id",
-          data: [],
-        });
-      }
-
-      const deleteData = await ticketDataServiceProvider.delete(ticketId)
-
-      return res.status(200).json({
-        success: true,
-        message: "Ticket deleted successfully",
-        data: [],
-      });
-    }
-    catch (error) {
-      return next(error);
-    }
-  }
-
   public async getOne(req: Request, res: Response, next: NextFunction) {
     try {
 
@@ -148,7 +122,6 @@ export class TicketController {
       return next(err);
     }
   }
-
 
   public async assignTicket(req: Request, res: Response,) {
     try {
@@ -261,6 +234,30 @@ export class TicketController {
     }
   }
 
+  public async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+
+      const id = req.params.id
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          message: "No ticket Id",
+          data: [],
+        });
+      }
+
+      const deleteData = await ticketDataServiceProvider.delete(id, req.body)
+
+      return res.status(200).json({
+        success: true,
+        message: "Ticket deleted successfully",
+        deleteData
+      });
+    }
+    catch (error) {
+      return next(error);
+    }
+  }
 
   //TODO
   public async ticketsStatistics(req: Request, res: Response) {
@@ -273,6 +270,7 @@ export class TicketController {
 
     }
   }
+
 
 
 

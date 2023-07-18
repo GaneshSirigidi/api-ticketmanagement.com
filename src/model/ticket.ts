@@ -24,7 +24,7 @@ const ticketSchema = new Schema({
 
   query_status: {
     type: String,
-    enum: ["OPEN", "CLOSED"],
+    enum: ["OPEN", "CLOSED", "ARCHIVE"],
     default: "OPEN",
   },
 
@@ -36,17 +36,17 @@ const ticketSchema = new Schema({
   {
     type: String
   },
-  
+
   assigned_to: {
-    type:String
+    type: String
   },
 
   assigned_count: {
-    type:Number
+    type: Number
   },
 
   unassigned_count: {
-    type:Number
+    type: Number
   }
 
 }, {

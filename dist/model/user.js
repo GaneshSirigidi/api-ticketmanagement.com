@@ -19,7 +19,7 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         enum: ['USER', 'ADMIN', 'AGENT'],
         default: 'USER'
-    }
+    },
 }, {
     timestamps: {
         'createdAt': 'created_at',

@@ -1,3 +1,4 @@
+import { string } from "joi";
 import { Schema, model } from "mongoose";
 
 
@@ -16,14 +17,14 @@ const userSchema = new Schema({
     },
 
     phone_number: {
-        type:String
+        type: String
     },
 
     user_type: {
         type: String,
         enum: ['USER', 'ADMIN', 'AGENT'],
-        default:'USER'
-    }
+        default: 'USER'
+    },
 }, {
     timestamps: {
         'createdAt': 'created_at',

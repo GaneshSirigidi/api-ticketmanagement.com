@@ -37,4 +37,7 @@ router.get('/admin/tickets/:id/threads', [
 router.get('/admin/tickets-statistics', [
     authMiddleware.validateAccessTokenForAdmin
 ], ticketController.ticketsStatistics);
+router.delete('/admin/ticket/:id', [
+    authMiddleware.validateAccessTokenForAdmin
+], ticketController.delete);
 exports.default = router;
