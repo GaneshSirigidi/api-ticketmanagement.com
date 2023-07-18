@@ -32,7 +32,7 @@ router.post('/signin', passportMiddleware_1.default.authenticate('signin', {
 router.get('/agent/profile', [
     authMiddleware.validateAccessTokenForAgent
 ], userController.getProfile);
-router.patch('/agent/profile', [
+router.patch('/profile', [
     authMiddleware.validateAccessTokenForAgent,
     validateRequest,
 ], userController.updateProfile);

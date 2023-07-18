@@ -57,7 +57,7 @@ router.delete('/admin/agent/:id',
   userController.delete,
 );
 
-router.get('/admin/profile',
+router.get('/profile',
   [
     authMiddleware.validateAccessTokenForAdmin
   ],
