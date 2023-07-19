@@ -44,7 +44,7 @@ router.get('/agent/profile',
   userController.getProfile,
 );
 
-router.patch('/profile',
+router.patch('agent/profile',
   [
     authMiddleware.validateAccessTokenForAgent,
     validateRequest,

@@ -31,7 +31,7 @@ router.post('/signin', passportMiddleware_1.default.authenticate('signin', {
     };
     return res.status(err.status).json(respData);
 });
-router.get('/profile', [
+router.get('/user/profile', [
     authMiddleware.validateAccessTokenForUser
 ], userController.getProfile);
 router.patch('/user/profile', [

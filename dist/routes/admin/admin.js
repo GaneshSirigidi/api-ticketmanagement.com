@@ -38,7 +38,7 @@ router.post('/admin/agent', [
 router.delete('/admin/agent/:id', [
     authMiddleware.validateAccessTokenForAdmin,
 ], userController.delete);
-router.get('/profile', [
+router.get('admin/profile', [
     authMiddleware.validateAccessTokenForAdmin
 ], userController.getProfile);
 router.patch('/admin/profile', [

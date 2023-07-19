@@ -42,7 +42,7 @@ router.post('/signin',
   }
 );
 
-router.get('/profile',
+router.get('/user/profile',
   [
     authMiddleware.validateAccessTokenForUser
   ],
