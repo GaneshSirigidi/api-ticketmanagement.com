@@ -48,5 +48,12 @@ router.patch('/profile', [
 router.get('/admin/users', [
     authMiddleware.validateAccessTokenForAdmin,
     customValidationMiddleware.parseSkipAndLimitAndSortParams
-], userController.listUsersByUserType);
+], userController.listUsers);
+router.get('/admin/agents', [
+    authMiddleware.validateAccessTokenForAdmin,
+    customValidationMiddleware.parseSkipAndLimitAndSortParams
+], userController.listAgents);
+router.patch('/admin/user/status/:id', [
+    authMiddleware.validateAccessTokenForAdmin,
+], userController.updateUserStatus);
 exports.default = router;

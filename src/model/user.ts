@@ -19,7 +19,12 @@ const userSchema = new Schema({
     phone_number: {
         type: String
     },
-
+    status:
+    {
+        type: String,
+        enum: ['ACTIVE', 'INACTIVE'],
+        default: "ACTIVE",
+    },
     user_type: {
         type: String,
         enum: ['USER', 'ADMIN', 'AGENT'],

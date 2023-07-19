@@ -146,13 +146,13 @@ class UserController {
             }
         });
     }
-    listUsersByUserType(req, res, next) {
+    listUsers(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const userType = req.query.user_type;
                 const { skip, limit, sort } = req.parsedFilterParams || {};
                 const query = {
-                    user_type: { $eq: userType }
+                    user_type: { $eq: 'USER' },
+                    status: { $ne: 'INACTIVE' }
                 };
                 const [users, count] = yield Promise.all([
                     userDataServiceProvider.getAll({
@@ -172,6 +172,52 @@ class UserController {
                     searchString: req.query.search_string,
                 });
                 return res.status(200).json(response);
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
+    listAgents(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { skip, limit, sort } = req.parsedFilterParams || {};
+                const query = {
+                    user_type: { $eq: 'AGENT' }
+                };
+                const [users, count] = yield Promise.all([
+                    userDataServiceProvider.getAll({
+                        query, skip, limit, sort
+                    }),
+                    userDataServiceProvider.countAll({
+                        query
+                    })
+                ]);
+                const response = paginationHelper_1.default.getPaginationResponse({
+                    page: req.query.page || 1,
+                    count,
+                    limit,
+                    skip,
+                    data: users,
+                    message: "Users fetched successfully",
+                    searchString: req.query.search_string,
+                });
+                return res.status(200).json(response);
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
+    updateUserStatus(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = req.params.id;
+                yield userDataServiceProvider.updateUserById(id, req.body);
+                return res.status(200).json({
+                    success: true,
+                    message: "User Status Updated Successfully"
+                });
             }
             catch (err) {
                 return next(err);
