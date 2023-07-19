@@ -31,11 +31,11 @@ router.post('/signin', passportMiddleware_1.default.authenticate('signin', {
     };
     return res.status(err.status).json(respData);
 });
-router.get('/user/profile', [
-    authMiddleware.validateAccessTokenForUser
+router.get('/profile', [
+    authMiddleware.validateAccessToken
 ], userController.getProfile);
-router.patch('/user/profile', [
-    authMiddleware.validateAccessTokenForUser,
+router.patch('/profile', [
+    authMiddleware.validateAccessToken,
     validateRequest,
 ], userController.updateProfile);
 router.post('/user/forgot-password', [
@@ -45,7 +45,7 @@ router.patch('/user/reset-password', [
     validateRequest,
 ], userController.resetPassword);
 router.post('/user/pre-signed-url', [
-    authMiddleware.validateAccessTokenForUser,
+    authMiddleware.validateAccessToken,
     validateRequest
 ], userController.getSignedUrl);
 exports.default = router;

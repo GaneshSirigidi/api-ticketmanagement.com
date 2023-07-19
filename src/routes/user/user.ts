@@ -42,16 +42,16 @@ router.post('/signin',
   }
 );
 
-router.get('/user/profile',
+router.get('/profile',
   [
-    authMiddleware.validateAccessTokenForUser
+    authMiddleware.validateAccessToken
   ],
   userController.getProfile,
 );
 
-router.patch('/user/profile',
+router.patch('/profile',
   [
-    authMiddleware.validateAccessTokenForUser,
+    authMiddleware.validateAccessToken,
     validateRequest,
 
   ],
@@ -71,7 +71,7 @@ router.patch('/user/reset-password',
 
 router.post('/user/pre-signed-url',
   [
-    authMiddleware.validateAccessTokenForUser,
+    authMiddleware.validateAccessToken,
     validateRequest
 
   ], userController.getSignedUrl)

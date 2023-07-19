@@ -38,11 +38,11 @@ router.post('/admin/agent', [
 router.delete('/admin/agent/:id', [
     authMiddleware.validateAccessTokenForAdmin,
 ], userController.delete);
-router.get('admin/profile', [
-    authMiddleware.validateAccessTokenForAdmin
+router.get('/profile', [
+    authMiddleware.validateAccessToken
 ], userController.getProfile);
-router.patch('/admin/profile', [
-    authMiddleware.validateAccessTokenForAdmin,
+router.patch('/profile', [
+    authMiddleware.validateAccessToken,
     validateRequest
 ], userController.updateProfile);
 router.get('/admin/users', [
