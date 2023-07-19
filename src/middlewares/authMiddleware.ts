@@ -5,7 +5,7 @@ const userDataServiceProvider = new UserDataServiceProvider()
 
 export class AuthMiddleware {
 
-  public async validateAccessTokenForUser(req, res, next) {
+  public async validateAccessToken(req, res, next) {
     try {
       const accessToken = req.headers.authorization;
 
@@ -24,13 +24,13 @@ export class AuthMiddleware {
       const user: any = await userDataServiceProvider.userById(
         userDetails.id
       );
-      if (userDetails.user_type !== 'USER') {
-        const respData = {
-          success: false,
-          message: "Invalid user type",
-        };
-        return res.status(403).json(respData);
-      }
+      // if (userDetails.user_type !== 'USER') {
+      //   const respData = {
+      //     success: false,
+      //     message: "Invalid user type",
+      //   };
+      //   return res.status(403).json(respData);
+      // }
 
       const tokenSecret = process.env.JWT_SECRET + user.password;
 

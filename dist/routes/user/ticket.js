@@ -13,20 +13,20 @@ const authMiddleware = new authMiddleware_1.AuthMiddleware();
 const router = (0, express_1.Router)();
 router.post('/user/tickets', [
     validateRequest,
-    authMiddleware.validateAccessTokenForUser
+    authMiddleware.validateAccessToken
 ], ticketController.addTicket);
 router.patch('/user/tickets/:id', [
     validateRequest,
-    authMiddleware.validateAccessTokenForUser
+    authMiddleware.validateAccessToken
 ], ticketController.updateTicket);
 router.get('/user/tickets/:id', [
-    authMiddleware.validateAccessTokenForUser
+    authMiddleware.validateAccessToken
 ], ticketController.getOne);
 router.get('/user/tickets', [
-    authMiddleware.validateAccessTokenForUser,
+    authMiddleware.validateAccessToken,
     customValidationMiddleware.parseSkipAndLimitAndSortParams,
 ], ticketController.listTickets);
 router.get('/user/tickets/:id/threads', [
-    authMiddleware.validateAccessTokenForUser
+    authMiddleware.validateAccessToken
 ], ticketController.getThreads);
 exports.default = router;

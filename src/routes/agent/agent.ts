@@ -37,16 +37,16 @@ passportMiddleware.authenticate('signin', {
   }
 );
 
-router.get('/agent/profile',
+router.get('/profile',
   [
-    authMiddleware.validateAccessTokenForAgent
+    authMiddleware.validateAccessToken
   ],
   userController.getProfile,
 );
 
-router.patch('agent/profile',
+router.patch('/profile',
   [
-    authMiddleware.validateAccessTokenForAgent,
+    authMiddleware.validateAccessToken,
     validateRequest,
 
   ],

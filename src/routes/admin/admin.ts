@@ -57,16 +57,16 @@ router.delete('/admin/agent/:id',
   userController.delete,
 );
 
-router.get('admin/profile',
+router.get('/profile',
   [
-    authMiddleware.validateAccessTokenForAdmin
+    authMiddleware.validateAccessToken
   ],
   userController.getProfile,
 );
 
-router.patch('/admin/profile',
+router.patch('/profile',
   [
-    authMiddleware.validateAccessTokenForAdmin,
+    authMiddleware.validateAccessToken,
     validateRequest
 
   ],

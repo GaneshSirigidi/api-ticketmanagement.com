@@ -29,11 +29,11 @@ router.post('/signin', passportMiddleware_1.default.authenticate('signin', {
     };
     return res.status(err.status).json(respData);
 });
-router.get('/agent/profile', [
-    authMiddleware.validateAccessTokenForAgent
+router.get('/profile', [
+    authMiddleware.validateAccessToken
 ], userController.getProfile);
-router.patch('agent/profile', [
-    authMiddleware.validateAccessTokenForAgent,
+router.patch('/profile', [
+    authMiddleware.validateAccessToken,
     validateRequest,
 ], userController.updateProfile);
 exports.default = router;

@@ -17,28 +17,28 @@ const router: Router = Router();
 router.post('/user/tickets',
     [
         validateRequest,
-        authMiddleware.validateAccessTokenForUser
+        authMiddleware.validateAccessToken
     ],
     ticketController.addTicket
 )
 router.patch('/user/tickets/:id',
     [
         validateRequest,
-        authMiddleware.validateAccessTokenForUser
+        authMiddleware.validateAccessToken
     ],
     ticketController.updateTicket
 )
 
 router.get('/user/tickets/:id',
     [
-        authMiddleware.validateAccessTokenForUser
+        authMiddleware.validateAccessToken
     ],
     ticketController.getOne
 )
 
 router.get('/user/tickets',
     [
-        authMiddleware.validateAccessTokenForUser,
+        authMiddleware.validateAccessToken,
         customValidationMiddleware.parseSkipAndLimitAndSortParams,
        
     ],
@@ -47,7 +47,7 @@ router.get('/user/tickets',
 
 router.get('/user/tickets/:id/threads',
     [
-        authMiddleware.validateAccessTokenForUser
+        authMiddleware.validateAccessToken
     ],
     ticketController.getThreads
 )
