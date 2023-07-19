@@ -25,6 +25,12 @@ const ticketSchema = new mongoose_1.Schema({
     requirement_brief: {
         type: String
     },
+    proofs: [
+        {
+            file_path: { type: String },
+            uploaded_at: { type: Date, default: Date.now }
+        }
+    ],
     subject: {
         type: String
     },

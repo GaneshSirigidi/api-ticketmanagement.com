@@ -7,6 +7,11 @@ export class TicketDataServiceProvider {
   public async saveTicket(queryData) {
     return await TicketModel.create(queryData)
   }
+  async saveProof(userId, fileName) {
+    return await TicketModel.findByIdAndUpdate(
+      { _id: userId },
+      { $push: { proofs: { file_path: fileName } } })
+  }
 
   public async getTicketById(id) {
     return await TicketModel.findById({ _id: id });
@@ -37,7 +42,7 @@ export class TicketDataServiceProvider {
   }
 
   async updateTicketStatus(ticketId, ticketStatus) {
-       return await TicketModel.updateOne({ _id: ticketId }, { $set: ticketStatus });
+    return await TicketModel.updateOne({ _id: ticketId }, { $set: ticketStatus });
   }
 
   async updateTicket(id, body) {
