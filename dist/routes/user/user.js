@@ -44,7 +44,7 @@ router.post('/forgot-password', [
 router.patch('/reset-password', [
     validateRequest,
 ], userController.resetPassword);
-router.post('/user/pre-signed-url', [
+router.post('/user/ticket/:id/pre-signed-url', [
     authMiddleware.validateAccessToken,
     validateRequest
 ], userController.getSignedUrl);

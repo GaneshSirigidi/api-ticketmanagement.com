@@ -231,6 +231,8 @@ export class UserController {
             if (!fileName) {
                 return res.status(400).json({ message: "No file provided" });
             }
+
+            const proof = await ticketDataServiceProvider.saveProof(req.params.id, fileName)
             const filePath = "Ticket-Proofs";
             const uploadUrl = await s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath)
 
@@ -240,7 +242,8 @@ export class UserController {
             return res.status(200).json({
                 success: true,
                 message: "Successfully generated pre-signed url",
-                data
+                data,
+                proof
             });
         } catch (err) {
             console.error(err);
