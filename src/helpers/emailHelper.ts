@@ -23,7 +23,7 @@ export const prepareForgotPasswordEmailData = (
     subject = "Forgot Password"
 ) => {
 
-    const url = baseUrl + `/forgot-password/verify-email?token=${token}`;
+    const url = baseUrl + `/forget-password/verify-email?token=${token}`;
 
     const emailData = {
         email: email,
