@@ -13,7 +13,7 @@ exports.default = {
     '/user/tickets': {
         multi: true,
         post: addTicket_1.addTicketSchema,
-        get: listTicket_1.listTicketSchema
+        get: listTicket_1.listTicketSchema,
     },
     '/user/signup': {
         multi: true,
@@ -52,6 +52,10 @@ exports.default = {
         multi: true,
         post: replyTicket_1.replyTicketSchema
     },
+    '/agent/tickets': {
+        multi: true,
+        get: listTicket_1.listTicketSchema,
+    },
     //Admin
     '/admin/signup': {
         multi: true,
@@ -76,5 +80,9 @@ exports.default = {
     '/admin/tickets/:id': {
         multi: true,
         patch: updateStatus_1.updateTicketStatusSchema
-    }
+    },
+    '/admin/tickets': {
+        multi: true,
+        get: listTicket_1.listTicketSchema,
+    },
 };

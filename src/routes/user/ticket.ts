@@ -39,6 +39,7 @@ router.get('/user/tickets/:id',
 router.get('/user/tickets',
     [
         authMiddleware.validateAccessToken,
+        validateRequest,
         customValidationMiddleware.parseSkipAndLimitAndSortParams,
        
     ],

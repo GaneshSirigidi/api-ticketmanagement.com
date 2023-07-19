@@ -34,6 +34,7 @@ router.get('/agent/tickets/:id',
 router.get('/agent/tickets',
     [
         authMiddleware.validateAccessTokenForAgent,
+        validateRequest,
         customValidationMiddleware.parseSkipAndLimitAndSortParams,
     ],
     ticketController.listTickets,

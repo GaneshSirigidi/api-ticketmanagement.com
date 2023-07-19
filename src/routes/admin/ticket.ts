@@ -26,6 +26,7 @@ const router: Router = Router();
 router.get('/admin/tickets',
     [
         authMiddleware.validateAccessTokenForAdmin,
+        validateRequest,
         customValidationMiddleware.parseSkipAndLimitAndSortParams,
     ],
     ticketController.listTickets
