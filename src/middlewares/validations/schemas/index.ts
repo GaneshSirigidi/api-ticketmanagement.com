@@ -1,6 +1,7 @@
-import { addTicketSchema } from "./tickets/addTicket";
+import { addTicketSchema, updateTicketSchema } from "./tickets/addTicket";
 import { listTicketSchema } from "./tickets/listTicket";
 import { replyTicketSchema } from "./tickets/replyTicket";
+import { updateTicketStatusSchema } from "./tickets/updateStatus";
 import { forgotPasswordRequestSchema } from "./users/forgot-password-request";
 import { resetPasswordSchema } from "./users/reset-password";
 import { signInSchema } from "./users/signin";
@@ -33,6 +34,13 @@ export default {
         multi: true,
         patch: updateProfileSchema
     },
+
+    '/user/tickets/:id':
+    {
+        multi: true,
+        patch:updateTicketSchema
+    },
+
     '/user/forgot-password':
     {
         multi: true,
@@ -93,5 +101,11 @@ export default {
     {
         multi: true,
         post: replyTicketSchema
+    },
+
+    '/admin/tickets/:id':
+    {
+        multi: true,
+        patch: updateTicketStatusSchema
     }
 }

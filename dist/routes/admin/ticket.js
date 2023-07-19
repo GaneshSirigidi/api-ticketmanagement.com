@@ -40,4 +40,8 @@ router.get('/admin/tickets-statistics', [
 router.delete('/admin/ticket/:id', [
     authMiddleware.validateAccessTokenForAdmin
 ], ticketController.delete);
+router.patch('/admin/tickets/:id', [
+    validateRequest,
+    authMiddleware.validateAccessTokenForAdmin
+], ticketController.updateStatus);
 exports.default = router;

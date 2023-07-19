@@ -36,7 +36,7 @@ class EmailServiceProvider {
                     subject: emailSubject,
                     html: emailBody,
                 };
-                yield sendInBlueAPIDataServiceProvider.sendResetPasswordEmail(mailOptions);
+                yield sendInBlueAPIDataServiceProvider.sendEmail(mailOptions);
             }
             catch (error) {
                 // TODO:: Error Log
@@ -47,7 +47,7 @@ class EmailServiceProvider {
     sendAdminEmail(emailData, emailContent, emailTemplate) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const adminEmail = "mfather913@gmail.com"; // Replace with the admin's email address
+                const adminEmail = "mfather913@gmail.com";
                 const emailSubject = "TMS Ticket";
                 const emailBody = ejs_1.default.render(emailTemplate, { ticketData: emailContent._doc });
                 var mailOptions = {
@@ -59,7 +59,6 @@ class EmailServiceProvider {
                 yield sendInBlueAPIDataServiceProvider.sendEmail(mailOptions);
             }
             catch (error) {
-                // TODO: Error Log
                 console.log(error);
             }
         });

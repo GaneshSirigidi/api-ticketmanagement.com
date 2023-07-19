@@ -36,8 +36,8 @@ export class TicketDataServiceProvider {
     return await TicketModel.findOne({ _id: id })
   }
 
-  async updateTicketStatus(ticket, ticketStatus) {
-    return await TicketModel.updateOne({ _id: ticket.id }, { query_status: ticketStatus });
+  async updateTicketStatus(ticketId, ticketStatus) {
+       return await TicketModel.updateOne({ _id: ticketId }, { $set: ticketStatus });
   }
 
   async updateTicket(id, body) {

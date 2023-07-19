@@ -3,7 +3,7 @@ import { stringErrorHandler } from "../../../../helpers/joiHelper";
 import dataFormatConstants from "../../../../constants/dataFormatConstants";
 
 export const signUpSchema = Joi.object().keys({
-    full_name: Joi.string().required().regex(dataFormatConstants.NAME_REGEX).error(errors => stringErrorHandler(errors, 'full_name')),
+    full_name: Joi.string().required().regex(dataFormatConstants.NAME_REGEX).error(errors => stringErrorHandler(errors, 'Full Name')),
     email: Joi.string().email({ tlds: { allow: false } }).required().error(errors => stringErrorHandler(errors, 'Email')),
     password: Joi.string().required().regex(dataFormatConstants.PASSWORD_REGEX).error(errors => stringErrorHandler(errors, 'Password')),
     user_type: Joi.string().valid('USER', 'ADMIN', 'AGENT').error(errors => stringErrorHandler(errors, 'user_type')),

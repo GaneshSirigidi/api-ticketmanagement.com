@@ -42,24 +42,5 @@ class SendInBlueAPIDataServiceProvider {
             }
         });
     }
-    sendResetPasswordEmail(options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const sender = {
-                    email: process.env.SENDER_EMAIL,
-                };
-                const response = yield apiInstance.sendTransacEmail({
-                    sender,
-                    to: [{ email: options.to }],
-                    subject: options.subject,
-                    htmlContent: options.html,
-                });
-            }
-            catch (err) {
-                console.log("err", err);
-                throw err;
-            }
-        });
-    }
 }
 exports.SendInBlueAPIDataServiceProvider = SendInBlueAPIDataServiceProvider;

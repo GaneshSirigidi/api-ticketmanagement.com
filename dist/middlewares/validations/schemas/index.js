@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const addTicket_1 = require("./tickets/addTicket");
 const listTicket_1 = require("./tickets/listTicket");
 const replyTicket_1 = require("./tickets/replyTicket");
+const updateStatus_1 = require("./tickets/updateStatus");
 const forgot_password_request_1 = require("./users/forgot-password-request");
 const reset_password_1 = require("./users/reset-password");
 const signin_1 = require("./users/signin");
@@ -25,6 +26,10 @@ exports.default = {
     '/user/profile': {
         multi: true,
         patch: singup_1.updateProfileSchema
+    },
+    '/user/tickets/:id': {
+        multi: true,
+        patch: addTicket_1.updateTicketSchema
     },
     '/user/forgot-password': {
         multi: true,
@@ -67,5 +72,9 @@ exports.default = {
     '/admin/tickets/:id/reply': {
         multi: true,
         post: replyTicket_1.replyTicketSchema
+    },
+    '/admin/tickets/:id': {
+        multi: true,
+        patch: updateStatus_1.updateTicketStatusSchema
     }
 };

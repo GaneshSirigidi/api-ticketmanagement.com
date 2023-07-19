@@ -23,9 +23,9 @@ export class TicketController {
       const ticketId = await stringGen();
       ticketData.ticket_id = ticketId;
       const responseData = await ticketDataServiceProvider.saveTicket(ticketData);
-           
-      const {emailData,emailContent}= prepareTicketdetailsData(responseData)
-      await emailServiceProvider.sendTicketDetailsEmail(emailData,emailContent)
+
+      const { emailData, emailContent } = prepareTicketdetailsData(responseData)
+      await emailServiceProvider.sendTicketDetailsEmail(emailData, emailContent)
 
       return res.status(200).json({
         success: true,
@@ -82,8 +82,8 @@ export class TicketController {
   public async updateTicket(req: Request, res: Response, next: NextFunction) {
     try {
 
-      const id = req.params.id
-      await ticketDataServiceProvider.updateTicket(id, req.body);
+      const ticketId = req.params.id
+      await ticketDataServiceProvider.updateTicket(ticketId, req.body);
 
       return res.status(200).json({
         success: true,
@@ -98,10 +98,10 @@ export class TicketController {
     try {
 
       const ticketId = req.params.id;
-      if (!ticketId) {
+      if (!ticketId.length) {
         return res.status(400).json({
           success: false,
-          message: "No ticket Id",
+          message: "Ticket not found",
           data: [],
         });
       }
@@ -242,27 +242,43 @@ export class TicketController {
   public async delete(req: Request, res: Response, next: NextFunction) {
     try {
 
-      const id = req.params.id
-      if (!id) {
+      const ticketId = req.params.id
+      if (!ticketId.length) {
         return res.status(400).json({
           success: false,
-          message: "No ticket Id",
+          message: "Ticket not found",
           data: [],
         });
       }
 
-      const deleteData = await ticketDataServiceProvider.delete(id, req.body)
+      const deleteData = await ticketDataServiceProvider.delete(ticketId, req.body)
 
       return res.status(200).json({
         success: true,
         message: "Ticket deleted successfully",
-        deleteData
       });
     }
     catch (error) {
       return next(error);
     }
   }
+
+  public async updateStatus(req:Request, res:Response,next:NextFunction) {
+    try {
+      const ticketId = req.params.id;
+      const ticketStatus = req.body
+      
+      const responseData = await ticketDataServiceProvider.updateTicketStatus(ticketId, ticketStatus)
+      return res.status(200).json({
+        success: true,
+        message: "Ticket status updated successfully",
+      }); 
+    }
+    catch (error) {
+      return next(error);
+    }
+  }
+
 
   //TODO
   public async ticketsStatistics(req: Request, res: Response) {

@@ -50,9 +50,9 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.findOne({ _id: id });
         });
     }
-    updateTicketStatus(ticket, ticketStatus) {
+    updateTicketStatus(ticketId, ticketStatus) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.updateOne({ _id: ticket.id }, { query_status: ticketStatus });
+            return yield ticket_1.TicketModel.updateOne({ _id: ticketId }, { $set: ticketStatus });
         });
     }
     updateTicket(id, body) {

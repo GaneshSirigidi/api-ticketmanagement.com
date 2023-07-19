@@ -58,13 +58,13 @@ router.patch('/profile',
   userController.updateProfile,
 );
 
-router.post('/user/forgot-password',
+router.post('/forgot-password',
   [
     validateRequest,
   ],
   userController.forgotPassword
 )
-router.patch('/user/reset-password',
+router.patch('/reset-password',
   [
     validateRequest,
   ], userController.resetPassword)

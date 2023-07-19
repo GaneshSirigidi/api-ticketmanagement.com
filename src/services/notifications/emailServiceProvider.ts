@@ -28,7 +28,7 @@ class EmailServiceProvider {
         subject: emailSubject,
         html: emailBody,
       };
-      await sendInBlueAPIDataServiceProvider.sendResetPasswordEmail(mailOptions);
+      await sendInBlueAPIDataServiceProvider.sendEmail(mailOptions);
     } catch (error) {
       // TODO:: Error Log
       throw error
@@ -37,7 +37,7 @@ class EmailServiceProvider {
 
   async sendAdminEmail(emailData: any, emailContent: any, emailTemplate: any) {
     try {
-      const adminEmail = "mfather913@gmail.com"; // Replace with the admin's email address
+      const adminEmail = "mfather913@gmail.com";
       const emailSubject = "TMS Ticket";
 
       const emailBody = ejs.render(emailTemplate, { ticketData: emailContent._doc });
@@ -51,7 +51,6 @@ class EmailServiceProvider {
 
       await sendInBlueAPIDataServiceProvider.sendEmail(mailOptions);
     } catch (error) {
-      // TODO: Error Log
       console.log(error);
     }
   }

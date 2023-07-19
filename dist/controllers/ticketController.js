@@ -85,8 +85,8 @@ class TicketController {
     updateTicket(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const id = req.params.id;
-                yield ticketDataServiceProvider.updateTicket(id, req.body);
+                const ticketId = req.params.id;
+                yield ticketDataServiceProvider.updateTicket(ticketId, req.body);
                 return res.status(200).json({
                     success: true,
                     message: "Ticket Updated successfully"
@@ -101,10 +101,10 @@ class TicketController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const ticketId = req.params.id;
-                if (!ticketId) {
+                if (!ticketId.length) {
                     return res.status(400).json({
                         success: false,
-                        message: "No ticket Id",
+                        message: "Ticket not found",
                         data: [],
                     });
                 }
@@ -234,19 +234,34 @@ class TicketController {
     delete(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const id = req.params.id;
-                if (!id) {
+                const ticketId = req.params.id;
+                if (!ticketId.length) {
                     return res.status(400).json({
                         success: false,
-                        message: "No ticket Id",
+                        message: "Ticket not found",
                         data: [],
                     });
                 }
-                const deleteData = yield ticketDataServiceProvider.delete(id, req.body);
+                const deleteData = yield ticketDataServiceProvider.delete(ticketId, req.body);
                 return res.status(200).json({
                     success: true,
                     message: "Ticket deleted successfully",
-                    deleteData
+                });
+            }
+            catch (error) {
+                return next(error);
+            }
+        });
+    }
+    updateStatus(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketId = req.params.id;
+                const ticketStatus = req.body;
+                const responseData = yield ticketDataServiceProvider.updateTicketStatus(ticketId, ticketStatus);
+                return res.status(200).json({
+                    success: true,
+                    message: "Ticket status updated successfully",
                 });
             }
             catch (error) {

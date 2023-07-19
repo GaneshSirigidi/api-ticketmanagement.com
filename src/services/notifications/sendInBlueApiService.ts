@@ -37,23 +37,23 @@ export class SendInBlueAPIDataServiceProvider {
     }
   }
 
-  public async sendResetPasswordEmail(options) {
-    try {
-      const sender = {
-        email: process.env.SENDER_EMAIL,
-      }
-      const response = await apiInstance.sendTransacEmail({
-        sender,
-        to: [{ email: options.to }],
-        subject: options.subject,
-        htmlContent: options.html,
-      })
-    }
-    catch (err) {
+  // public async sendResetPasswordEmail(options) {
+  //   try {
+  //     const sender = {
+  //       email: process.env.SENDER_EMAIL,
+  //     }
+  //     const response = await apiInstance.sendTransacEmail({
+  //       sender,
+  //       to: [{ email: options.to }],
+  //       subject: options.subject,
+  //       htmlContent: options.html,
+  //     })
+  //   }
+  //   catch (err) {
 
-      console.log("err", err)
-      throw err
-    }
-  }
+  //     console.log("err", err)
+  //     throw err
+  //   }
+  // }
 
 }
