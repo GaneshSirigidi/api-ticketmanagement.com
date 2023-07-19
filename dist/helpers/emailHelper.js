@@ -14,7 +14,7 @@ const prepareTicketdetailsData = (ticketData) => {
 exports.prepareTicketdetailsData = prepareTicketdetailsData;
 const baseUrl = process.env.APP_URL;
 const prepareForgotPasswordEmailData = (email, token, subject = "Forgot Password") => {
-    const url = baseUrl + `/forgot-password/verify-email?token=${token}`;
+    const url = baseUrl + `/forget-password/verify-email?token=${token}`;
     const emailData = {
         email: email,
         subject,
