@@ -148,13 +148,43 @@ export class UserController {
         }
     }
 
-    public async listUsersByUserType(req: Request, res: Response, next: NextFunction) {
+    public async listUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const userType = req.query.user_type
-            const { skip, limit, sort } = req.parsedFilterParams || {};
 
+            const { skip, limit, sort } = req.parsedFilterParams || {};
             const query = {
-                user_type: { $eq: userType }
+                user_type: { $eq: 'USER' },
+                status: { $ne: 'INACTIVE' }
+            };
+            const [users, count] = await Promise.all([
+                userDataServiceProvider.getAll({
+                    query, skip, limit, sort
+                }),
+                userDataServiceProvider.countAll({
+                    query
+                })
+            ])
+            const response = paginationHelper.getPaginationResponse({
+                page: req.query.page || 1,
+                count,
+                limit,
+                skip,
+                data: users,
+                message: "Users fetched successfully",
+                searchString: req.query.search_string,
+            });
+            return res.status(200).json(response);
+        }
+        catch (err) {
+            return next(err)
+        }
+    }
+    public async listAgents(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const { skip, limit, sort } = req.parsedFilterParams || {};
+            const query = {
+                user_type: { $eq: 'AGENT' }
             };
 
             const [users, count] = await Promise.all([
@@ -175,6 +205,21 @@ export class UserController {
                 searchString: req.query.search_string,
             });
             return res.status(200).json(response);
+        }
+        catch (err) {
+            return next(err)
+        }
+    }
+    public async updateUserStatus(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const id = req.params.id
+            await userDataServiceProvider.updateUserById(id, req.body);
+
+            return res.status(200).json({
+                success: true,
+                message: "User Status Updated Successfully"
+            });
         }
         catch (err) {
             return next(err)
