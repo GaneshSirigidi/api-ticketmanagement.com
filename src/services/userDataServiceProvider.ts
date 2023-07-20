@@ -65,7 +65,7 @@ export class UserDataServiceProvider {
   }
 
   async delete(userId) {
-    return await UserModel.deleteOne({ _id: userId })
+    return await UserModel.updateOne({ _id: userId }, { $set: { status: "INACTIVE" } });
   }
 
 }

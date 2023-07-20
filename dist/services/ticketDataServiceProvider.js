@@ -88,9 +88,9 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: body });
         });
     }
-    delete(id, body) {
+    delete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: body });
+            return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: { status: "INACTIVE" } });
         });
     }
 }

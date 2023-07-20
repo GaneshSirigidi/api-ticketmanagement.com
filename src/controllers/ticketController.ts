@@ -20,29 +20,70 @@ const s3DataServiceProvider = new S3DataServiceProvider()
 
 export class TicketController {
 
+  // public async addTicket(req: Request, res: Response, next: NextFunction) {
+  //   try {
+
+  //     const ticketData = req.body;
+  //     const ticketId = await stringGen();
+  //     ticketData.ticket_id = ticketId;
+  //     const responseData = await ticketDataServiceProvider.saveTicket(ticketData);
+
+  //     //send email to admin 
+  //     const { emailData, emailContent } = prepareTicketdetailsData(responseData)
+  //     await emailServiceProvider.sendTicketDetailsEmail(emailData, emailContent)
+
+  //     //send email to user
+  //     await emailServiceProvider.sendTicketDetailsEmailToUser(emailData, emailContent)
+
+  //     return res.status(200).json({
+  //       success: true,
+  //       message: "Ticket Created successfully",
+  //       data: responseData,
+  //     });
+  //   }
+  //   catch (err) {
+  //     return next(err)
+  //   }
+  // }
   public async addTicket(req: Request, res: Response, next: NextFunction) {
     try {
-
       const ticketData = req.body;
       const ticketId = await stringGen();
       ticketData.ticket_id = ticketId;
+
+      let fileName = ""; // Initialize the filename variable
+
+      // Check if there is a file in the request
+      console.log("hello", req.file)
+      if (req.file) {
+        console.log("hello", req.file)
+        // Upload the file to S3 and get the file path
+        const fileName = `${uuidv4()}_${req.file}`;
+        const filePath = "Ticket-Proofs"; // Replace with your desired S3 bucket path
+        const uploadResult = await s3DataServiceProvider.upload(fileName, filePath);
+        const fileUrl = uploadResult.Location; // Assuming that the Location property contains the URL of the uploaded file
+
+      }
+      // Save the filename in the ticketData
+      console.log("filename", fileName)
+      ticketData.filename = fileName;
+
       const responseData = await ticketDataServiceProvider.saveTicket(ticketData);
 
       //send email to admin 
-      const { emailData, emailContent } = prepareTicketdetailsData(responseData)
-      await emailServiceProvider.sendTicketDetailsEmail(emailData, emailContent)
+      const { emailData, emailContent } = prepareTicketdetailsData(responseData);
+      await emailServiceProvider.sendTicketDetailsEmail(emailData, emailContent);
 
       //send email to user
-      await emailServiceProvider.sendTicketDetailsEmailToUser(emailData, emailContent)
+      await emailServiceProvider.sendTicketDetailsEmailToUser(emailData, emailContent);
 
       return res.status(200).json({
         success: true,
         message: "Ticket Created successfully",
         data: responseData,
       });
-    }
-    catch (err) {
-      return next(err)
+    } catch (err) {
+      return next(err);
     }
   }
 
@@ -261,7 +302,7 @@ export class TicketController {
         });
       }
 
-      const deleteData = await ticketDataServiceProvider.delete(ticketId, req.body)
+      await ticketDataServiceProvider.delete(ticketId)
 
       return res.status(200).json({
         success: true,

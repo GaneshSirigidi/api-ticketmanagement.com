@@ -29,7 +29,7 @@ router.get('/user/tickets', [
 ], ticketController.listTickets);
 router.post('/user/tickets/:id/reply', [
     validateRequest,
-    authMiddleware.validateAccessTokenForAgent,
+    authMiddleware.validateAccessToken
 ], ticketController.replyTicket);
 router.get('/user/tickets/:id/threads', [
     authMiddleware.validateAccessToken

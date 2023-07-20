@@ -49,7 +49,7 @@ router.get('/user/tickets',
 router.post('/user/tickets/:id/reply',
     [
         validateRequest,
-        authMiddleware.validateAccessTokenForAgent,
+        authMiddleware.validateAccessToken
     ],
     ticketController.replyTicket
 )

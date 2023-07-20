@@ -72,8 +72,9 @@ export class TicketDataServiceProvider {
       { $set: body })
   }
 
-  async delete(id, body) {
-    return await TicketModel.updateOne({ _id: id }, { $set: body })
+  async delete(id) {
+    return await TicketModel.updateOne({ _id: id }, { $set: { status: "INACTIVE" } });
+
   }
 
 
