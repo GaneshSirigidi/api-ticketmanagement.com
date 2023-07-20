@@ -9,10 +9,14 @@ import roleBasedFilterHelper from "../helpers/roleBasedFilterHelper";
 import filterHelper from "../helpers/filterHelper";
 import emailServiceProvider from "../services/notifications/emailServiceProvider";
 import { prepareAssignTicketdetailsData, prepareTicketdetailsData } from "../helpers/emailHelper";
+import { v4 as uuidv4 } from 'uuid';
+
+import { S3DataServiceProvider } from "../services/s3DataServiceProvider";
 
 const threadsDataServiceProvider = new ThreadsDataServiceProvider()
 const userDataServiceProvider = new UserDataServiceProvider()
 const ticketDataServiceProvider = new TicketDataServiceProvider();
+const s3DataServiceProvider = new S3DataServiceProvider()
 
 export class TicketController {
 
@@ -348,6 +352,31 @@ export class TicketController {
     }
     catch (error) {
       return next(error);
+    }
+  }
+  public async updateProof(req: Request, res: Response, next: NextFunction) {
+    try {
+      const fileName = `${uuidv4()}_${req.body.file}`;
+      if (!fileName) {
+        return res.status(400).json({ message: "No file provided" });
+      }
+
+      const proof = await ticketDataServiceProvider.saveProof(req.params.id, fileName)
+      const filePath = "Ticket-Proofs";
+      const uploadUrl = await s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath)
+
+      let data = {
+        "upload_url": uploadUrl,
+      };
+      return res.status(200).json({
+        success: true,
+        message: "Successfully generated pre-signed url",
+        data,
+        proof
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error" });
     }
   }
 

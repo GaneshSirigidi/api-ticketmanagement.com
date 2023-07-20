@@ -1,6 +1,8 @@
+import { addProofSchema } from "./tickets/addProof";
 import { addTicketSchema, updateTicketSchema } from "./tickets/addTicket";
 import { listTicketSchema } from "./tickets/listTicket";
 import { replyTicketSchema } from "./tickets/replyTicket";
+import { updateProofSchema } from "./tickets/updateProof";
 import { updateTicketStatusSchema } from "./tickets/updateStatus";
 import { forgotPasswordRequestSchema } from "./users/forgot-password-request";
 import { resetPasswordSchema } from "./users/reset-password";
@@ -115,5 +117,16 @@ export default {
     {
         multi: true,
         get: listTicketSchema,
+    }
+    ,
+    '/user/ticket/proof':
+    {
+        multi: true,
+        post: addProofSchema,
+    },
+    '/user/ticket/:id/proof':
+    {
+        multi: true,
+        post: updateProofSchema
     }
 }

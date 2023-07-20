@@ -13,6 +13,12 @@ export class TicketDataServiceProvider {
       { $push: { proofs: { file_path: fileName } } })
   }
 
+  async addProof(email, fileName) {
+    return await TicketModel.findOneAndUpdate(
+      { email: email },
+      { $push: { proofs: { file_path: fileName } } })
+  }
+
   public async getTicketById(id) {
     return await TicketModel.findById({ _id: id });
   }

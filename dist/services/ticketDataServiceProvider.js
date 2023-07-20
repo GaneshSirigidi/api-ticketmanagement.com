@@ -22,6 +22,11 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.findByIdAndUpdate({ _id: userId }, { $push: { proofs: { file_path: fileName } } });
         });
     }
+    addProof(email, fileName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield ticket_1.TicketModel.findOneAndUpdate({ email: email }, { $push: { proofs: { file_path: fileName } } });
+        });
+    }
     getTicketById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield ticket_1.TicketModel.findById({ _id: id });

@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const addProof_1 = require("./tickets/addProof");
 const addTicket_1 = require("./tickets/addTicket");
 const listTicket_1 = require("./tickets/listTicket");
 const replyTicket_1 = require("./tickets/replyTicket");
+const updateProof_1 = require("./tickets/updateProof");
 const updateStatus_1 = require("./tickets/updateStatus");
 const forgot_password_request_1 = require("./users/forgot-password-request");
 const reset_password_1 = require("./users/reset-password");
@@ -80,5 +82,13 @@ exports.default = {
     '/admin/agent/:id/tickets': {
         multi: true,
         get: listTicket_1.listTicketSchema,
+    },
+    '/user/ticket/proof': {
+        multi: true,
+        post: addProof_1.addProofSchema,
+    },
+    '/user/ticket/:id/proof': {
+        multi: true,
+        post: updateProof_1.updateProofSchema
     }
 };

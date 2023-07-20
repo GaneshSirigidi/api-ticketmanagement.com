@@ -224,32 +224,6 @@ class UserController {
             }
         });
     }
-    getSignedUrl(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const fileName = `${(0, uuid_1.v4)()}_${req.body.file}`;
-                if (!fileName) {
-                    return res.status(400).json({ message: "No file provided" });
-                }
-                const proof = yield ticketDataServiceProvider.saveProof(req.params.id, fileName);
-                const filePath = "Ticket-Proofs";
-                const uploadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);
-                let data = {
-                    "upload_url": uploadUrl,
-                };
-                return res.status(200).json({
-                    success: true,
-                    message: "Successfully generated pre-signed url",
-                    data,
-                    proof
-                });
-            }
-            catch (err) {
-                console.error(err);
-                return res.status(500).json({ message: "Internal server error" });
-            }
-        });
-    }
     forgotPassword(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -308,6 +282,31 @@ class UserController {
                     message: err.message,
                 };
                 return res.status(err.statusCode || 500).json(respData);
+            }
+        });
+    }
+    addProof(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const fileName = `${(0, uuid_1.v4)()}_${req.body.file}`;
+                if (!fileName) {
+                    return res.status(400).json({ message: "No file provided" });
+                }
+                const proof = yield ticketDataServiceProvider.addProof(req.body.email, fileName);
+                const filePath = "Ticket-Proofs";
+                const uploadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);
+                let data = {
+                    "upload_url": uploadUrl,
+                };
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully generated pre-signed url",
+                    data,
+                });
+            }
+            catch (err) {
+                console.error(err);
+                return res.status(500).json({ message: "Internal server error" });
             }
         });
     }

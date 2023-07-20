@@ -225,31 +225,6 @@ export class UserController {
             return next(err)
         }
     }
-    public async getSignedUrl(req: Request, res: Response, next: NextFunction) {
-        try {
-            const fileName = `${uuidv4()}_${req.body.file}`;
-            if (!fileName) {
-                return res.status(400).json({ message: "No file provided" });
-            }
-
-            const proof = await ticketDataServiceProvider.saveProof(req.params.id, fileName)
-            const filePath = "Ticket-Proofs";
-            const uploadUrl = await s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath)
-
-            let data = {
-                "upload_url": uploadUrl,
-            };
-            return res.status(200).json({
-                success: true,
-                message: "Successfully generated pre-signed url",
-                data,
-                proof
-            });
-        } catch (err) {
-            console.error(err);
-            return res.status(500).json({ message: "Internal server error" });
-        }
-    }
 
     public async forgotPassword(req: Request, res: Response, next: NextFunction) {
         try {
@@ -315,6 +290,29 @@ export class UserController {
                 message: err.message,
             };
             return res.status(err.statusCode || 500).json(respData);
+        }
+    }
+    public async addProof(req: Request, res: Response, next: NextFunction) {
+        try {
+            const fileName = `${uuidv4()}_${req.body.file}`;
+            if (!fileName) {
+                return res.status(400).json({ message: "No file provided" });
+            }
+            const proof = await ticketDataServiceProvider.addProof(req.body.email, fileName)
+            const filePath = "Ticket-Proofs";
+            const uploadUrl = await s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath)
+
+            let data = {
+                "upload_url": uploadUrl,
+            };
+            return res.status(200).json({
+                success: true,
+                message: "Successfully generated pre-signed url",
+                data,
+            });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Internal server error" });
         }
     }
 
