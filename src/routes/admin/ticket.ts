@@ -78,6 +78,12 @@ router.patch('/admin/tickets/:id',
         validateRequest,
         authMiddleware.validateAccessTokenForAdmin
 
-    ],ticketController.updateStatus)
+    ], ticketController.updateStatus)
+    
+router.get('/admin/agent/:id/tickets',
+    [
+        validateRequest,
+        authMiddleware.validateAccessTokenForAdmin
+],ticketController.getAgentTickets)
 
 export default router;

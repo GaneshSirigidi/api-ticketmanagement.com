@@ -34,6 +34,10 @@ export class UserDataServiceProvider {
     return await UserModel.findOne({ email: email })
   }
 
+  async getEmail(id: string) {
+    return await UserModel.findById({ _id: id })
+  }
+
   // async phoneExists(phone) {
   //   return await UserModel.findOne({phone_number:phone})
   // }

@@ -43,7 +43,7 @@ export class TicketController {
 
       const { skip, limit, sort } = req.parsedFilterParams || {};
       let { query = {} } = req.parsedFilterParams || {};
-
+      console.log("query", req.query.query_status)
       query = filterHelper.tickets(query, req.query)
       query = roleBasedFilterHelper.tickets(query, req.user);
 
@@ -263,19 +263,63 @@ export class TicketController {
     }
   }
 
-  public async updateStatus(req:Request, res:Response,next:NextFunction) {
+  public async updateStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const ticketId = req.params.id;
       const ticketStatus = req.body
-      
+
       const responseData = await ticketDataServiceProvider.updateTicketStatus(ticketId, ticketStatus)
       return res.status(200).json({
         success: true,
         message: "Ticket status updated successfully",
-      }); 
+      });
     }
     catch (error) {
       return next(error);
+    }
+  }
+  public async getAgentTickets(req: Request, res: Response, next: NextFunction) {
+    try {
+
+      const { skip, limit, sort } = req.parsedFilterParams || {};
+      let { query = {} } = req.parsedFilterParams || {};
+
+      const id = req.params.id
+      const userData = await userDataServiceProvider.getEmail(id)
+      const email = userData.email
+
+      query.assigned_to = email;
+      query = filterHelper.tickets(query, req.query)
+
+      const [tickets, count] = await Promise.all([
+        ticketDataServiceProvider.getAll({
+          query, skip, limit, sort
+        }),
+        ticketDataServiceProvider.countAll({ query })
+      ])
+
+      if (!tickets.length) {
+        return res.status(400).json({
+          success: false,
+          message: "No tickets found",
+          data: [],
+        });
+      }
+
+      const response = paginationHelper.getPaginationResponse({
+        page: req.query.page || 1,
+        count,
+        limit,
+        skip,
+        data: tickets,
+        message: "Tickets fetched successfully",
+        searchString: req.query.search_string,
+      });
+
+      return res.status(200).json(response);
+    }
+    catch (err) {
+      return next(err)
     }
   }
 

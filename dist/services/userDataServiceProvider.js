@@ -54,6 +54,11 @@ class UserDataServiceProvider {
             return yield user_1.UserModel.findOne({ email: email });
         });
     }
+    getEmail(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield user_1.UserModel.findById({ _id: id });
+        });
+    }
     // async phoneExists(phone) {
     //   return await UserModel.findOne({phone_number:phone})
     // }

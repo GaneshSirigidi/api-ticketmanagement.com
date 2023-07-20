@@ -20,7 +20,6 @@ class FilterHelper {
                 { requester: searchPattern }
             ];
         }
-        query.query_status = { $ne: "ARCHIVE" };
 
         return query;
     }

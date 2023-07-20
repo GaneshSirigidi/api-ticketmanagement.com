@@ -51,6 +51,7 @@ class TicketController {
             try {
                 const { skip, limit, sort } = req.parsedFilterParams || {};
                 let { query = {} } = req.parsedFilterParams || {};
+                console.log("query", req.query.query_status);
                 query = filterHelper_1.default.tickets(query, req.query);
                 query = roleBasedFilterHelper_1.default.tickets(query, req.user);
                 const [tickets, count] = yield Promise.all([
@@ -266,6 +267,45 @@ class TicketController {
             }
             catch (error) {
                 return next(error);
+            }
+        });
+    }
+    getAgentTickets(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { skip, limit, sort } = req.parsedFilterParams || {};
+                let { query = {} } = req.parsedFilterParams || {};
+                const id = req.params.id;
+                const userData = yield userDataServiceProvider.getEmail(id);
+                const email = userData.email;
+                query.assigned_to = email;
+                query = filterHelper_1.default.tickets(query, req.query);
+                const [tickets, count] = yield Promise.all([
+                    ticketDataServiceProvider.getAll({
+                        query, skip, limit, sort
+                    }),
+                    ticketDataServiceProvider.countAll({ query })
+                ]);
+                if (!tickets.length) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "No tickets found",
+                        data: [],
+                    });
+                }
+                const response = paginationHelper_1.default.getPaginationResponse({
+                    page: req.query.page || 1,
+                    count,
+                    limit,
+                    skip,
+                    data: tickets,
+                    message: "Tickets fetched successfully",
+                    searchString: req.query.search_string,
+                });
+                return res.status(200).json(response);
+            }
+            catch (err) {
+                return next(err);
             }
         });
     }
