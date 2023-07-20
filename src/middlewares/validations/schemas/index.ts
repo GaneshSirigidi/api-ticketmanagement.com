@@ -29,7 +29,7 @@ export default {
         post: signInSchema
     },
 
-    '/user/profile':
+    '/profile':
     {
         multi: true,
         patch: updateProfileSchema
@@ -38,7 +38,7 @@ export default {
     '/user/tickets/:id':
     {
         multi: true,
-        patch:updateTicketSchema
+        patch: updateTicketSchema
     },
 
     '/user/forgot-password':
@@ -61,11 +61,7 @@ export default {
         post: signInSchema
     },
 
-    '/agent/profile':
-    {
-        multi: true,
-        patch: updateProfileSchema
-    },
+
 
     '/agent/tickets/:id/reply':
     {
@@ -97,12 +93,6 @@ export default {
         post: agentSignUpSchema
     },
 
-    '/admin/profile':
-    {
-        multi: true,
-        patch: updateProfileSchema
-    },
-
     '/admin/tickets/:id/reply':
     {
         multi: true,
@@ -120,4 +110,10 @@ export default {
         multi: true,
         get: listTicketSchema,
     },
+
+    '/admin/agent/:id/tickets':
+    {
+        multi: true,
+        get: listTicketSchema,
+    }
 }

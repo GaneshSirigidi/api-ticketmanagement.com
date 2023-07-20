@@ -14,13 +14,12 @@ class FilterHelper {
                 filters.search_string.trim().replace(/\s/, "|"),
                 "ig"
             );
-
             query.$or = [
                 { ticket_id: searchPattern },
                 { requester: searchPattern }
             ];
         }
-
+        query.status = { $ne: "INACTIVE" }
         return query;
     }
 

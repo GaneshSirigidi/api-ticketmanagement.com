@@ -23,7 +23,7 @@ exports.default = {
         multi: true,
         post: signin_1.signInSchema
     },
-    '/user/profile': {
+    '/profile': {
         multi: true,
         patch: singup_1.updateProfileSchema
     },
@@ -43,10 +43,6 @@ exports.default = {
     '/agent/signin': {
         multi: true,
         post: signin_1.signInSchema
-    },
-    '/agent/profile': {
-        multi: true,
-        patch: singup_1.updateProfileSchema
     },
     '/agent/tickets/:id/reply': {
         multi: true,
@@ -69,10 +65,6 @@ exports.default = {
         multi: true,
         post: singup_1.agentSignUpSchema
     },
-    '/admin/profile': {
-        multi: true,
-        patch: singup_1.updateProfileSchema
-    },
     '/admin/tickets/:id/reply': {
         multi: true,
         post: replyTicket_1.replyTicketSchema
@@ -85,4 +77,8 @@ exports.default = {
         multi: true,
         get: listTicket_1.listTicketSchema,
     },
+    '/admin/agent/:id/tickets': {
+        multi: true,
+        get: listTicket_1.listTicketSchema,
+    }
 };

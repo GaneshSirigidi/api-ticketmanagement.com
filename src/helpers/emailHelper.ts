@@ -16,7 +16,7 @@ export const prepareTicketdetailsData = (ticketData: any) => {
 
 }
 
-export const prepareAssignTicketdetailsData = (ticketData: any,user:any) => {
+export const prepareAssignTicketdetailsData = (ticketData: any, user: any) => {
 
     const name = ticketData.requester;
     const emailData = {
@@ -40,7 +40,7 @@ export const prepareForgotPasswordEmailData = (
     subject = "Forgot Password"
 ) => {
 
-    const url = baseUrl + `/forget-password/verify-email?token=${token}`;
+    const url = baseUrl + `/forget-password/verify?token=${token}`;
 
     const emailData = {
         email: email,

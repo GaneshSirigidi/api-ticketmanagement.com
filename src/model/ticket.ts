@@ -24,10 +24,15 @@ const ticketSchema = new Schema({
 
   query_status: {
     type: String,
-    enum: ["OPEN", "CLOSED", "ARCHIVE"],
+    enum: ["OPEN", "CLOSED"],
     default: "OPEN",
   },
-
+  status:
+  {
+    type: String,
+    enum: ["ACTIVE", "INACTIVE"],
+    default: "ACTIVE",
+  },
   requirement_brief: {
     type: String
   },

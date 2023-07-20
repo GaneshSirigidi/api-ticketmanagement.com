@@ -12,6 +12,7 @@ class FilterHelper {
                 { requester: searchPattern }
             ];
         }
+        query.status = { $ne: "INACTIVE" };
         return query;
     }
 }

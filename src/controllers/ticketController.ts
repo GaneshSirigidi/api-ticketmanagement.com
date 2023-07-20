@@ -23,13 +23,13 @@ export class TicketController {
       const ticketId = await stringGen();
       ticketData.ticket_id = ticketId;
       const responseData = await ticketDataServiceProvider.saveTicket(ticketData);
-      
+
       //send email to admin 
       const { emailData, emailContent } = prepareTicketdetailsData(responseData)
       await emailServiceProvider.sendTicketDetailsEmail(emailData, emailContent)
 
       //send email to user
-      await emailServiceProvider.sendTicketDetailsEmailToUser(emailData,emailContent) 
+      await emailServiceProvider.sendTicketDetailsEmailToUser(emailData, emailContent)
 
       return res.status(200).json({
         success: true,
@@ -47,7 +47,6 @@ export class TicketController {
 
       const { skip, limit, sort } = req.parsedFilterParams || {};
       let { query = {} } = req.parsedFilterParams || {};
-      console.log("query", req.query.query_status)
       query = filterHelper.tickets(query, req.query)
       query = roleBasedFilterHelper.tickets(query, req.user);
 
@@ -156,8 +155,8 @@ export class TicketController {
       }
 
       await ticketDataServiceProvider.assignTicketById(id, agent);
-    
-      const { emailData, emailContent } = prepareAssignTicketdetailsData(ticektDetails,agent)
+
+      const { emailData, emailContent } = prepareAssignTicketdetailsData(ticektDetails, agent)
       await emailServiceProvider.sendTicketDetailsToAgentEmail(emailData, emailContent)
 
       return res.status(200).json({
@@ -332,14 +331,23 @@ export class TicketController {
 
 
   //TODO
-  public async ticketsStatistics(req: Request, res: Response) {
+  public async ticketsStatistics(req: Request, res: Response, next: NextFunction) {
     try {
 
-      const totalTickets = await ticketDataServiceProvider.countAll({})
-      return totalTickets;
+      const count = await ticketDataServiceProvider.count()
+      return res.status(200).json({
+        success: true,
+        message: "Counts fetched successfully",
+        open_tickets: count.open_tickets,
+        closed_tickets: count.closed_tickets,
+        unassigned_tickets: count.unassigned_tickets,
+        assigned_to_me: count.assigned_to_me,
+        assigned_to_others: count.assigned_to_others
+
+      });
     }
     catch (error) {
-
+      return next(error);
     }
   }
 

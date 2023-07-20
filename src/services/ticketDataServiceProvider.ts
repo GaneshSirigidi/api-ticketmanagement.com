@@ -28,7 +28,23 @@ export class TicketDataServiceProvider {
   async countAll({ query = {} }) {
     return TicketModel.countDocuments(query)
   }
+  async count() {
+    const unassigned_tickets = await TicketModel.countDocuments({ assigned_to: { $exists: false } })
+    const assigned_to_me = await TicketModel.countDocuments({ assigned_to: "admin@gmail.com" })
+    const assigned_to_others = await TicketModel.countDocuments({
+      $and: [{ assigned_to: { $ne: null } }, { assigned_to: { $ne: 'admin@example.com' } }],
+    });
+    const open_tickets = await TicketModel.countDocuments({ query_status: { $eq: "OPEN" } })
+    const closed_tickets = await TicketModel.countDocuments({ query_status: { $eq: "CLOSE" } })
 
+    return {
+      unassigned_tickets,
+      assigned_to_me,
+      assigned_to_others,
+      open_tickets,
+      closed_tickets
+    }
+  }
   async getOne(id) {
     return await TicketModel.findById(id)
   }

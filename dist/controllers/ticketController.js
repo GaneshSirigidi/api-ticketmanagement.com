@@ -54,7 +54,6 @@ class TicketController {
             try {
                 const { skip, limit, sort } = req.parsedFilterParams || {};
                 let { query = {} } = req.parsedFilterParams || {};
-                console.log("query", req.query.query_status);
                 query = filterHelper_1.default.tickets(query, req.query);
                 query = roleBasedFilterHelper_1.default.tickets(query, req.user);
                 const [tickets, count] = yield Promise.all([
@@ -315,13 +314,22 @@ class TicketController {
         });
     }
     //TODO
-    ticketsStatistics(req, res) {
+    ticketsStatistics(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const totalTickets = yield ticketDataServiceProvider.countAll({});
-                return totalTickets;
+                const count = yield ticketDataServiceProvider.count();
+                return res.status(200).json({
+                    success: true,
+                    message: "Counts fetched successfully",
+                    open_tickets: count.open_tickets,
+                    closed_tickets: count.closed_tickets,
+                    unassigned_tickets: count.unassigned_tickets,
+                    assigned_to_me: count.assigned_to_me,
+                    assigned_to_others: count.assigned_to_others
+                });
             }
             catch (error) {
+                return next(error);
             }
         });
     }

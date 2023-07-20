@@ -11,6 +11,7 @@ const listSchema = {
     limit: joi_1.default.number().min(1).max(100).error(joiHelper_1.numberErrorHandler),
     order_by: joi_1.default.string().valid('created_at', 'updated_at', '_id').error(joiHelper_1.stringErrorHandler).default('updated_at'),
     order_type: joi_1.default.string().valid('asc', 'desc').error(joiHelper_1.stringErrorHandler).default('desc'),
-    search_string: joi_1.default.string()
+    search_string: joi_1.default.string(),
+    query_status: joi_1.default.string().valid('CLOSE', 'OPEN').error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'query_status')),
 };
 exports.listTicketSchema = joi_1.default.object().keys(Object.assign({}, listSchema));

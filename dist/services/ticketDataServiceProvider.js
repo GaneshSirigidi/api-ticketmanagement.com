@@ -40,6 +40,24 @@ class TicketDataServiceProvider {
             return ticket_1.TicketModel.countDocuments(query);
         });
     }
+    count() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const unassigned_tickets = yield ticket_1.TicketModel.countDocuments({ assigned_to: { $exists: false } });
+            const assigned_to_me = yield ticket_1.TicketModel.countDocuments({ assigned_to: "admin@gmail.com" });
+            const assigned_to_others = yield ticket_1.TicketModel.countDocuments({
+                $and: [{ assigned_to: { $ne: null } }, { assigned_to: { $ne: 'admin@example.com' } }],
+            });
+            const open_tickets = yield ticket_1.TicketModel.countDocuments({ query_status: { $eq: "OPEN" } });
+            const closed_tickets = yield ticket_1.TicketModel.countDocuments({ query_status: { $eq: "CLOSE" } });
+            return {
+                unassigned_tickets,
+                assigned_to_me,
+                assigned_to_others,
+                open_tickets,
+                closed_tickets
+            };
+        });
+    }
     getOne(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield ticket_1.TicketModel.findById(id);
