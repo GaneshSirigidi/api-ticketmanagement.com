@@ -227,7 +227,7 @@ export class UserController {
     }
     public async getSignedUrl(req: Request, res: Response, next: NextFunction) {
         try {
-            const fileName = `${req.user._id}_${uuidv4()}_${req.body.file}`;
+            const fileName = `${uuidv4()}_${req.body.file}`;
             if (!fileName) {
                 return res.status(400).json({ message: "No file provided" });
             }
