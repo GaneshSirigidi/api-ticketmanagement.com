@@ -19,6 +19,7 @@ const router = (0, express_1.Router)();
 //     ticketController.addTicket)
 router.get('/admin/tickets', [
     authMiddleware.validateAccessTokenForAdmin,
+    validateRequest,
     customValidationMiddleware.parseSkipAndLimitAndSortParams,
 ], ticketController.listTickets);
 router.get('/admin/ticket/:id', [

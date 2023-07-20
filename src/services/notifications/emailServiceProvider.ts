@@ -3,8 +3,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { SendInBlueAPIDataServiceProvider } from "../notifications/sendInBlueApiService";
-import ticketDetails from "../../views/emailTemplates/sendTicketdetails";
+import ticketDetails from "../../views/emailTemplates/sendTicketdetailsToAdmin";
 import forgotPasswordTemplate from "../../views/emailTemplates/forgotPasswordTemplate";
+import ticketDetailsToAgent from "../../views/emailTemplates/sendTicketdetailsToAgent";
+import ticketDetailsToUser from "../../views/emailTemplates/sendTicketdetailsToUser";
 
 
 const sendInBlueAPIDataServiceProvider = new SendInBlueAPIDataServiceProvider();
@@ -19,7 +21,8 @@ class EmailServiceProvider {
     try {
 
       const emailRecipient = emailData.email;
-      const emailSubject = emailData.subject;
+      const emailSubject = "TMS Ticket";
+
       const emailBody = ejs.render(emailTemplate, emailContent);
 
       var mailOptions = {
@@ -58,6 +61,15 @@ class EmailServiceProvider {
   async sendTicketDetailsEmail(emailData: any, emailContent: any) {
     await this.sendAdminEmail(emailData, emailContent, ticketDetails);
   }
+  
+  async sendTicketDetailsEmailToUser(emailData: any, emailContent: any) {
+    await this.sendEmail(emailData, emailContent, ticketDetailsToUser);
+  }
+
+  async sendTicketDetailsToAgentEmail(emailData: any, emailContent: any) {
+    await this.sendEmail(emailData, emailContent, ticketDetailsToAgent);
+  }
+
   async sendForgotPasswordDetailsEmail(emailData: any, emailContent: any) {
     try {
       await this.sendEmail(emailData, emailContent, forgotPasswordTemplate);

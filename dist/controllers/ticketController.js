@@ -33,8 +33,11 @@ class TicketController {
                 const ticketId = yield (0, stringGen_1.stringGen)();
                 ticketData.ticket_id = ticketId;
                 const responseData = yield ticketDataServiceProvider.saveTicket(ticketData);
+                //send email to admin 
                 const { emailData, emailContent } = (0, emailHelper_1.prepareTicketdetailsData)(responseData);
                 yield emailServiceProvider_1.default.sendTicketDetailsEmail(emailData, emailContent);
+                //send email to user
+                yield emailServiceProvider_1.default.sendTicketDetailsEmailToUser(emailData, emailContent);
                 return res.status(200).json({
                     success: true,
                     message: "Ticket Created successfully",
@@ -131,8 +134,8 @@ class TicketController {
     assignTicket(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const assignData = req.body;
-                const emailExists = yield userDataServiceProvider.emailExists(assignData.assigned_to);
+                const agent = req.body;
+                const emailExists = yield userDataServiceProvider.emailExists(agent.assigned_to);
                 if (!emailExists) {
                     return res.status(400).json({
                         success: false,
@@ -141,18 +144,20 @@ class TicketController {
                     });
                 }
                 const id = req.params.id;
-                const ticektExists = yield ticketDataServiceProvider.ticketExists(id);
-                if (!ticektExists) {
+                const ticektDetails = yield ticketDataServiceProvider.ticketExists(id);
+                if (!ticektDetails) {
                     return res.status(400).json({
                         success: false,
                         message: "Ticket not found",
                         data: [],
                     });
                 }
-                yield ticketDataServiceProvider.assignTicketById(id, assignData);
+                yield ticketDataServiceProvider.assignTicketById(id, agent);
+                const { emailData, emailContent } = (0, emailHelper_1.prepareAssignTicketdetailsData)(ticektDetails, agent);
+                yield emailServiceProvider_1.default.sendTicketDetailsToAgentEmail(emailData, emailContent);
                 return res.status(200).json({
                     success: true,
-                    message: `Ticket assigned to ${assignData.assigned_to}`,
+                    message: `Ticket assigned to ${agent.assigned_to}`,
                 });
             }
             catch (error) {

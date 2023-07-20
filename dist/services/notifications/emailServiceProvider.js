@@ -16,8 +16,10 @@ const ejs_1 = __importDefault(require("ejs"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const sendInBlueApiService_1 = require("../notifications/sendInBlueApiService");
-const sendTicketdetails_1 = __importDefault(require("../../views/emailTemplates/sendTicketdetails"));
+const sendTicketdetailsToAdmin_1 = __importDefault(require("../../views/emailTemplates/sendTicketdetailsToAdmin"));
 const forgotPasswordTemplate_1 = __importDefault(require("../../views/emailTemplates/forgotPasswordTemplate"));
+const sendTicketdetailsToAgent_1 = __importDefault(require("../../views/emailTemplates/sendTicketdetailsToAgent"));
+const sendTicketdetailsToUser_1 = __importDefault(require("../../views/emailTemplates/sendTicketdetailsToUser"));
 const sendInBlueAPIDataServiceProvider = new sendInBlueApiService_1.SendInBlueAPIDataServiceProvider();
 class EmailServiceProvider {
     constructor() {
@@ -28,7 +30,7 @@ class EmailServiceProvider {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const emailRecipient = emailData.email;
-                const emailSubject = emailData.subject;
+                const emailSubject = "TMS Ticket";
                 const emailBody = ejs_1.default.render(emailTemplate, emailContent);
                 var mailOptions = {
                     from: process.env.SENDER_EMAIL,
@@ -65,7 +67,17 @@ class EmailServiceProvider {
     }
     sendTicketDetailsEmail(emailData, emailContent) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.sendAdminEmail(emailData, emailContent, sendTicketdetails_1.default);
+            yield this.sendAdminEmail(emailData, emailContent, sendTicketdetailsToAdmin_1.default);
+        });
+    }
+    sendTicketDetailsEmailToUser(emailData, emailContent) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.sendEmail(emailData, emailContent, sendTicketdetailsToUser_1.default);
+        });
+    }
+    sendTicketDetailsToAgentEmail(emailData, emailContent) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.sendEmail(emailData, emailContent, sendTicketdetailsToAgent_1.default);
         });
     }
     sendForgotPasswordDetailsEmail(emailData, emailContent) {

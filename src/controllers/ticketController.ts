@@ -8,7 +8,7 @@ import { ThreadsDataServiceProvider } from "../services/threadsDataServiceProvid
 import roleBasedFilterHelper from "../helpers/roleBasedFilterHelper";
 import filterHelper from "../helpers/filterHelper";
 import emailServiceProvider from "../services/notifications/emailServiceProvider";
-import { prepareTicketdetailsData } from "../helpers/emailHelper";
+import { prepareAssignTicketdetailsData, prepareTicketdetailsData } from "../helpers/emailHelper";
 
 const threadsDataServiceProvider = new ThreadsDataServiceProvider()
 const userDataServiceProvider = new UserDataServiceProvider()
@@ -23,9 +23,13 @@ export class TicketController {
       const ticketId = await stringGen();
       ticketData.ticket_id = ticketId;
       const responseData = await ticketDataServiceProvider.saveTicket(ticketData);
-
+      
+      //send email to admin 
       const { emailData, emailContent } = prepareTicketdetailsData(responseData)
       await emailServiceProvider.sendTicketDetailsEmail(emailData, emailContent)
+
+      //send email to user
+      await emailServiceProvider.sendTicketDetailsEmailToUser(emailData,emailContent) 
 
       return res.status(200).json({
         success: true,
@@ -131,8 +135,8 @@ export class TicketController {
   public async assignTicket(req: Request, res: Response,) {
     try {
 
-      const assignData = req.body;
-      const emailExists = await userDataServiceProvider.emailExists(assignData.assigned_to)
+      const agent = req.body;
+      const emailExists = await userDataServiceProvider.emailExists(agent.assigned_to)
       if (!emailExists) {
         return res.status(400).json({
           success: false,
@@ -142,8 +146,8 @@ export class TicketController {
       }
 
       const id = req.params.id
-      const ticektExists = await ticketDataServiceProvider.ticketExists(id)
-      if (!ticektExists) {
+      const ticektDetails = await ticketDataServiceProvider.ticketExists(id)
+      if (!ticektDetails) {
         return res.status(400).json({
           success: false,
           message: "Ticket not found",
@@ -151,11 +155,14 @@ export class TicketController {
         });
       }
 
-      await ticketDataServiceProvider.assignTicketById(id, assignData);
+      await ticketDataServiceProvider.assignTicketById(id, agent);
+    
+      const { emailData, emailContent } = prepareAssignTicketdetailsData(ticektDetails,agent)
+      await emailServiceProvider.sendTicketDetailsToAgentEmail(emailData, emailContent)
 
       return res.status(200).json({
         success: true,
-        message: `Ticket assigned to ${assignData.assigned_to}`,
+        message: `Ticket assigned to ${agent.assigned_to}`,
       });
 
     } catch (error) {

@@ -14,7 +14,7 @@ export default {
     {
         multi: true,
         post: addTicketSchema,
-        get: listTicketSchema
+        get: listTicketSchema,
     },
 
     '/user/signup':
@@ -73,6 +73,12 @@ export default {
         post: replyTicketSchema
     },
 
+    '/agent/tickets':
+    {
+        multi: true,
+        get: listTicketSchema,
+    },
+
     //Admin
     '/admin/signup':
     {
@@ -107,5 +113,11 @@ export default {
     {
         multi: true,
         patch: updateTicketStatusSchema
-    }
+    },
+
+    '/admin/tickets':
+    {
+        multi: true,
+        get: listTicketSchema,
+    },
 }

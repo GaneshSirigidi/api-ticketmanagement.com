@@ -15,6 +15,23 @@ export const prepareTicketdetailsData = (ticketData: any) => {
     return { emailData, emailContent }
 
 }
+
+export const prepareAssignTicketdetailsData = (ticketData: any,user:any) => {
+
+    const name = ticketData.requester;
+    const emailData = {
+        email: user.assigned_to,
+        subject: ticketData.subject,
+        name
+    };
+    const emailContent = {
+        name,
+        ...ticketData
+    }
+    return { emailData, emailContent }
+
+}
+
 const baseUrl = process.env.APP_URL
 
 export const prepareForgotPasswordEmailData = (
