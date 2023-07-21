@@ -22,9 +22,15 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.findByIdAndUpdate({ _id: userId }, { $push: { proofs: { file_path: fileName } } });
         });
     }
-    addProof(email, fileName) {
+    addProof(ticketId, fileName) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.findOneAndUpdate({ email: email }, { $push: { proofs: { file_path: fileName } } });
+            const result = yield ticket_1.TicketModel.findOneAndUpdate({ ticket_id: ticketId }, { $push: { proofs: { file_path: fileName } } }, { new: true });
+            return result.proofs;
+        });
+    }
+    findTicket(ticketId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield ticket_1.TicketModel.findOne({ ticket_id: ticketId });
         });
     }
     getTicketById(id) {
@@ -90,7 +96,7 @@ class TicketDataServiceProvider {
     }
     delete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: { status: "INACTIVE" } });
+            return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: { status: "ARCHIVE" } });
         });
     }
 }

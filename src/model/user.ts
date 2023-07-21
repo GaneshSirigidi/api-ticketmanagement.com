@@ -22,7 +22,7 @@ const userSchema = new Schema({
     status:
     {
         type: String,
-        enum: ['ACTIVE', 'INACTIVE'],
+        enum: ['ACTIVE', 'INACTIVE', 'ARCHIVE'],
         default: "ACTIVE",
     },
     user_type: {
@@ -30,7 +30,7 @@ const userSchema = new Schema({
         enum: ['USER', 'ADMIN', 'AGENT'],
         default: 'USER'
     },
- 
+
 }, {
     timestamps: {
         'createdAt': 'created_at',

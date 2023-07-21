@@ -67,21 +67,5 @@ class S3DataServiceProvider {
             return yield this.s3Service.getSignedUrl(method, params);
         });
     }
-    upload(file, slug) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const bucket = process.env.AWS_S3_BUCKET;
-            let key = "";
-            if (slug) {
-                key += `${slug}/`;
-            }
-            key += file.originalname;
-            const params = {
-                Bucket: bucket,
-                Key: key,
-                Body: file.buffer,
-            };
-            return yield this.s3Service.upload(params).promise();
-        });
-    }
 }
 exports.S3DataServiceProvider = S3DataServiceProvider;

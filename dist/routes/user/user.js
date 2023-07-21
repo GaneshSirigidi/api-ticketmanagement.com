@@ -44,8 +44,4 @@ router.post('/forgot-password', [
 router.patch('/reset-password', [
     validateRequest,
 ], userController.resetPassword);
-router.post('/user/ticket/proof', [
-    authMiddleware.validateAccessToken,
-    validateRequest
-], userController.addProof);
 exports.default = router;

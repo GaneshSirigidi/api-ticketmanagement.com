@@ -19,7 +19,7 @@ class FilterHelper {
                 { requester: searchPattern }
             ];
         }
-        query.status = { $ne: "INACTIVE" }
+        query.status = { $ne: "ARCHIVE" }
         return query;
     }
 

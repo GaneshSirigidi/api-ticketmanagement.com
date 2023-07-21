@@ -29,49 +29,23 @@ const userDataServiceProvider = new userDataServiceProvider_1.UserDataServicePro
 const ticketDataServiceProvider = new ticketDataServiceProvider_1.TicketDataServiceProvider();
 const s3DataServiceProvider = new s3DataServiceProvider_1.S3DataServiceProvider();
 class TicketController {
-    // public async addTicket(req: Request, res: Response, next: NextFunction) {
-    //   try {
-    //     const ticketData = req.body;
-    //     const ticketId = await stringGen();
-    //     ticketData.ticket_id = ticketId;
-    //     const responseData = await ticketDataServiceProvider.saveTicket(ticketData);
-    //     //send email to admin 
-    //     const { emailData, emailContent } = prepareTicketdetailsData(responseData)
-    //     await emailServiceProvider.sendTicketDetailsEmail(emailData, emailContent)
-    //     //send email to user
-    //     await emailServiceProvider.sendTicketDetailsEmailToUser(emailData, emailContent)
-    //     return res.status(200).json({
-    //       success: true,
-    //       message: "Ticket Created successfully",
-    //       data: responseData,
-    //     });
-    //   }
-    //   catch (err) {
-    //     return next(err)
-    //   }
-    // }
     addTicket(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const ticketData = req.body;
                 const ticketId = yield (0, stringGen_1.stringGen)();
                 ticketData.ticket_id = ticketId;
-                let fileName = ""; // Initialize the filename variable
-                // Check if there is a file in the request
-                console.log("hello", req.file);
-                if (req.file) {
-                    console.log("hello", req.file);
-                    // Upload the file to S3 and get the file path
-                    const fileName = `${(0, uuid_1.v4)()}_${req.file}`;
-                    const filePath = "Ticket-Proofs"; // Replace with your desired S3 bucket path
-                    const uploadResult = yield s3DataServiceProvider.upload(fileName, filePath);
-                    const fileUrl = uploadResult.Location; // Assuming that the Location property contains the URL of the uploaded file
-                }
-                // Save the filename in the ticketData
-                console.log("filename", fileName);
-                ticketData.filename = fileName;
                 const responseData = yield ticketDataServiceProvider.saveTicket(ticketData);
-                //send email to admin 
+                const fileName = `${(0, uuid_1.v4)()}_${req.body.file}`;
+                if (!fileName) {
+                    return res.status(400).json({ message: "No file provided" });
+                }
+                yield ticketDataServiceProvider.findTicket(ticketId);
+                const proof = yield ticketDataServiceProvider.addProof(ticketId, fileName);
+                responseData.proofs = proof;
+                const filePath = "Ticket-Proofs";
+                const uploadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);
+                // send email to admin 
                 const { emailData, emailContent } = (0, emailHelper_1.prepareTicketdetailsData)(responseData);
                 yield emailServiceProvider_1.default.sendTicketDetailsEmail(emailData, emailContent);
                 //send email to user
@@ -80,6 +54,7 @@ class TicketController {
                     success: true,
                     message: "Ticket Created successfully",
                     data: responseData,
+                    uploadUrl: uploadUrl
                 });
             }
             catch (err) {

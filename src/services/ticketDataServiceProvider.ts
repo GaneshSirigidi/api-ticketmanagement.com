@@ -13,10 +13,18 @@ export class TicketDataServiceProvider {
       { $push: { proofs: { file_path: fileName } } })
   }
 
-  async addProof(email, fileName) {
-    return await TicketModel.findOneAndUpdate(
-      { email: email },
-      { $push: { proofs: { file_path: fileName } } })
+  async addProof(ticketId, fileName) {
+
+    const result = await TicketModel.findOneAndUpdate(
+      { ticket_id: ticketId },
+      { $push: { proofs: { file_path: fileName } } },
+      { new: true }
+    );
+    return result.proofs
+
+  }
+  async findTicket(ticketId) {
+    return await TicketModel.findOne({ ticket_id: ticketId })
   }
 
   public async getTicketById(id) {
@@ -73,7 +81,7 @@ export class TicketDataServiceProvider {
   }
 
   async delete(id) {
-    return await TicketModel.updateOne({ _id: id }, { $set: { status: "INACTIVE" } });
+    return await TicketModel.updateOne({ _id: id }, { $set: { status: "ARCHIVE" } });
 
   }
 

@@ -24,10 +24,13 @@ const ticketSchema = new mongoose_1.Schema({
     },
     status: {
         type: String,
-        enum: ["ACTIVE", "INACTIVE"],
+        enum: ["ACTIVE", "INACTIVE", "ARCHIVE"],
         default: "ACTIVE",
     },
     requirement_brief: {
+        type: String
+    },
+    file: {
         type: String
     },
     proofs: [

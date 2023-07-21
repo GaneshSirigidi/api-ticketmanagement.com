@@ -13,6 +13,8 @@ exports.addTicketSchema = joi_1.default.object().keys({
     query_status: joi_1.default.string().valid('OPEN', 'CLOSE').error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'Query status')),
     subject: joi_1.default.string().required().error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'Subject')),
     requirement_brief: joi_1.default.string().required().error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'Requirement Brief')),
+    file: joi_1.default.string().error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'Requirement Brief')),
+    proofs: joi_1.default.string().error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'proof'))
 });
 exports.updateTicketSchema = joi_1.default.object().keys({
     id: joi_1.default.string(),

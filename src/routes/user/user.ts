@@ -71,12 +71,6 @@ router.patch('/reset-password',
 
 
 
-router.post('/user/ticket/proof',
-  [
-    authMiddleware.validateAccessToken,
-    validateRequest
-
-  ], userController.addProof)
 
 
 

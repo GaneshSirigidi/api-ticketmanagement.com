@@ -17,7 +17,7 @@ const userSchema = new mongoose_1.Schema({
     },
     status: {
         type: String,
-        enum: ['ACTIVE', 'INACTIVE'],
+        enum: ['ACTIVE', 'INACTIVE', 'ARCHIVE'],
         default: "ACTIVE",
     },
     user_type: {

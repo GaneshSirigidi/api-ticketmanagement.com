@@ -40,21 +40,4 @@ export class S3DataServiceProvider {
         return await this.s3Service.getSignedUrl(method, params);
     }
 
-    async upload(file, slug)
-    {
-        const bucket = process.env.AWS_S3_BUCKET;
-        let key = "";
-        if (slug) {
-            key += `${slug}/`;
-        }
-        key += file.originalname;
-
-        const params = {
-            Bucket: bucket,
-            Key: key,
-            Body: file.buffer,
-        };
-
-        return await this.s3Service.upload(params).promise();
-    }
 }

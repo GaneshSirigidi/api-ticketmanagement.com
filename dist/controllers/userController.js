@@ -18,7 +18,6 @@ const authHelper_1 = require("../helpers/authHelper");
 const paginationHelper_1 = __importDefault(require("../helpers/paginationHelper"));
 const ticketDataServiceProvider_1 = require("../services/ticketDataServiceProvider");
 const s3DataServiceProvider_1 = require("../services/s3DataServiceProvider");
-const uuid_1 = require("uuid");
 const emailServiceProvider_1 = __importDefault(require("../services/notifications/emailServiceProvider"));
 const emailHelper_1 = require("../helpers/emailHelper");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -152,7 +151,7 @@ class UserController {
                 const { skip, limit, sort } = req.parsedFilterParams || {};
                 const query = {
                     user_type: { $eq: 'USER' },
-                    status: { $ne: 'INACTIVE' }
+                    status: { $ne: 'ARCHIVE' }
                 };
                 const [users, count] = yield Promise.all([
                     userDataServiceProvider.getAll({
@@ -282,31 +281,6 @@ class UserController {
                     message: err.message,
                 };
                 return res.status(err.statusCode || 500).json(respData);
-            }
-        });
-    }
-    addProof(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const fileName = `${(0, uuid_1.v4)()}_${req.body.file}`;
-                if (!fileName) {
-                    return res.status(400).json({ message: "No file provided" });
-                }
-                const proof = yield ticketDataServiceProvider.addProof(req.body.email, fileName);
-                const filePath = "Ticket-Proofs";
-                const uploadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);
-                let data = {
-                    "upload_url": uploadUrl,
-                };
-                return res.status(200).json({
-                    success: true,
-                    message: "Successfully generated pre-signed url",
-                    data,
-                });
-            }
-            catch (err) {
-                console.error(err);
-                return res.status(500).json({ message: "Internal server error" });
             }
         });
     }

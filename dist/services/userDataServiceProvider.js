@@ -88,7 +88,7 @@ class UserDataServiceProvider {
     }
     delete(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield user_1.UserModel.updateOne({ _id: userId }, { $set: { status: "INACTIVE" } });
+            return yield user_1.UserModel.updateOne({ _id: userId }, { $set: { status: "ARCHIVE" } });
         });
     }
 }
