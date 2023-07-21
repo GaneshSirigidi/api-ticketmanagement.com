@@ -18,7 +18,13 @@ const threadSchema = new mongoose_1.Schema({
     },
     ticket_status: {
         type: String
-    }
+    },
+    proofs: [
+        {
+            file_path: { type: String },
+            uploaded_at: { type: Date, default: Date.now },
+        }
+    ],
 }, {
     timestamps: {
         'createdAt': 'created_at',

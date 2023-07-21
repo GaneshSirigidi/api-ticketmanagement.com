@@ -31,6 +31,10 @@ router.post('/user/tickets/:id/reply', [
     validateRequest,
     authMiddleware.validateAccessToken
 ], ticketController.replyTicket);
+router.post('/user/tickets/:id/reply-proof', [
+    validateRequest,
+    authMiddleware.validateAccessToken
+], ticketController.replyTicketWithImage);
 router.get('/user/tickets/:id/threads', [
     authMiddleware.validateAccessToken
 ], ticketController.getThreads);
@@ -38,4 +42,8 @@ router.post('/user/ticket/:id/proof', [
     authMiddleware.validateAccessToken,
     validateRequest
 ], ticketController.updateProof);
+router.post('/user/ticket/:id/download', [
+    authMiddleware.validateAccessToken,
+    validateRequest
+], ticketController.downloadProof);
 exports.default = router;

@@ -36,7 +36,8 @@ const ticketSchema = new mongoose_1.Schema({
     proofs: [
         {
             file_path: { type: String },
-            uploaded_at: { type: Date, default: Date.now }
+            uploaded_at: { type: Date, default: Date.now },
+            uploaded_by: { type: String }
         }
     ],
     subject: {

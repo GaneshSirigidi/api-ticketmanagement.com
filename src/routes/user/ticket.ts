@@ -53,6 +53,14 @@ router.post('/user/tickets/:id/reply',
     ],
     ticketController.replyTicket
 )
+router.post('/user/tickets/:id/reply-proof',
+    [
+        validateRequest,
+        authMiddleware.validateAccessToken
+    ],
+    ticketController.replyTicketWithImage
+)
+
 
 router.get('/user/tickets/:id/threads',
     [
@@ -67,5 +75,15 @@ router.post('/user/ticket/:id/proof',
         validateRequest
 
     ], ticketController.updateProof)
+
+router.post('/user/ticket/:id/download',
+
+    [
+        authMiddleware.validateAccessToken,
+        validateRequest
+
+    ], ticketController.downloadProof)
+
+
 
 export default router;

@@ -13,6 +13,7 @@ export class UserDataServiceProvider {
   async userById(userId) {
     return await UserModel.findById({ _id: userId })
   }
+
   async userByEmail(email) {
     return await UserModel.findOne({ email })
   }

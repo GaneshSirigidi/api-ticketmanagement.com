@@ -10,6 +10,7 @@ import filterHelper from "../helpers/filterHelper";
 import emailServiceProvider from "../services/notifications/emailServiceProvider";
 import { prepareAssignTicketdetailsData, prepareTicketdetailsData } from "../helpers/emailHelper";
 import { v4 as uuidv4 } from 'uuid';
+import jwt from 'jsonwebtoken'
 
 import { S3DataServiceProvider } from "../services/s3DataServiceProvider";
 
@@ -225,6 +226,41 @@ export class TicketController {
     }
   }
 
+  async replyTicketWithImage(req: Request, res: Response, next: NextFunction) {
+    try {
+      const ticketId = req.params.id;
+      const ticket = await ticketDataServiceProvider.getTicketById(ticketId);
+
+      if (!ticket) {
+        return res.status(400).json({
+          success: false,
+          message: "Ticket not found",
+        });
+      }
+
+      const fileName = `${uuidv4()}_${req.body.file}`;
+      if (!fileName) {
+        return res.status(400).json({ message: "No file provided" });
+      }
+
+      const threadData = await threadsDataServiceProvider.replyTicketWithProof(fileName, req.user, ticketId, req.body);
+
+      const filePath = "Ticket-Proofs";
+      const uploadUrl = await s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);
+
+
+      return res.status(200).json({
+        success: true,
+        message: "Reply posted successfully",
+        data: threadData,
+        uploadUrl
+      });
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+
   public async getThreads(req: Request, res: Response) {
     try {
       const ticketId = req.params.id
@@ -375,19 +411,46 @@ export class TicketController {
       if (!fileName) {
         return res.status(400).json({ message: "No file provided" });
       }
-
-      const proof = await ticketDataServiceProvider.saveProof(req.params.id, fileName)
+      const accessToken = req.headers.authorization;
+      const userDetails = jwt.decode(accessToken);
+      const userType = userDetails.user_type
+      await ticketDataServiceProvider.saveProof(req.params.id, fileName, userType)
       const filePath = "Ticket-Proofs";
       const uploadUrl = await s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath)
 
       let data = {
         "upload_url": uploadUrl,
-      };
+      }
       return res.status(200).json({
         success: true,
         message: "Successfully generated pre-signed url",
         data,
-        proof
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  public async downloadProof(req: Request, res: Response, next: NextFunction) {
+    try {
+
+      const ticketData = await ticketDataServiceProvider.getTicketById(req.params.id)
+      const filePath = "Ticket-Proofs"
+      const downloadUrls = [];
+
+      // Loop through each proof file path in the ticketData.proofs array
+      for (const proof of ticketData.proofs) {
+        const fileName = proof.file_path;
+        // Generate the download URL for each proof file and add it to the downloadUrls array
+        const downloadUrl = await s3DataServiceProvider.getPreSignedUrl(fileName, 'get', filePath)
+        downloadUrls.push(downloadUrl);
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Successfully generated pre-signed URLs",
+        data: downloadUrls,
       });
     } catch (err) {
       console.error(err);

@@ -31,7 +31,7 @@ const ticketSchema = new Schema({
   status:
   {
     type: String,
-    enum: ["ACTIVE", "INACTIVE","ARCHIVE"],
+    enum: ["ACTIVE", "INACTIVE", "ARCHIVE"],
     default: "ACTIVE",
   },
   requirement_brief: {
@@ -43,7 +43,8 @@ const ticketSchema = new Schema({
   proofs: [
     {
       file_path: { type: String },
-      uploaded_at: { type: Date, default: Date.now }
+      uploaded_at: { type: Date, default: Date.now },
+      uploaded_by: { type: String }
     }
   ],
   subject:

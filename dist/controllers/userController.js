@@ -66,6 +66,7 @@ class UserController {
     getProfile(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("in proflie");
                 let userDetails = yield userDataServiceProvider.userById(req.user._id);
                 const profile = {
                     full_name: userDetails.full_name,

@@ -24,7 +24,7 @@ export class S3DataServiceProvider {
         if (slug) {
             key += `${slug}/`;
         }
-
+      
         key += fileName;
         const params = {
             Bucket: bucket,
@@ -39,5 +39,6 @@ export class S3DataServiceProvider {
         const method = type === "put" ? "putObject" : "getObject";
         return await this.s3Service.getSignedUrl(method, params);
     }
+   
 
 }

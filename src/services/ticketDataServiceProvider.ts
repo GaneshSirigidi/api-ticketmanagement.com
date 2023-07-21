@@ -7,10 +7,11 @@ export class TicketDataServiceProvider {
   public async saveTicket(queryData) {
     return await TicketModel.create(queryData)
   }
-  async saveProof(userId, fileName) {
+  async saveProof(userId, fileName, userType) {
+
     return await TicketModel.findByIdAndUpdate(
       { _id: userId },
-      { $push: { proofs: { file_path: fileName } } })
+      { $push: { proofs: { file_path: fileName, uploaded_by: userType } } })
   }
 
   async addProof(ticketId, fileName) {

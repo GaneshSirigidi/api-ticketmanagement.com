@@ -63,6 +63,7 @@ export class UserController {
     public async getProfile(req: Request, res: Response) {
         try {
 
+            console.log("in proflie")
             let userDetails: any = await userDataServiceProvider.userById(req.user._id);
 
             const profile = {

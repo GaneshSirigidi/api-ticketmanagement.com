@@ -17,9 +17,9 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.create(queryData);
         });
     }
-    saveProof(userId, fileName) {
+    saveProof(userId, fileName, userType) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ticket_1.TicketModel.findByIdAndUpdate({ _id: userId }, { $push: { proofs: { file_path: fileName } } });
+            return yield ticket_1.TicketModel.findByIdAndUpdate({ _id: userId }, { $push: { proofs: { file_path: fileName, uploaded_by: userType } } });
         });
     }
     addProof(ticketId, fileName) {

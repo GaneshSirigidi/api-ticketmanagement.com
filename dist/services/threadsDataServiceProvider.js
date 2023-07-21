@@ -17,6 +17,22 @@ class ThreadsDataServiceProvider {
             return yield thread_1.ThreadModel.create(replyData);
         });
     }
+    replyTicketWithProof(fileName, user, ticket_id, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const newReply = {
+                file_path: fileName,
+                uploaded_by: user.user_type,
+            };
+            const threadReply = yield thread_1.ThreadModel.create({
+                ticket_id: ticket_id,
+                reporter_by: user.full_name,
+                reporter_type: user.user_type,
+                message: body.message,
+                proofs: [newReply],
+            });
+            return threadReply;
+        });
+    }
     getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
         return __awaiter(this, void 0, void 0, function* () {
             if (lean) {

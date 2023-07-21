@@ -23,6 +23,7 @@ const filterHelper_1 = __importDefault(require("../helpers/filterHelper"));
 const emailServiceProvider_1 = __importDefault(require("../services/notifications/emailServiceProvider"));
 const emailHelper_1 = require("../helpers/emailHelper");
 const uuid_1 = require("uuid");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const s3DataServiceProvider_1 = require("../services/s3DataServiceProvider");
 const threadsDataServiceProvider = new threadsDataServiceProvider_1.ThreadsDataServiceProvider();
 const userDataServiceProvider = new userDataServiceProvider_1.UserDataServiceProvider();
@@ -213,6 +214,36 @@ class TicketController {
             }
         });
     }
+    replyTicketWithImage(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketId = req.params.id;
+                const ticket = yield ticketDataServiceProvider.getTicketById(ticketId);
+                if (!ticket) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Ticket not found",
+                    });
+                }
+                const fileName = `${(0, uuid_1.v4)()}_${req.body.file}`;
+                if (!fileName) {
+                    return res.status(400).json({ message: "No file provided" });
+                }
+                const threadData = yield threadsDataServiceProvider.replyTicketWithProof(fileName, req.user, ticketId, req.body);
+                const filePath = "Ticket-Proofs";
+                const uploadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);
+                return res.status(200).json({
+                    success: true,
+                    message: "Reply posted successfully",
+                    data: threadData,
+                    uploadUrl
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
     getThreads(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -353,7 +384,10 @@ class TicketController {
                 if (!fileName) {
                     return res.status(400).json({ message: "No file provided" });
                 }
-                const proof = yield ticketDataServiceProvider.saveProof(req.params.id, fileName);
+                const accessToken = req.headers.authorization;
+                const userDetails = jsonwebtoken_1.default.decode(accessToken);
+                const userType = userDetails.user_type;
+                yield ticketDataServiceProvider.saveProof(req.params.id, fileName, userType);
                 const filePath = "Ticket-Proofs";
                 const uploadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);
                 let data = {
@@ -363,7 +397,31 @@ class TicketController {
                     success: true,
                     message: "Successfully generated pre-signed url",
                     data,
-                    proof
+                });
+            }
+            catch (err) {
+                console.error(err);
+                return res.status(500).json({ message: "Internal server error" });
+            }
+        });
+    }
+    downloadProof(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketData = yield ticketDataServiceProvider.getTicketById(req.params.id);
+                const filePath = "Ticket-Proofs";
+                const downloadUrls = [];
+                // Loop through each proof file path in the ticketData.proofs array
+                for (const proof of ticketData.proofs) {
+                    const fileName = proof.file_path;
+                    // Generate the download URL for each proof file and add it to the downloadUrls array
+                    const downloadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'get', filePath);
+                    downloadUrls.push(downloadUrl);
+                }
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully generated pre-signed URLs",
+                    data: downloadUrls,
                 });
             }
             catch (err) {
