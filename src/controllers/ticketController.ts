@@ -243,7 +243,18 @@ export class TicketController {
         return res.status(400).json({ message: "No file provided" });
       }
 
-      const threadData = await threadsDataServiceProvider.replyTicketWithProof(fileName, req.user, ticketId, req.body);
+      const proof = {
+        filePath: fileName,
+      }
+      const replyData =
+      {
+        ticket_id: ticketId,
+        reporter_by: req.user.full_name,
+        reporter_type: req.user.user_type,
+        message: req.body.message,
+        proofs: [proof]
+      }
+      const threadData = await threadsDataServiceProvider.replyTicketWithProof(replyData);
 
       const filePath = "Ticket-Proofs";
       const uploadUrl = await s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);

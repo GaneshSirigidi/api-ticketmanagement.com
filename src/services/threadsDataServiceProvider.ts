@@ -6,20 +6,8 @@ export class ThreadsDataServiceProvider {
     return await ThreadModel.create(replyData)
   }
 
-  async replyTicketWithProof(fileName, user, ticket_id, body) {
-
-    const newReply = {
-      file_path: fileName,
-      uploaded_by: user.user_type,
-    };
-
-    const threadReply = await ThreadModel.create({
-      ticket_id: ticket_id,
-      reporter_by: user.full_name,
-      reporter_type: user.user_type,
-      message: body.message,
-      proofs: [newReply],
-    });
+  async replyTicketWithProof(replyData) {
+    const threadReply = await ThreadModel.create(replyData);
     return threadReply;
   }
 

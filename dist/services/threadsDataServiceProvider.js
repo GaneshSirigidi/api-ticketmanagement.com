@@ -17,19 +17,9 @@ class ThreadsDataServiceProvider {
             return yield thread_1.ThreadModel.create(replyData);
         });
     }
-    replyTicketWithProof(fileName, user, ticket_id, body) {
+    replyTicketWithProof(replyData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newReply = {
-                file_path: fileName,
-                uploaded_by: user.user_type,
-            };
-            const threadReply = yield thread_1.ThreadModel.create({
-                ticket_id: ticket_id,
-                reporter_by: user.full_name,
-                reporter_type: user.user_type,
-                message: body.message,
-                proofs: [newReply],
-            });
+            const threadReply = yield thread_1.ThreadModel.create(replyData);
             return threadReply;
         });
     }
