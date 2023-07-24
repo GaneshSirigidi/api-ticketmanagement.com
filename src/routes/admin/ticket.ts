@@ -32,6 +32,7 @@ router.get('/admin/tickets',
     ticketController.listTickets
 )
 
+
 router.get('/admin/ticket/:id',
     [
         authMiddleware.validateAccessTokenForAdmin
@@ -80,7 +81,7 @@ router.patch('/admin/tickets/:id',
         authMiddleware.validateAccessTokenForAdmin
 
     ], ticketController.updateStatus)
-    
+
 router.get('/admin/agent/:id/tickets',
     [
         validateRequest,
@@ -94,5 +95,14 @@ router.post('/admin/ticket/:id/download',
         validateRequest
 
     ], ticketController.downloadProof)
+
+router.post('/admin/tickets/:id/reply-proof',
+    [
+        authMiddleware.validateAccessTokenForAdmin,
+        validateRequest,
+    ],
+    ticketController.replyTicketWithImage
+)
+
 
 export default router;

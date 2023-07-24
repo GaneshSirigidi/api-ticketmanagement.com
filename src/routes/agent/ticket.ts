@@ -54,4 +54,14 @@ router.post('/agent/ticket/:id/download',
         validateRequest
 
     ], ticketController.downloadProof)
+
+router.post('/agent/tickets/:id/reply-proof',
+    [
+        authMiddleware.validateAccessTokenForAgent,
+        validateRequest,
+    ],
+    ticketController.replyTicketWithImage
+)
+
+
 export default router;

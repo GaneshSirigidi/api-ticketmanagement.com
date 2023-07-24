@@ -420,7 +420,10 @@ export class TicketController {
     try {
       const fileName = `${uuidv4()}_${req.body.file}`;
       if (!fileName) {
-        return res.status(400).json({ message: "No file provided" });
+        return res.status(400).json({
+          success: "false",
+          message: "No file provided"
+        });
       }
       const accessToken = req.headers.authorization;
       const userDetails = jwt.decode(accessToken);
@@ -439,7 +442,10 @@ export class TicketController {
       });
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({
+        success: "false",
+        message: "Internal server error"
+      });
     }
   }
 
@@ -447,6 +453,14 @@ export class TicketController {
     try {
 
       const ticketData = await ticketDataServiceProvider.getTicketById(req.params.id)
+      if (!ticketData) {
+        return res.status(400).json({
+          success: "false",
+          message: "Ticket Not Found"
+        });
+
+      }
+      console.log("ticket", ticketData)
       const filePath = "Ticket-Proofs"
       const downloadUrls = [];
 
@@ -465,11 +479,38 @@ export class TicketController {
       });
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({
+        sucess: "fasle",
+        message: "Internal server error"
+      });
     }
   }
 
 
+  public async deleteProof(req: Request, res: Response, next: NextFunction) {
+    try {
 
+      const ticketData = await ticketDataServiceProvider.getTicketById(req.params.id)
+      if (!ticketData) {
+        return res.status(400).json({
+          success: "false",
+          message: "Ticket Not Found"
+        });
+      }
+      const proofId = req.body.id
+
+      await ticketDataServiceProvider.deleteProof(req.params.id, proofId)
+      return res.status(200).json({
+        success: true,
+        message: "Successfully deleted",
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        sucess: "fasle",
+        message: "Internal server error"
+      });
+    }
+  }
 
 }

@@ -84,6 +84,13 @@ router.post('/user/ticket/:id/download',
 
     ], ticketController.downloadProof)
 
+router.delete('/user/ticket/:id/proof',
+    [
+        authMiddleware.validateAccessToken,
+        validateRequest
+    ], ticketController.deleteProof)
+
+
 
 
 export default router;

@@ -5,6 +5,7 @@ import { replyTicketSchema } from "./tickets/replyTicket";
 import { updateProofSchema } from "./tickets/updateProof";
 import { updateTicketStatusSchema } from "./tickets/updateStatus";
 import { forgotPasswordRequestSchema } from "./users/forgot-password-request";
+import { listUsersSchema } from "./users/listUsers";
 import { resetPasswordSchema } from "./users/reset-password";
 import { signInSchema } from "./users/signin";
 import { agentSignUpSchema, signUpSchema, updateProfileSchema } from "./users/singup";
@@ -94,6 +95,18 @@ export default {
         multi: true,
         post: agentSignUpSchema
     },
+
+    '/admin/agents': {
+        multi: true,
+        post: listUsersSchema
+    },
+
+    '/admin/users': {
+        multi: true,
+        post: listUsersSchema
+    },
+
+
 
     '/admin/tickets/:id/reply':
     {

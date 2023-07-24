@@ -7,6 +7,7 @@ const replyTicket_1 = require("./tickets/replyTicket");
 const updateProof_1 = require("./tickets/updateProof");
 const updateStatus_1 = require("./tickets/updateStatus");
 const forgot_password_request_1 = require("./users/forgot-password-request");
+const listUsers_1 = require("./users/listUsers");
 const reset_password_1 = require("./users/reset-password");
 const signin_1 = require("./users/signin");
 const singup_1 = require("./users/singup");
@@ -66,6 +67,14 @@ exports.default = {
     '/admin/agent': {
         multi: true,
         post: singup_1.agentSignUpSchema
+    },
+    '/admin/agents': {
+        multi: true,
+        post: listUsers_1.listUsersSchema
+    },
+    '/admin/users': {
+        multi: true,
+        post: listUsers_1.listUsersSchema
     },
     '/admin/tickets/:id/reply': {
         multi: true,

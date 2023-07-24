@@ -53,4 +53,8 @@ router.post('/admin/ticket/:id/download', [
     authMiddleware.validateAccessTokenForAdmin,
     validateRequest
 ], ticketController.downloadProof);
+router.post('/admin/tickets/:id/reply-proof', [
+    authMiddleware.validateAccessTokenForAdmin,
+    validateRequest,
+], ticketController.replyTicketWithImage);
 exports.default = router;

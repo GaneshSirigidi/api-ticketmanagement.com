@@ -392,7 +392,10 @@ class TicketController {
             try {
                 const fileName = `${(0, uuid_1.v4)()}_${req.body.file}`;
                 if (!fileName) {
-                    return res.status(400).json({ message: "No file provided" });
+                    return res.status(400).json({
+                        success: "false",
+                        message: "No file provided"
+                    });
                 }
                 const accessToken = req.headers.authorization;
                 const userDetails = jsonwebtoken_1.default.decode(accessToken);
@@ -411,7 +414,10 @@ class TicketController {
             }
             catch (err) {
                 console.error(err);
-                return res.status(500).json({ message: "Internal server error" });
+                return res.status(500).json({
+                    success: "false",
+                    message: "Internal server error"
+                });
             }
         });
     }
@@ -419,6 +425,13 @@ class TicketController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const ticketData = yield ticketDataServiceProvider.getTicketById(req.params.id);
+                if (!ticketData) {
+                    return res.status(400).json({
+                        success: "false",
+                        message: "Ticket Not Found"
+                    });
+                }
+                console.log("ticket", ticketData);
                 const filePath = "Ticket-Proofs";
                 const downloadUrls = [];
                 // Loop through each proof file path in the ticketData.proofs array
@@ -436,7 +449,36 @@ class TicketController {
             }
             catch (err) {
                 console.error(err);
-                return res.status(500).json({ message: "Internal server error" });
+                return res.status(500).json({
+                    sucess: "fasle",
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    deleteProof(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketData = yield ticketDataServiceProvider.getTicketById(req.params.id);
+                if (!ticketData) {
+                    return res.status(400).json({
+                        success: "false",
+                        message: "Ticket Not Found"
+                    });
+                }
+                const proofId = req.body.id;
+                yield ticketDataServiceProvider.deleteProof(req.params.id, proofId);
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully deleted",
+                });
+            }
+            catch (err) {
+                console.error(err);
+                return res.status(500).json({
+                    sucess: "fasle",
+                    message: "Internal server error"
+                });
             }
         });
     }

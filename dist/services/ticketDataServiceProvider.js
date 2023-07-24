@@ -28,6 +28,11 @@ class TicketDataServiceProvider {
             return result.proofs;
         });
     }
+    deleteProof(ticket_id, proof_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield ticket_1.TicketModel.updateOne({ _id: ticket_id }, { $pull: { proofs: { _id: proof_id } } });
+        });
+    }
     findTicket(ticketId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield ticket_1.TicketModel.findOne({ ticket_id: ticketId });

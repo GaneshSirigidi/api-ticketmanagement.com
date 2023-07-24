@@ -24,6 +24,12 @@ export class TicketDataServiceProvider {
     return result.proofs
 
   }
+
+  async deleteProof(ticket_id, proof_id) {
+    return await TicketModel.updateOne(
+      { _id: ticket_id },
+      { $pull: { proofs: { _id: proof_id } } })
+  }
   async findTicket(ticketId) {
     return await TicketModel.findOne({ ticket_id: ticketId })
   }

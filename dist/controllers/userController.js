@@ -154,6 +154,15 @@ class UserController {
                     user_type: { $eq: 'USER' },
                     status: { $ne: 'ARCHIVE' }
                 };
+                const searchString = req.query.search_string;
+                if (searchString) {
+                    query.$or =
+                        [
+                            { full_name: { $regex: searchString, $options: "i" } },
+                            { phone_number: { $regex: searchString, $options: "i" } },
+                            { email: { $regex: searchString, $options: "i" } },
+                        ];
+                }
                 const [users, count] = yield Promise.all([
                     userDataServiceProvider.getAll({
                         query, skip, limit, sort
@@ -185,6 +194,15 @@ class UserController {
                 const query = {
                     user_type: { $eq: 'AGENT' }
                 };
+                const searchString = req.query.search_string;
+                if (searchString) {
+                    query.$or =
+                        [
+                            { full_name: { $regex: searchString, $options: "i" } },
+                            { phone_number: { $regex: searchString, $options: "i" } },
+                            { email: { $regex: searchString, $options: "i" } },
+                        ];
+                }
                 const [users, count] = yield Promise.all([
                     userDataServiceProvider.getAll({
                         query, skip, limit, sort

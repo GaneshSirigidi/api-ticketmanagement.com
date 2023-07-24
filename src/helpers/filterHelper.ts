@@ -8,7 +8,6 @@ class FilterHelper {
         if (filters.query_status) {
             query.query_status = filters.query_status;
         }
-
         if (filters.search_string && filters.search_string.trim()) {
             const searchPattern = new RegExp(
                 filters.search_string.trim().replace(/\s/, "|"),

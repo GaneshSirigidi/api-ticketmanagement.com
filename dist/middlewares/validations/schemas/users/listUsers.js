@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listTicketSchema = void 0;
+exports.listUsersSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const joiHelper_1 = require("../../../../helpers/joiHelper");
 const listSchema = {
@@ -14,4 +14,4 @@ const listSchema = {
     query_status: joi_1.default.string().valid('CLOSE', 'OPEN').error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'query_status')),
     search_string: joi_1.default.string(),
 };
-exports.listTicketSchema = joi_1.default.object().keys(Object.assign({}, listSchema));
+exports.listUsersSchema = joi_1.default.object().keys(Object.assign({}, listSchema));

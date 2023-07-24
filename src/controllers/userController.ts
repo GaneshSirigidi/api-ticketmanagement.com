@@ -153,10 +153,20 @@ export class UserController {
         try {
 
             const { skip, limit, sort } = req.parsedFilterParams || {};
-            const query = {
+            const query: any = {
                 user_type: { $eq: 'USER' },
                 status: { $ne: 'ARCHIVE' }
             };
+
+            const searchString = req.query.search_string
+            if (searchString) {
+                query.$or =
+                    [
+                        { full_name: { $regex: searchString, $options: "i" } },
+                        { phone_number: { $regex: searchString, $options: "i" } },
+                        { email: { $regex: searchString, $options: "i" } },
+                    ]
+            }
             const [users, count] = await Promise.all([
                 userDataServiceProvider.getAll({
                     query, skip, limit, sort
@@ -184,9 +194,19 @@ export class UserController {
         try {
 
             const { skip, limit, sort } = req.parsedFilterParams || {};
-            const query = {
+            const query: any = {
                 user_type: { $eq: 'AGENT' }
             };
+
+            const searchString = req.query.search_string
+            if (searchString) {
+                query.$or =
+                    [
+                        { full_name: { $regex: searchString, $options: "i" } },
+                        { phone_number: { $regex: searchString, $options: "i" } },
+                        { email: { $regex: searchString, $options: "i" } },
+                    ]
+            }
 
             const [users, count] = await Promise.all([
                 userDataServiceProvider.getAll({
