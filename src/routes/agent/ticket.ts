@@ -50,7 +50,7 @@ router.post('/agent/tickets/:id/reply',
 router.post('/agent/ticket/:id/download',
 
     [
-        authMiddleware.validateAccessTokenForAdmin,
+        authMiddleware.validateAccessTokenForAgent,
         validateRequest
 
     ], ticketController.downloadProof)

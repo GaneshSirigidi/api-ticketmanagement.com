@@ -31,7 +31,7 @@ router.post('/agent/tickets/:id/reply', [
     authMiddleware.validateAccessTokenForAgent,
 ], ticketController.replyTicket);
 router.post('/agent/ticket/:id/download', [
-    authMiddleware.validateAccessTokenForAdmin,
+    authMiddleware.validateAccessTokenForAgent,
     validateRequest
 ], ticketController.downloadProof);
 exports.default = router;
