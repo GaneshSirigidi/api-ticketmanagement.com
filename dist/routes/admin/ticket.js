@@ -49,4 +49,8 @@ router.get('/admin/agent/:id/tickets', [
     validateRequest,
     authMiddleware.validateAccessTokenForAdmin
 ], ticketController.getAgentTickets);
+router.post('/admin/ticket/:id/download', [
+    authMiddleware.validateAccessTokenForAdmin,
+    validateRequest
+], ticketController.downloadProof);
 exports.default = router;
