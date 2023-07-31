@@ -10,7 +10,15 @@ export class ThreadsDataServiceProvider {
     const threadReply = await ThreadModel.create(replyData);
     return threadReply;
   }
+  public async getTicketById(id) {
+    return await ThreadModel.findById({ _id: id });
+  }
+  async saveProof(userId, fileName, userType) {
 
+    return await ThreadModel.findByIdAndUpdate(
+      { _id: userId },
+      { $push: { proofs: { file_path: fileName, uploaded_by: userType } } })
+  }
 
   async getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
     if (lean) {

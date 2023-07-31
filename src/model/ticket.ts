@@ -63,7 +63,6 @@ const ticketSchema = new Schema({
   unassigned_count: {
     type: Number
   }
-
 }, {
   timestamps: {
     'createdAt': 'created_at',

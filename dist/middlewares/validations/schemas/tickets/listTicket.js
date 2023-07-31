@@ -13,5 +13,6 @@ const listSchema = {
     order_type: joi_1.default.string().valid('asc', 'desc').error(joiHelper_1.stringErrorHandler).default('desc'),
     query_status: joi_1.default.string().valid('CLOSE', 'OPEN').error(errors => (0, joiHelper_1.stringErrorHandler)(errors, 'query_status')),
     search_string: joi_1.default.string(),
+    assign_to: joi_1.default.string()
 };
 exports.listTicketSchema = joi_1.default.object().keys(Object.assign({}, listSchema));

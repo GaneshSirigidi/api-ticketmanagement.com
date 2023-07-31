@@ -42,10 +42,18 @@ router.post('/user/ticket/:id/proof', [
     authMiddleware.validateAccessToken,
     validateRequest
 ], ticketController.updateProof);
+router.post('/user/thread/:id/proof', [
+    authMiddleware.validateAccessToken,
+    validateRequest
+], ticketController.updateProofInThreads);
 router.post('/user/ticket/:id/download', [
     authMiddleware.validateAccessToken,
     validateRequest
 ], ticketController.downloadProof);
+router.post('/user/threads/:id/download', [
+    authMiddleware.validateAccessToken,
+    validateRequest
+], ticketController.downloadProofInThreads);
 router.delete('/user/ticket/:id/proof', [
     authMiddleware.validateAccessToken,
     validateRequest

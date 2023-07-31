@@ -23,6 +23,16 @@ class ThreadsDataServiceProvider {
             return threadReply;
         });
     }
+    getTicketById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield thread_1.ThreadModel.findById({ _id: id });
+        });
+    }
+    saveProof(userId, fileName, userType) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield thread_1.ThreadModel.findByIdAndUpdate({ _id: userId }, { $push: { proofs: { file_path: fileName, uploaded_by: userType } } });
+        });
+    }
     getAll({ query = {}, skip = null, limit = null, sort = {}, projection = {}, lean = false }) {
         return __awaiter(this, void 0, void 0, function* () {
             if (lean) {

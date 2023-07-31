@@ -69,7 +69,7 @@ class TicketController {
                 const { skip, limit, sort } = req.parsedFilterParams || {};
                 let { query = {} } = req.parsedFilterParams || {};
                 query = filterHelper_1.default.tickets(query, req.query);
-                query = roleBasedFilterHelper_1.default.tickets(query, req.user);
+                query = roleBasedFilterHelper_1.default.tickets(query, req.user, req.query);
                 const [tickets, count] = yield Promise.all([
                     ticketDataServiceProvider.getAll({
                         query, skip, limit, sort
@@ -431,7 +431,6 @@ class TicketController {
                         message: "Ticket Not Found"
                     });
                 }
-                console.log("ticket", ticketData);
                 const filePath = "Ticket-Proofs";
                 const downloadUrls = [];
                 // Loop through each proof file path in the ticketData.proofs array
@@ -477,6 +476,74 @@ class TicketController {
                 console.error(err);
                 return res.status(500).json({
                     sucess: "fasle",
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    downloadProofInThreads(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketData = yield threadsDataServiceProvider.getTicketById(req.params.id);
+                if (!ticketData) {
+                    return res.status(400).json({
+                        success: "false",
+                        message: "Ticket Not Found"
+                    });
+                }
+                const filePath = "Ticket-Proofs";
+                const downloadUrls = [];
+                // Loop through each proof file path in the ticketData.proofs array
+                for (const proof of ticketData.proofs) {
+                    const fileName = proof.file_path;
+                    // Generate the download URL for each proof file and add it to the downloadUrls array
+                    const downloadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'get', filePath);
+                    downloadUrls.push(downloadUrl);
+                }
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully generated pre-signed URLs",
+                    data: downloadUrls,
+                });
+            }
+            catch (err) {
+                console.error(err);
+                return res.status(500).json({
+                    sucess: "fasle",
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    updateProofInThreads(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const fileName = `${(0, uuid_1.v4)()}_${req.body.file}`;
+                if (!fileName) {
+                    return res.status(400).json({
+                        success: "false",
+                        message: "No file provided"
+                    });
+                }
+                const accessToken = req.headers.authorization;
+                const userDetails = jsonwebtoken_1.default.decode(accessToken);
+                const userType = userDetails.user_type;
+                yield threadsDataServiceProvider.saveProof(req.params.id, fileName, userType);
+                const filePath = "Ticket-Proofs";
+                const uploadUrl = yield s3DataServiceProvider.getPreSignedUrl(fileName, 'put', filePath);
+                let data = {
+                    "upload_url": uploadUrl,
+                };
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully generated pre-signed url",
+                    data,
+                });
+            }
+            catch (err) {
+                console.error(err);
+                return res.status(500).json({
+                    success: "false",
                     message: "Internal server error"
                 });
             }

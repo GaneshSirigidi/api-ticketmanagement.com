@@ -76,6 +76,13 @@ router.post('/user/ticket/:id/proof',
 
     ], ticketController.updateProof)
 
+router.post('/user/thread/:id/proof',
+    [
+        authMiddleware.validateAccessToken,
+        validateRequest
+
+    ], ticketController.updateProofInThreads)
+
 router.post('/user/ticket/:id/download',
 
     [
@@ -83,6 +90,13 @@ router.post('/user/ticket/:id/download',
         validateRequest
 
     ], ticketController.downloadProof)
+
+router.post('/user/threads/:id/download',
+    [
+        authMiddleware.validateAccessToken,
+        validateRequest
+
+    ], ticketController.downloadProofInThreads)
 
 router.delete('/user/ticket/:id/proof',
     [

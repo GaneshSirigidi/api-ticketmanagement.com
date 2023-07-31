@@ -1,3 +1,4 @@
+import { Query } from "mongoose";
 
 
 class FilterHelper {
@@ -18,6 +19,7 @@ class FilterHelper {
                 { requester: searchPattern }
             ];
         }
+    
         query.status = { $ne: "ARCHIVE" }
         return query;
     }
