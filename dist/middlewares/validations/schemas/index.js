@@ -55,6 +55,10 @@ exports.default = {
         multi: true,
         get: listTicket_1.listTicketSchema,
     },
+    '/agent/tickets/:id/main-reply': {
+        multi: true,
+        post: replyTicket_1.replyTicketSchema,
+    },
     //Admin
     '/admin/signup': {
         multi: true,

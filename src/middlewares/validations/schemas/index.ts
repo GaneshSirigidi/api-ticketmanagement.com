@@ -78,6 +78,11 @@ export default {
         get: listTicketSchema,
     },
 
+    '/agent/tickets/:id/main-reply': {
+        multi: true,
+        post: replyTicketSchema,
+    },
+
     //Admin
     '/admin/signup':
     {

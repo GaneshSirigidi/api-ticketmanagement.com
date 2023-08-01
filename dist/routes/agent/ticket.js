@@ -38,4 +38,8 @@ router.post('/agent/tickets/:id/reply-proof', [
     authMiddleware.validateAccessTokenForAgent,
     validateRequest,
 ], ticketController.replyTicketWithImage);
+router.post('/agent/tickets/:id/main-reply', [
+    authMiddleware.validateAccessTokenForAgent,
+    validateRequest,
+], ticketController.mainReply);
 exports.default = router;
