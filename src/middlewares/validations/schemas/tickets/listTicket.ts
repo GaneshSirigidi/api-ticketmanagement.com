@@ -6,7 +6,7 @@ const listSchema = {
     limit: Joi.number().min(1).max(100).error(numberErrorHandler),
     order_by: Joi.string().valid('created_at', 'updated_at', '_id').error(stringErrorHandler).default('updated_at'),
     order_type: Joi.string().valid('asc', 'desc').error(stringErrorHandler).default('desc'),
-    query_status: Joi.string().valid('CLOSE', 'OPEN').error(errors => stringErrorHandler(errors, 'query_status')),
+    query_status: Joi.string().valid('CLOSE', 'OPEN','ARCHIVE').error(errors => stringErrorHandler(errors, 'Query Status')),
     search_string: Joi.string(),
     assign_to: Joi.string()
 }

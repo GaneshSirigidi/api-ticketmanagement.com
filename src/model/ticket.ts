@@ -28,15 +28,15 @@ const ticketSchema = new Schema({
 
   query_status: {
     type: String,
-    enum: ["OPEN", "CLOSE"],
+    enum: ["OPEN", "CLOSE","ARCHIVE"],
     default: "OPEN",
   },
-  status:
-  {
-    type: String,
-    enum: ["ACTIVE", "INACTIVE", "ARCHIVE"],
-    default: "ACTIVE",
-  },
+  // status:
+  // {
+  //   type: String,
+  //   enum: ["ACTIVE", "INACTIVE", "ARCHIVE"],
+  //   default: "ACTIVE",
+  // },
   requirement_brief: {
     type: String,
     default:null
@@ -60,31 +60,25 @@ const ticketSchema = new Schema({
 
   assigned_to: {
     type: String,
-    default:null
   },
 
   assigned_count: {
     type: Number,
-    default:null
   },
 
   unassigned_count: {
     type: Number,
-    default:null
   },
 
   reply: {
     reporter_by: {
       type: String,
-      default:null
     },
     reporter_type: {
       type: String,
-      default:null
     },
     message: {
       type: String,
-      default:null
     }
 
   }

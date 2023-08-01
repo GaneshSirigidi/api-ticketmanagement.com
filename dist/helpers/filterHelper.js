@@ -12,7 +12,12 @@ class FilterHelper {
                 { requester: searchPattern }
             ];
         }
-        query.status = { $ne: "ARCHIVE" };
+        if (query.query_status) {
+            query.query_status = query.query_status;
+        }
+        else {
+            query.query_status = { $ne: 'ARCHIVE' };
+        }
         return query;
     }
 }

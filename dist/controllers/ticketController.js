@@ -402,19 +402,19 @@ class TicketController {
             }
         });
     }
-    //TODO
     ticketsStatistics(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const count = yield ticketDataServiceProvider.count();
                 return res.status(200).json({
                     success: true,
-                    message: "Counts fetched successfully",
+                    message: "Statistics fetched successfully",
                     open_tickets: count.open_tickets,
                     closed_tickets: count.closed_tickets,
                     unassigned_tickets: count.unassigned_tickets,
                     assigned_to_me: count.assigned_to_me,
-                    assigned_to_others: count.assigned_to_others
+                    assigned_to_others: count.assigned_to_others,
+                    total_tickets: count.total_tickets
                 });
             }
             catch (error) {
