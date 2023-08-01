@@ -144,6 +144,36 @@ class TicketController {
             }
         });
     }
+    getThread(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ticketId = req.params.id;
+                if (!ticketId.length) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Ticket not found",
+                        data: [],
+                    });
+                }
+                const ticketData = yield threadsDataServiceProvider.getTicketById(ticketId);
+                if (ticketData === null) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Ticket details not found",
+                        data: [],
+                    });
+                }
+                return res.status(200).json({
+                    success: true,
+                    message: "Ticket details fetched successfully",
+                    data: ticketData,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    }
     assignTicket(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -230,7 +260,7 @@ class TicketController {
                     return res.status(400).json({ message: "No file provided" });
                 }
                 const proof = {
-                    filePath: fileName,
+                    file_path: fileName,
                 };
                 const replyData = {
                     ticket_id: ticketId,

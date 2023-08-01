@@ -150,7 +150,39 @@ export class TicketController {
       return next(err);
     }
   }
+  public async getThread(req: Request, res: Response, next: NextFunction) {
+    try {
 
+      const ticketId = req.params.id;
+      if (!ticketId.length) {
+        return res.status(400).json({
+          success: false,
+          message: "Ticket not found",
+          data: [],
+        });
+      }
+      const ticketData = await threadsDataServiceProvider.getTicketById(ticketId);
+
+      if (ticketData === null) {
+        return res.status(400).json({
+          success: false,
+          message: "Ticket details not found",
+          data: [],
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Ticket details fetched successfully",
+        data: ticketData,
+      });
+
+    }
+    catch (err) {
+
+      return next(err);
+    }
+  }
   public async assignTicket(req: Request, res: Response,) {
     try {
 
@@ -244,7 +276,7 @@ export class TicketController {
       }
 
       const proof = {
-        filePath: fileName,
+        file_path: fileName,
       }
       const replyData =
       {

@@ -39,6 +39,12 @@ router.get('/admin/ticket/:id',
     ],
     ticketController.getOne
 )
+router.get('/admin/threads/:id',
+    [
+        authMiddleware.validateAccessToken
+    ],
+    ticketController.getThread
+)
 
 router.patch('/admin/tickets/:id/assigned-to',
     [
