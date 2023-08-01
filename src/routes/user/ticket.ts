@@ -69,6 +69,13 @@ router.get('/user/tickets/:id/threads',
     ticketController.getThreads
 )
 
+router.get('/user/threads/:id',
+    [
+        authMiddleware.validateAccessToken
+    ],
+    ticketController.getThread
+)
+
 router.post('/user/ticket/:id/proof',
     [
         authMiddleware.validateAccessToken,
