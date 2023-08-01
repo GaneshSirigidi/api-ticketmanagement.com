@@ -78,6 +78,11 @@ export default {
         get: listTicketSchema,
     },
 
+    '/agent/tickets/:id/main-reply': {
+        multi: true,
+        post: replyTicketSchema,
+    },
+
     //Admin
     '/admin/signup':
     {
@@ -130,8 +135,14 @@ export default {
     {
         multi: true,
         get: listTicketSchema,
-    }
-    ,
+    },
+
+    '/admin/tickets/:id/main-reply': {
+        multi: true,
+        post: replyTicketSchema,
+    },
+
+
     '/user/ticket/proof':
     {
         multi: true,
@@ -141,5 +152,7 @@ export default {
     {
         multi: true,
         post: updateProofSchema
-    }
+    },
+
+
 }

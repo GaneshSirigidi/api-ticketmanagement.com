@@ -110,5 +110,12 @@ router.post('/admin/tickets/:id/reply-proof',
     ticketController.replyTicketWithImage
 )
 
+router.post('/admin/tickets/:id/main-reply',
+    [
+        authMiddleware.validateAccessTokenForAdmin,
+        validateRequest,
+    ],
+    ticketController.mainReply
+)
 
 export default router;

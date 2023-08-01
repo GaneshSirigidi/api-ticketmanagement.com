@@ -92,5 +92,9 @@ export class TicketDataServiceProvider {
 
   }
 
+  async replyTicket(ticketId,replyData) {
+    return await TicketModel.updateOne({ _id: ticketId }, { $set: { reply: replyData } })
+  }
+
 
 }

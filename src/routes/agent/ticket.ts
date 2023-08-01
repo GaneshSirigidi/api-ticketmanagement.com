@@ -63,5 +63,13 @@ router.post('/agent/tickets/:id/reply-proof',
     ticketController.replyTicketWithImage
 )
 
+router.post('/agent/tickets/:id/main-reply',
+    [
+        authMiddleware.validateAccessTokenForAgent,
+        validateRequest,
+    ],
+    ticketController.mainReply
+)
+
 
 export default router;

@@ -4,22 +4,25 @@ exports.TicketModel = void 0;
 const mongoose_1 = require("mongoose");
 const ticketSchema = new mongoose_1.Schema({
     ticket_id: {
-        type: String
+        type: String,
+        default: null
     },
     requester: {
         type: String,
+        default: null
     },
     email: {
         type: String,
-        lowercase: true
+        lowercase: true,
+        default: null
     },
     priority: {
         type: String,
-        enum: ["HIGH", "MEDIUM", "LOW"]
+        enum: ["HIGH", "MEDIUM", "LOW"],
     },
     query_status: {
         type: String,
-        enum: ["OPEN", "CLOSED"],
+        enum: ["OPEN", "CLOSE"],
         default: "OPEN",
     },
     status: {
@@ -28,10 +31,12 @@ const ticketSchema = new mongoose_1.Schema({
         default: "ACTIVE",
     },
     requirement_brief: {
-        type: String
+        type: String,
+        default: null
     },
     file: {
-        type: String
+        type: String,
+        default: null
     },
     proofs: [
         {
@@ -41,16 +46,34 @@ const ticketSchema = new mongoose_1.Schema({
         }
     ],
     subject: {
-        type: String
+        type: String,
+        default: null
     },
     assigned_to: {
-        type: String
+        type: String,
+        default: null
     },
     assigned_count: {
-        type: Number
+        type: Number,
+        default: null
     },
     unassigned_count: {
-        type: Number
+        type: Number,
+        default: null
+    },
+    reply: {
+        reporter_by: {
+            type: String,
+            default: null
+        },
+        reporter_type: {
+            type: String,
+            default: null
+        },
+        message: {
+            type: String,
+            default: null
+        }
     }
 }, {
     timestamps: {

@@ -258,6 +258,43 @@ export class TicketController {
     }
   }
 
+  public async mainReply(req: Request, res: Response, next: NextFunction) {
+    try {
+      const reqData = req.body
+      const ticketId = req.params.id;
+      const ticket = await ticketDataServiceProvider.getTicketById(ticketId);
+     
+      if (!ticket) {
+        return res.status(400).json({
+          success: false,
+          message: "Ticket not found",
+        });
+      }
+
+      if (ticket && ticket.query_status === 'CLOSE') {
+        return res.status(400).json({
+          success: false,
+          message: "Query status should be in Open",
+        });
+      }
+
+      const replyData = {
+        reporter_by: req.user.full_name,
+        reporter_type: req.user.user_type,
+        message: reqData.message,
+      };
+      ticket.reply=replyData
+      await ticketDataServiceProvider.replyTicket(ticketId,replyData);
+
+      return res.status(200).json({
+        success: true,
+        message: "Reply posted successfully",
+      });
+    } catch (err) {
+      return next(err);
+    }
+  }
+
   async replyTicketWithImage(req: Request, res: Response, next: NextFunction) {
     try {
       const ticketId = req.params.id;

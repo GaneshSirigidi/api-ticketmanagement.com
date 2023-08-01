@@ -60,4 +60,8 @@ router.post('/admin/tickets/:id/reply-proof', [
     authMiddleware.validateAccessTokenForAdmin,
     validateRequest,
 ], ticketController.replyTicketWithImage);
+router.post('/admin/tickets/:id/main-reply', [
+    authMiddleware.validateAccessTokenForAdmin,
+    validateRequest,
+], ticketController.mainReply);
 exports.default = router;
