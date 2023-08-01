@@ -130,8 +130,14 @@ export default {
     {
         multi: true,
         get: listTicketSchema,
-    }
-    ,
+    },
+
+    '/admin/tickets/:id/main-reply': {
+        multi: true,
+        post: replyTicketSchema,
+    },
+
+
     '/user/ticket/proof':
     {
         multi: true,
@@ -141,5 +147,7 @@ export default {
     {
         multi: true,
         post: updateProofSchema
-    }
+    },
+
+
 }

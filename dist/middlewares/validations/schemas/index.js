@@ -92,6 +92,10 @@ exports.default = {
         multi: true,
         get: listTicket_1.listTicketSchema,
     },
+    '/admin/tickets/:id/main-reply': {
+        multi: true,
+        post: replyTicket_1.replyTicketSchema,
+    },
     '/user/ticket/proof': {
         multi: true,
         post: addProof_1.addProofSchema,
@@ -99,5 +103,5 @@ exports.default = {
     '/user/ticket/:id/proof': {
         multi: true,
         post: updateProof_1.updateProofSchema
-    }
+    },
 };

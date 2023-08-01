@@ -104,5 +104,10 @@ class TicketDataServiceProvider {
             return yield ticket_1.TicketModel.updateOne({ _id: id }, { $set: { status: "ARCHIVE" } });
         });
     }
+    replyTicket(ticketId, replyData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield ticket_1.TicketModel.updateOne({ _id: ticketId }, { $set: { reply: replyData } });
+        });
+    }
 }
 exports.TicketDataServiceProvider = TicketDataServiceProvider;
